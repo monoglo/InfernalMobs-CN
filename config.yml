@@ -28,6 +28,25 @@ nameTagsLevel: 1
 nameTagsName: '&f<prefix> <mobName>'
 bossBarsName: '&fLevel <mobLevel> &f<prefix> <mobName>'
 enableBossBar: true
+bossBarSettings:
+  defaultColor: "PURPLE"
+  defaultStyle: "SOLID"
+  perMob:
+    PigZombie:
+      color: "RED"
+      style: "SEGMENTED_6"
+    Ghast:
+      color: "RED"
+      style: "SEGMENTED_12"
+    WitherSkeleton:
+      color: "RED"
+      style: "SEGMENTED_20"
+    Blaze:
+      color: "RED"
+      style: "SEGMENTED_10"
+    Creeper:
+      color: "GREEN"
+      style: "SEGMENTED_6"
 enableScoreBoard: true
 showHealthOnScoreBoard: true
 effectAllPlayerAttacks: true

@@ -1,13 +1,17 @@
 package io.hotmail.com.jacob_vejvoda.infernal_mobs;
 
-import java.io.PrintStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.boss.BarColor;
+import org.bukkit.boss.BarFlag;
+import org.bukkit.boss.BarStyle;
+import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -21,127 +25,136 @@ import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.ScoreboardManager;
-import org.inventivetalent.bossbar.BossBarAPI;
 
-public class GUI
-  implements Listener
-{
-  static infernal_mobs plugin;
-  HashMap<String, Scoreboard> playerScoreBoard = new HashMap();
+public class GUI implements Listener{
+	static infernal_mobs plugin;
+	HashMap<String, Scoreboard> playerScoreBoard = new  HashMap<String, Scoreboard>();
+	HashMap<Entity, BossBar> bossBars = new  HashMap<Entity, BossBar>();
   
-  public GUI(infernal_mobs instance)
-  {
-    plugin = instance;
-  }
+	public GUI(infernal_mobs instance){
+		plugin = instance;
+	}
   
-  public void fixBar(Player p)
-  {
-    double dis = 26.0D;
-    Entity b = null;
-    for (Mob m : plugin.infernalList) {
-      if (m.entity.getWorld().equals(p.getWorld()))
-      {
-        Entity boss = m.entity;
-        if (p.getLocation().distance(boss.getLocation()) < dis)
-        {
-          dis = p.getLocation().distance(boss.getLocation());
-          b = boss;
-        }
-      }
-    }
-    if (b != null)
-    {
-      if (plugin.getConfig().getBoolean("enableBossBar")) {
-        showBossBar(p, b);
-      }
-      if (plugin.getConfig().getBoolean("enableScoreBoard")) {
-        fixScoreboard(p, b, plugin.findMobAbilities(b.getUniqueId()));
-      }
-    }
-    else
-    {
-      clearInfo(p);
-    }
-  }
+	public void fixBar(Player p){
+		//System.out.println("fixBar");
+		double dis = 26.0D;
+		Entity b = null;
+		for (Mob m : plugin.infernalList) {
+			if (m.entity.getWorld().equals(p.getWorld())){
+				Entity boss = m.entity;
+				if (p.getLocation().distance(boss.getLocation()) < dis){
+					dis = p.getLocation().distance(boss.getLocation());
+					b = boss;
+				}
+			}
+		}
+		if (b != null){
+			//System.out.println("Dead: " + b.isDead());
+			//System.out.println("HP: " + ((Damageable)b).getHealth());
+			if(b.isDead() || ((Damageable)b).getHealth() <= 0){
+				if (plugin.getConfig().getBoolean("enableBossBar")){
+					for(Player p2 : bossBars.get(b).getPlayers())
+						bossBars.get(b).removePlayer(p2);
+					bossBars.remove(b);
+				}
+			    int mobIndex = plugin.idSearch(b.getUniqueId());
+				try{
+					if (mobIndex != -1)
+						plugin.removeMob(mobIndex);
+				}catch (IOException e) {}
+				clearInfo(p);
+			}else{
+				if (plugin.getConfig().getBoolean("enableBossBar")) {
+					showBossBar(p, b);
+				}
+				if (plugin.getConfig().getBoolean("enableScoreBoard")) {
+					fixScoreboard(p, b, plugin.findMobAbilities(b.getUniqueId()));
+				}
+			}
+		}else
+			clearInfo(p);
+	}
   
-  public void showBossBar(Player p, Entity e)
-  {
-    ArrayList<String> oldMobAbilityList = plugin.findMobAbilities(e.getUniqueId());
-    String tittle;
-    if (plugin.getConfig().getString("bossBarsName") != null) {
-      tittle = plugin.getConfig().getString("bossBarsName");
-    } else {
-      tittle = "&fLevel <powers> &fInfernal <mobName>";
-    }
-    String mobName = e.getType().getName();
-    if (e.getType().equals(EntityType.SKELETON))
-    {
-      Skeleton sk = (Skeleton)e;
-      if (sk.getSkeletonType().equals(Skeleton.SkeletonType.WITHER)) {
-        mobName = "WitherSkeleton";
-      }
-    }
-    else if (e.getType().equals(EntityType.HORSE))
-    {
-      mobName = "Horse";
-    }
-    String prefix = plugin.getConfig().getString("namePrefix");
-    if (plugin.getConfig().getString("levelPrefixs." + oldMobAbilityList.size()) != null) {
-      prefix = plugin.getConfig().getString("levelPrefixs." + oldMobAbilityList.size());
-    }
-    tittle = tittle.replace("<prefix>", prefix);
-    tittle = tittle.replace("<mobName>", mobName);
-    tittle = tittle.replace("<mobLevel>", oldMobAbilityList.size()+"");
-    String abilities = plugin.generateString(5, oldMobAbilityList);
-    int count = 4;
-    try
-    {
-      do
-      {
-        abilities = plugin.generateString(count, oldMobAbilityList);
-        count--;
-        if (count <= 0) {
-          break;
-        }
-      } while (
-      
-        tittle.length() + abilities.length() + mobName.length() > 64);
-    }
-    catch (Exception x)
-    {
-      System.out.println("showBossBar error: ");x.printStackTrace();
-    }
-    tittle = tittle.replace("<abilities>", abilities);
-    tittle = ChatColor.translateAlternateColorCodes('&', tittle);
-    
-    float health = (float)((Damageable)e).getHealth();
-    float maxHealth = (float)((Damageable)e).getMaxHealth();
-    float setHealth = health * 100.0F / maxHealth;
-    try
-    {
-      BossBarAPI.setMessage(p, tittle, setHealth);
-    }
-    catch (Exception localException1) {}
-  }
+	@SuppressWarnings("deprecation")
+	public void showBossBar(Player p, Entity e){
+		ArrayList<String> oldMobAbilityList = plugin.findMobAbilities(e.getUniqueId());
+		String tittle;
+		if (plugin.getConfig().getString("bossBarsName") != null) {
+			tittle = plugin.getConfig().getString("bossBarsName");
+		}else
+			tittle = "&fLevel <powers> &fInfernal <mobName>";
+		String mobName = e.getType().getName();
+		if (e.getType().equals(EntityType.SKELETON)) {
+			Skeleton sk = (Skeleton)e;
+			if (sk.getSkeletonType().equals(Skeleton.SkeletonType.WITHER)) {
+				mobName = "WitherSkeleton";
+			}
+		}else if (e.getType().equals(EntityType.HORSE)){
+			mobName = "Horse";
+		}
+		String prefix = plugin.getConfig().getString("namePrefix");
+		if (plugin.getConfig().getString("levelPrefixs." + oldMobAbilityList.size()) != null) {
+			prefix = plugin.getConfig().getString("levelPrefixs." + oldMobAbilityList.size());
+		}
+		tittle = tittle.replace("<prefix>", prefix);
+		tittle = tittle.replace("<mobName>", mobName);
+		tittle = tittle.replace("<mobLevel>", oldMobAbilityList.size()+"");
+		String abilities = plugin.generateString(5, oldMobAbilityList);
+		int count = 4;
+		try{
+			do{
+				abilities = plugin.generateString(count, oldMobAbilityList);
+				count--;
+				if (count <= 0) {
+					break;
+				}
+			} while (tittle.length() + abilities.length() + mobName.length() > 64);
+		}catch (Exception x){System.out.println("showBossBar error: ");x.printStackTrace();}
+		tittle = tittle.replace("<abilities>", abilities);
+		tittle = ChatColor.translateAlternateColorCodes('&', tittle);
+		
+		//float health = (float)((Damageable)e).getHealth();
+		//float maxHealth = (float)((Damageable)e).getMaxHealth();
+		//float setHealth = health * 100.0F / maxHealth;
+		//BossBarAPI.setMessage(p, tittle, setHealth);
+		if(!bossBars.containsKey(e)){
+			BarColor bc = BarColor.valueOf(plugin.getConfig().getString("bossBarSettings.defaultColor"));
+			BarStyle bs = BarStyle.valueOf(plugin.getConfig().getString("bossBarSettings.defaultStyle"));
+			//Per Mob Setings
+			String mc = plugin.getConfig().getString("bossBarSettings.perMob."+e.getType().getName()+".color");
+			if(mc != null)
+				bc = BarColor.valueOf(mc);
+			String ms = plugin.getConfig().getString("bossBarSettings.perMob."+e.getType().getName()+".style");
+			if(ms != null)
+				bs = BarStyle.valueOf(ms);
+			BossBar bar = Bukkit.createBossBar(tittle, bc, bs, BarFlag.CREATE_FOG);
+			bar.setVisible(true);
+			bossBars.put(e, bar);
+		}
+		if(!bossBars.get(e).getPlayers().contains(p))
+			bossBars.get(e).addPlayer(p);
+    	float health = (float) ((Damageable) e).getHealth();
+    	float maxHealth = (float) ((Damageable) e).getMaxHealth();
+    	float setHealth = (health * 100.0f) / maxHealth;
+    	bossBars.get(e).setProgress(setHealth/100.0f);
+	}
   
-  public void clearInfo(Player player)
-  {
-    if (plugin.getConfig().getBoolean("enableBossBar")) {
-      try
-      {
-        BossBarAPI.removeBar(player);
-      }
-      catch (Exception localException) {}
-    }
-    if (plugin.getConfig().getBoolean("enableScoreBoard")) {
-      try
-      {
-        player.getScoreboard().resetScores(player);
-        player.getScoreboard().getObjective(DisplaySlot.SIDEBAR).unregister();
-      }
-      catch (Exception localException1) {}
-    }
-  }
+	@SuppressWarnings("deprecation")
+	public void clearInfo(Player player){
+		if (plugin.getConfig().getBoolean("enableBossBar")) {
+			//BossBarAPI.removeBar(player);
+			for (Map.Entry<Entity, BossBar> hm : bossBars.entrySet())
+				if(hm.getValue().getPlayers().contains(player))
+					hm.getValue().removePlayer(player);
+		}
+		if (plugin.getConfig().getBoolean("enableScoreBoard")) {
+			try{
+				player.getScoreboard().resetScores(player);
+				player.getScoreboard().getObjective(DisplaySlot.SIDEBAR).unregister();
+			}
+			catch (Exception localException1) {}
+		}
+	}
   
 	@SuppressWarnings("deprecation")
 	public void fixScoreboard(Player player, Entity e, ArrayList<String> abilityList){

@@ -5,40 +5,30 @@ import io.hotmail.com.jacob_vejvoda.WizardlyMagic.WizardlyMagic;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.PrintStream;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Random;
 import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Chunk;
 import org.bukkit.Color;
 import org.bukkit.Effect;
 import org.bukkit.FireworkEffect;
-import org.bukkit.FireworkEffect.Builder;
-import org.bukkit.FireworkEffect.Type;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.Server;
 import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.banner.Pattern;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Arrow;
@@ -51,7 +41,6 @@ import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Guardian;
 import org.bukkit.entity.Horse;
-import org.bukkit.entity.Horse.Variant;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.MushroomCow;
@@ -61,7 +50,6 @@ import org.bukkit.entity.PigZombie;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Sheep;
 import org.bukkit.entity.Skeleton;
-import org.bukkit.entity.Skeleton.SkeletonType;
 import org.bukkit.entity.ThrownPotion;
 import org.bukkit.entity.Villager;
 import org.bukkit.entity.WitherSkull;
@@ -69,75 +57,69 @@ import org.bukkit.entity.Wolf;
 import org.bukkit.entity.Zombie;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.EntityEquipment;
-import org.bukkit.inventory.HorseInventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.BannerMeta;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
+import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.PluginDescriptionFile;
-import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.Potion;
+import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
-import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
 
-public class infernal_mobs
-  extends JavaPlugin
-  implements Listener
-{
-  ArrayList<Mob> infernalList = new ArrayList();
-  ArrayList<UUID> dropedLootList = new ArrayList();
-  File lootYML = new File(getDataFolder(), "loot.yml");
-  File saveYML = new File(getDataFolder(), "save.yml");
-  YamlConfiguration lootFile = YamlConfiguration.loadConfiguration(this.lootYML);
-  YamlConfiguration mobSaveFile = YamlConfiguration.loadConfiguration(this.saveYML);
-  HashMap<Entity, Entity> mountList = new HashMap();
-  ArrayList<Player> errorList = new ArrayList();
-  public GUI gui;
-  private EventListener events;
-  public long serverTime = 0L;
-  public WizardlyMagic wMagic;
-  public int loops;
+@SuppressWarnings({ "unchecked", "rawtypes", "deprecation" })
+public class infernal_mobs extends JavaPlugin implements Listener{
+	ArrayList<Mob> infernalList = new ArrayList();
+	ArrayList<UUID> dropedLootList = new ArrayList();
+	File lootYML = new File(getDataFolder(), "loot.yml");
+	File saveYML = new File(getDataFolder(), "save.yml");
+	YamlConfiguration lootFile = YamlConfiguration.loadConfiguration(this.lootYML);
+	YamlConfiguration mobSaveFile = YamlConfiguration.loadConfiguration(this.saveYML);
+	HashMap<Entity, Entity> mountList = new HashMap();
+	ArrayList<Player> errorList = new ArrayList();
+	public GUI gui;
+	private EventListener events;
+	public long serverTime = 0L;
+	public WizardlyMagic wMagic;
+	public int loops;
   
-  public void onEnable(){
-  	//Register Events
-  	getServer().getPluginManager().registerEvents(this, this);
-      this.events = new EventListener(this);
-      getServer().getPluginManager().registerEvents(this.events, this);
-      this.gui = new GUI(this);
-      getServer().getPluginManager().registerEvents(this.gui, this);
-  	//Register Config
-  	if (!new File(getDataFolder(), "config.yml").exists()) {
-  	     saveDefaultConfig();
-  	}
-  	//Register Loots
-      if (!lootYML.exists()) {
-          try {
-          	lootYML.createNewFile();
-          } catch (IOException e) {
-              e.printStackTrace();
-          }
-      }
-  	//Register Mob Saves
-      if (!saveYML.exists()) {
-          try {
-          	saveYML.createNewFile();
-          } catch (IOException e) {
-              e.printStackTrace();
-          }
-      }
+	public void onEnable(){
+		//Register Events
+		getServer().getPluginManager().registerEvents(this, this);
+		this.events = new EventListener(this);
+		getServer().getPluginManager().registerEvents(this.events, this);
+		this.gui = new GUI(this);
+		getServer().getPluginManager().registerEvents(this.gui, this);
+		//Register Config
+		if (!new File(getDataFolder(), "config.yml").exists()) {
+			saveDefaultConfig();
+		}
+		//Register Loots
+		if (!lootYML.exists()) {
+			try {
+				lootYML.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		//Register Mob Saves
+		if (!saveYML.exists()) {
+			try {
+				saveYML.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
   		//Register Metrics
 		try {
 		    Metrics metrics = new Metrics(this);
@@ -152,7 +134,7 @@ public class infernal_mobs
 		applyEffect();
 		reloadPowers();
 		showEffect();
-  }
+	}
   
   public void reloadPowers(){
     ArrayList<World> wList = new ArrayList();
@@ -166,11 +148,9 @@ public class infernal_mobs
     }
   }
   
-  public void scoreCheck()
-  {
-    for (Player p : getServer().getOnlinePlayers()) {
-      this.gui.fixBar(p);
-    }
+	public void scoreCheck(){
+		for (Player p : getServer().getOnlinePlayers())
+			this.gui.fixBar(p);
     //for (Map.Entry<Entity, Entity> hm : ((HashMap)this.mountList.clone()).entrySet()) {
     HashMap<Entity, Entity> tmp = ( HashMap<Entity, Entity>)mountList.clone();
     for (Map.Entry<Entity, Entity> hm : tmp.entrySet()){
@@ -472,9 +452,7 @@ public class infernal_mobs
     return list;
   }
   
-  public void removeMob(int mobIndex)
-    throws IOException
-  {
+  public void removeMob(int mobIndex) throws IOException{
     String id = ((Mob)this.infernalList.get(mobIndex)).id.toString();
     this.infernalList.remove(mobIndex);
     this.mobSaveFile.set(id, null);
@@ -743,6 +721,14 @@ public class infernal_mobs
         sm.setOwner(owner);
         stack.setItemMeta(sm);
       }
+		//Potions
+		if(lootFile.getString("loot." + loot + ".potion") != null)
+			if(stack.getType().equals(Material.POTION) || stack.getType().equals(Material.SPLASH_POTION) || stack.getType().equals(Material.LINGERING_POTION)){
+				PotionMeta pMeta = (PotionMeta) stack.getItemMeta();
+				String pn = lootFile.getString("loot." + loot + ".potion");
+				pMeta.setBasePotionData(new PotionData(PotionType.getByEffect(PotionEffectType.getByName(pn)), false, false));
+				stack.setItemMeta(pMeta);
+			}
       int enchAmount = 0;
       for (int e = 0; e <= 10; e++) {
         if (this.lootFile.getString("loot." + loot + ".enchantments." + e) != null) {
@@ -974,7 +960,6 @@ public class infernal_mobs
     	}catch(Exception x){x.printStackTrace();}
 	}
   
-	@SuppressWarnings("unchecked")
 	public void showEffect(){
 		try{
 			//GUI Bars And Stuff
@@ -1021,14 +1006,14 @@ public class infernal_mobs
 					}
 					//Ability's
 					ArrayList<String> abilityList = findMobAbilities(id);
-					System.out.println("PE1");
+					//System.out.println("PE1");
 					if (!mob.isDead()){
 						for (String ability : abilityList){
 							Random rand = new Random();
 							int min = 1;
 							int max = 10;
 							int randomNum = rand.nextInt(max - min + 1) + min;
-							System.out.println("PE: " + ability);
+							//System.out.println("PE: " + ability);
 							if (ability.equals("cloaked")){
 								((LivingEntity) mob).addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 40, 1), true);
 							}else if (ability.equals("armoured")){
@@ -1166,7 +1151,6 @@ public class infernal_mobs
     }, 1L);
   }
   
-	@SuppressWarnings("deprecation")
 	public void applyEffect(){
 		//Check Players
 		for(Player p : this.getServer().getOnlinePlayers()){
@@ -1305,7 +1289,6 @@ public class infernal_mobs
     }, 20 * time);
   }
   
-	@SuppressWarnings({ "deprecation" })
 	public boolean doEffect(Player player, final Entity mob, boolean playerIsVictom) throws Exception {
 		//Do Player Loot Effects
 		if(playerIsVictom == false){
@@ -1327,54 +1310,54 @@ public class infernal_mobs
 						boolean effectsPlayer = true;
 						if(lootFile.getString("potionEffects." + i + ".attackEffect").equals("target"))
 							effectsPlayer = false;
-  					for(int neededItemIndex : lootFile.getIntegerList("potionEffects." + i + ".requiredItems"))	{
-  						ItemStack neededItem = getItem(neededItemIndex);
+						for(int neededItemIndex : lootFile.getIntegerList("potionEffects." + i + ".requiredItems"))	{
+	  						ItemStack neededItem = getItem(neededItemIndex);
 							try{
-  							if((neededItem.getItemMeta() == null) || (neededItem.getItemMeta().getDisplayName() == null) || (itemUsed.getItemMeta().getDisplayName().equals(neededItem.getItemMeta().getDisplayName()))){
-  								if(itemUsed.getTypeId() == neededItem.getTypeId()){
-  									if((neededItem.getType().getMaxDurability() > 0) || (itemUsed.getDurability() == (neededItem.getDurability()))){
-  										//Player Using Item
-  										if(effectsPlayer == true){
-  											applyEffects(player, i);
-  										}else{
-  											if(mob instanceof LivingEntity)
-  												applyEffects((LivingEntity)mob, i);
-  										}
-  									}
-	    							}
-  							}
+								if((neededItem.getItemMeta() == null) || (neededItem.getItemMeta().getDisplayName() == null) || (itemUsed.getItemMeta().getDisplayName().equals(neededItem.getItemMeta().getDisplayName()))){
+	  								if(itemUsed.getTypeId() == neededItem.getTypeId()){
+	  									if((neededItem.getType().getMaxDurability() > 0) || (itemUsed.getDurability() == (neededItem.getDurability()))){
+	  										//Player Using Item
+	  										if(effectsPlayer == true){
+	  											applyEffects(player, i);
+	  										}else{
+	  											if(mob instanceof LivingEntity)
+	  												applyEffects((LivingEntity)mob, i);
+	  										}
+	  									}
+		    						}
+	  							}
 							}catch(Exception e){/**System.out.println("Error: " + e);**/}
-  					}
+	  					}
 					}else if(lootFile.getString("potionEffects." + i + ".attackHelpEffect") != null){
 						boolean effectsPlayer = true;
 						if(lootFile.getString("potionEffects." + i + ".attackHelpEffect").equals("target"))
 							effectsPlayer = false;
 						ArrayList<ItemStack> itemsPlayerHas = new ArrayList<ItemStack>();
-  					for(int neededItemIndex : lootFile.getIntegerList("potionEffects." + i + ".requiredItems"))	{
-  						ItemStack neededItem = getItem(neededItemIndex);
-  						for(ItemStack check : items){
-  							try{
-	    							if((neededItem.getItemMeta() == null) || (neededItem.getItemMeta().getDisplayName() == null) || (check.getItemMeta().getDisplayName().equals(neededItem.getItemMeta().getDisplayName()))){
-	    								if(check.getTypeId() == neededItem.getTypeId()){
-	    									if((neededItem.getType().getMaxDurability() > 0) || (check.getDurability() == (neededItem.getDurability()))){
-			    								if(!itemsPlayerHas.contains(neededItem)){
-			    									itemsPlayerHas.add(neededItem);
-			    								}
-	    									}
+	  					for(int neededItemIndex : lootFile.getIntegerList("potionEffects." + i + ".requiredItems"))	{
+	  						ItemStack neededItem = getItem(neededItemIndex);
+	  						for(ItemStack check : items){
+	  							try{
+		    							if((neededItem.getItemMeta() == null) || (neededItem.getItemMeta().getDisplayName() == null) || (check.getItemMeta().getDisplayName().equals(neededItem.getItemMeta().getDisplayName()))){
+		    								if(check.getTypeId() == neededItem.getTypeId()){
+		    									if((neededItem.getType().getMaxDurability() > 0) || (check.getDurability() == (neededItem.getDurability()))){
+				    								if(!itemsPlayerHas.contains(neededItem)){
+				    									itemsPlayerHas.add(neededItem);
+				    								}
+		    									}
+			    							}
 		    							}
-	    							}
-  							}catch(Exception e){/**System.out.println("Error: " + e);**/}
-  						}
-  					}
-  					if(itemsPlayerHas.size() >= lootFile.getIntegerList("potionEffects." + i + ".requiredItems").size()){
-							//Player Using Item
-							if(effectsPlayer == true){
-								applyEffects(player, i);
-							}else{
-								if(mob instanceof LivingEntity)
-									applyEffects((LivingEntity)mob, i);
-							}
-  					}
+	  							}catch(Exception e){/**System.out.println("Error: " + e);**/}
+	  						}
+	  					}
+	  					if(itemsPlayerHas.size() >= lootFile.getIntegerList("potionEffects." + i + ".requiredItems").size()){
+								//Player Using Item
+								if(effectsPlayer == true){
+									applyEffects(player, i);
+								}else{
+									if(mob instanceof LivingEntity)
+										applyEffects((LivingEntity)mob, i);
+								}
+	  					}
 					}
 				}
 			}
@@ -1399,180 +1382,138 @@ public class infernal_mobs
 		return false;
 	}
   
-  public void doMagic(Entity vic, Entity atc, boolean playerIsVictom, String ability, UUID id)
-  {
-    int min = 1;
-    int max = 10;
-    int randomNum = new Random().nextInt(max - min + 1) + min;
-    if ((atc instanceof Player)) {
-      randomNum = 1;
-    }
-    try
-    {
-      if ((atc instanceof Player)) {
-        if (ability.equals("tosser"))
-        {
-          if ((!(vic instanceof Player)) || ((!((Player)vic).isSneaking()) && (!((Player)vic).getGameMode().equals(GameMode.CREATIVE)))) {
-            vic.setVelocity(atc.getLocation().toVector().subtract(vic.getLocation().toVector()));
-          }
-        }
-        else if (ability.equals("gravity"))
-        {
-          if ((!(vic instanceof Player)) || ((!((Player)vic).isSneaking()) && (!((Player)vic).getGameMode().equals(GameMode.CREATIVE))))
-          {
-            Location feetBlock = vic.getLocation();
-            feetBlock.setY(feetBlock.getY() - 2.0D);
-            Block block = feetBlock.getWorld().getBlockAt(feetBlock);
-            if (!block.getType().equals(Material.AIR))
-            {
-              int amount = 6;
-              if (getConfig().getString("gravityLevitateLength") != null) {
-                amount = getConfig().getInt("gravityLevitateLength");
-              }
-              levitate(vic, amount);
-            }
-          }
-        }
-        else if ((ability.equals("ghastly")) || (ability.equals("necromancer")))
-        {
-          if ((!vic.isDead()) && (
-            (!(vic instanceof Player)) || ((!((Player)vic).isSneaking()) && (!((Player)vic).getGameMode().equals(GameMode.CREATIVE)))))
-          {
-            Fireball fb = null;
-            if (ability.equals("ghastly")) {
-              fb = (Fireball)((LivingEntity)atc).launchProjectile(Fireball.class);
-            } else {
-              fb = (Fireball)((LivingEntity)atc).launchProjectile(WitherSkull.class);
-            }
-            moveToward(fb, vic.getLocation(), 0.6D);
-          }
-        }
-        else if (ability.equals("ender")) {
-          atc.teleport(vic.getLocation());
-        }
-      }
-      if ((ability.equals("poisonous")) && (isLegitVictim(atc, playerIsVictom, ability)))
-      {
-        ((LivingEntity)vic).addPotionEffect(new PotionEffect(PotionEffectType.POISON, 200, 1), true);
-      }
-      else
-      {
-        Entity newEnt;
-        if ((ability.equals("morph")) && (isLegitVictim(atc, playerIsVictom, ability))) {
-          try
-          {
-            int mc = new Random().nextInt(25) + 1;
-            if (mc != 20) {
-              return;
-            }
-            Location l = atc.getLocation().clone();
-            double h = ((Damageable)atc).getHealth();
-            ArrayList<String> aList = ((Mob)this.infernalList.get(idSearch(id))).abilityList;
-            atc.teleport(new Location(atc.getWorld(), l.getX(), 0.0D, l.getZ()));
-            atc.remove();
-            
-            ArrayList<String> mList = (ArrayList)getConfig().getList("enabledmobs");
-            int index = new Random().nextInt(mList.size());
-            String mobName = (String)mList.get(index);
-            
-            newEnt = null;
-            EntityType[] arrayOfEntityType;
-            int j = (arrayOfEntityType = EntityType.values()).length;
-            for (int i = 0; i < j; i++)
-            {
-              EntityType e = arrayOfEntityType[i];
-              try
-              {
-                if ((e.getName() != null) && 
-                  (e.getName().equalsIgnoreCase(mobName))) {
-                  newEnt = vic.getWorld().spawnEntity(l, e);
-                }
-              }
-              catch (Exception localException1) {}
-            }
-            if (mobName.equals("WitherSkeleton"))
-            {
-              newEnt = vic.getWorld().spawnEntity(l, EntityType.SKELETON);
-              ((Skeleton)newEnt).setSkeletonType(Skeleton.SkeletonType.WITHER);
-            }
-            if (newEnt == null)
-            {
-              System.out.println("Infernal Mobs can't find mob type: " + mobName + "!");
-              return;
-            }
-            Mob newMob = null;
-            if (aList.contains("1up")) {
-              newMob = new Mob(newEnt, newEnt.getUniqueId(), vic.getWorld(), true, aList, 2, getEffect());
-            } else {
-              newMob = new Mob(newEnt, newEnt.getUniqueId(), vic.getWorld(), true, aList, 1, getEffect());
-            }
-            if (aList.contains("flying")) {
-              makeFly(newEnt);
-            }
-            this.infernalList.set(idSearch(id), newMob);
-            this.gui.setName(newEnt);
-            
-            giveMobGear(newEnt, true);
-            
-            addHealth(newEnt, aList);
-            if (h >= ((Damageable)newEnt).getMaxHealth()) {
-              return;
-            }
-            ((Damageable)newEnt).setHealth(h);
-          }
-          catch (Exception ex)
-          {
-            System.out.print("Morph Error: ");ex.printStackTrace();
-          }
-        }
-        if ((ability.equals("molten")) && (isLegitVictim(atc, playerIsVictom, ability)))
-        {
-          int amount;
-          if (getConfig().getString("moltenBurnLength") != null) {
-            amount = getConfig().getInt("moltenBurnLength");
-          } else {
-            amount = 5;
-          }
-          vic.setFireTicks(amount * 20);
-        }
-        else if ((ability.equals("blinding")) && (isLegitVictim(atc, playerIsVictom, ability)))
-        {
-          ((LivingEntity)vic).addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 60, 1), true);
-        }
-        else if ((ability.equals("confusing")) && (isLegitVictim(atc, playerIsVictom, ability)))
-        {
-          ((LivingEntity)vic).addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 80, 2), true);
-        }
-        else if ((ability.equals("withering")) && (isLegitVictim(atc, playerIsVictom, ability)))
-        {
-          ((LivingEntity)vic).addPotionEffect(new PotionEffect(PotionEffectType.WITHER, 180, 1), true);
-        }
-        else if ((ability.equals("thief")) && (isLegitVictim(atc, playerIsVictom, ability)))
-        {
-          if ((vic instanceof Player))
-          {
-            if ((((Player)vic).getInventory().getItemInHand() != null) && (!((Player)vic).getInventory().getItemInHand().getType().equals(Material.AIR)) && (
-              (randomNum <= 1) || (randomNum == 1)))
-            {
-              vic.getWorld().dropItemNaturally(atc.getLocation(), ((Player)vic).getInventory().getItemInHand());
-              int slot = ((Player)vic).getInventory().getHeldItemSlot();
-              ((Player)vic).getInventory().setItem(slot, null);
-            }
-          }
-          else if (((vic instanceof PigZombie)) || ((vic instanceof Zombie)) || ((vic instanceof Skeleton)))
-          {
-            EntityEquipment eq = ((LivingEntity)vic).getEquipment();
-            if (eq.getItemInHand() != null)
-            {
-              vic.getWorld().dropItemNaturally(atc.getLocation(), eq.getItemInHand());
-              eq.setItemInHand(null);
-            }
-          }
-        }
-        else if ((ability.equals("quicksand")) && (isLegitVictim(atc, playerIsVictom, ability)))
-        {
-          ((LivingEntity)vic).addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 180, 1), true);
-        }
+	public void doMagic(Entity vic, Entity atc, boolean playerIsVictom, String ability, UUID id){
+		//System.out.println("Do Magic: "+ability);
+		int min = 1;
+		int max = 10;
+		int randomNum = new Random().nextInt(max - min + 1) + min;
+		if ((atc instanceof Player)) {
+			randomNum = 1;
+		}
+		try{
+			if ((atc instanceof Player)) {
+				if (ability.equals("tosser")){
+					if ((!(vic instanceof Player)) || ((!((Player)vic).isSneaking()) && (!((Player)vic).getGameMode().equals(GameMode.CREATIVE)))) {
+						vic.setVelocity(atc.getLocation().toVector().subtract(vic.getLocation().toVector()));
+					}
+				}else if (ability.equals("gravity")){
+					if ((!(vic instanceof Player)) || ((!((Player)vic).isSneaking()) && (!((Player)vic).getGameMode().equals(GameMode.CREATIVE)))){
+						Location feetBlock = vic.getLocation();
+						feetBlock.setY(feetBlock.getY() - 2.0D);
+						Block block = feetBlock.getWorld().getBlockAt(feetBlock);
+						if (!block.getType().equals(Material.AIR)){
+							int amount = 6;
+							if (getConfig().getString("gravityLevitateLength") != null) {
+								amount = getConfig().getInt("gravityLevitateLength");
+							}
+							levitate(vic, amount);
+						}
+					}
+				}else if ((ability.equals("ghastly")) || (ability.equals("necromancer"))){
+					//System.out.println("ghastly");
+					if ((!vic.isDead()) && ((!(vic instanceof Player)) || ((!((Player)vic).isSneaking()) && (!((Player)vic).getGameMode().equals(GameMode.CREATIVE))))){
+						Fireball fb = null;
+						if (ability.equals("ghastly")) {
+							fb = (Fireball)((LivingEntity)atc).launchProjectile(Fireball.class);
+						} else {
+							fb = (Fireball)((LivingEntity)atc).launchProjectile(WitherSkull.class);
+						}
+						moveToward(fb, vic.getLocation(), 0.6D);
+					}
+				}
+			}
+			if (ability.equals("ender")) {
+				atc.teleport(vic.getLocation());
+			}else if ((ability.equals("poisonous")) && (isLegitVictim(atc, playerIsVictom, ability))){
+				((LivingEntity)vic).addPotionEffect(new PotionEffect(PotionEffectType.POISON, 200, 1), true);
+			}else if ((ability.equals("morph")) && (isLegitVictim(atc, playerIsVictom, ability))) {
+				try{
+					Entity newEnt;
+					int mc = new Random().nextInt(25) + 1;
+					if (mc != 20) {
+						return;
+					}
+					Location l = atc.getLocation().clone();
+					double h = ((Damageable)atc).getHealth();
+					ArrayList<String> aList = ((Mob)this.infernalList.get(idSearch(id))).abilityList;
+					atc.teleport(new Location(atc.getWorld(), l.getX(), 0.0D, l.getZ()));
+					atc.remove();
+        
+					ArrayList<String> mList = (ArrayList)getConfig().getList("enabledmobs");
+					int index = new Random().nextInt(mList.size());
+					String mobName = (String)mList.get(index);
+        
+					newEnt = null;
+					EntityType[] arrayOfEntityType;
+					int j = (arrayOfEntityType = EntityType.values()).length;
+					for (int i = 0; i < j; i++){
+						EntityType e = arrayOfEntityType[i];
+						try{
+							if ((e.getName() != null) && (e.getName().equalsIgnoreCase(mobName))) {
+								newEnt = vic.getWorld().spawnEntity(l, e);
+							}
+						}catch (Exception localException1) {}
+					}
+					if (mobName.equals("WitherSkeleton")){
+						newEnt = vic.getWorld().spawnEntity(l, EntityType.SKELETON);
+						((Skeleton)newEnt).setSkeletonType(Skeleton.SkeletonType.WITHER);
+					}
+					if (newEnt == null){
+						System.out.println("Infernal Mobs can't find mob type: " + mobName + "!");
+						return;
+					}
+					Mob newMob = null;
+					if (aList.contains("1up")) {
+						newMob = new Mob(newEnt, newEnt.getUniqueId(), vic.getWorld(), true, aList, 2, getEffect());
+					} else {
+						newMob = new Mob(newEnt, newEnt.getUniqueId(), vic.getWorld(), true, aList, 1, getEffect());
+					}
+					if (aList.contains("flying")) {
+						makeFly(newEnt);
+					}
+					this.infernalList.set(idSearch(id), newMob);
+					this.gui.setName(newEnt);
+					
+					giveMobGear(newEnt, true);
+					
+					addHealth(newEnt, aList);
+					if (h >= ((Damageable)newEnt).getMaxHealth()) {
+						return;
+					}
+					((Damageable)newEnt).setHealth(h);
+				}catch (Exception ex){System.out.print("Morph Error: ");ex.printStackTrace();}
+			}
+			if ((ability.equals("molten")) && (isLegitVictim(atc, playerIsVictom, ability))){
+				int amount;
+				if (getConfig().getString("moltenBurnLength") != null) {
+					amount = getConfig().getInt("moltenBurnLength");
+				} else {
+					amount = 5;
+				}
+				vic.setFireTicks(amount * 20);
+			}else if ((ability.equals("blinding")) && (isLegitVictim(atc, playerIsVictom, ability))){
+				((LivingEntity)vic).addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 60, 1), true);
+			}else if ((ability.equals("confusing")) && (isLegitVictim(atc, playerIsVictom, ability))){
+				((LivingEntity)vic).addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 80, 2), true);
+			}else if ((ability.equals("withering")) && (isLegitVictim(atc, playerIsVictom, ability))) {
+				((LivingEntity)vic).addPotionEffect(new PotionEffect(PotionEffectType.WITHER, 180, 1), true);
+			}else if ((ability.equals("thief")) && (isLegitVictim(atc, playerIsVictom, ability))) {
+				if ((vic instanceof Player)){
+					if ((((Player)vic).getInventory().getItemInHand() != null) && (!((Player)vic).getInventory().getItemInHand().getType().equals(Material.AIR)) && ((randomNum <= 1) || (randomNum == 1))){
+						vic.getWorld().dropItemNaturally(atc.getLocation(), ((Player)vic).getInventory().getItemInHand());
+						int slot = ((Player)vic).getInventory().getHeldItemSlot();
+						((Player)vic).getInventory().setItem(slot, null);
+					}
+				}else if (((vic instanceof PigZombie)) || ((vic instanceof Zombie)) || ((vic instanceof Skeleton))) {
+					EntityEquipment eq = ((LivingEntity)vic).getEquipment();
+					if (eq.getItemInHand() != null){
+						vic.getWorld().dropItemNaturally(atc.getLocation(), eq.getItemInHand());
+						eq.setItemInHand(null);
+					}
+				}
+			}else if ((ability.equals("quicksand")) && (isLegitVictim(atc, playerIsVictom, ability))){
+				((LivingEntity)vic).addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 180, 1), true);
+			}
         else if ((ability.equals("bullwark")) && (isLegitVictim(atc, playerIsVictom, ability)))
         {
           ((LivingEntity)atc).addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 500, 2), true);
@@ -1879,7 +1820,6 @@ public class infernal_mobs
             }
           }
         }
-      }
     }
     catch (Exception localException2) {}
   }
@@ -2742,7 +2682,7 @@ public class infernal_mobs
               }
               sender.sendMessage("§eKilled all infernal mobs near you!");
             }
-            else if ((args[0].equals("kill")) && (args.length == 2))
+            else if ((args[0].equals("killall")) && (args.length == 2))
             {
               World w = getServer().getWorld(args[1]);
               if (w != null)
@@ -2769,10 +2709,9 @@ public class infernal_mobs
         {
           sender.sendMessage("§cYou don't have permission to use this command!");
         }
-      }
-      catch (Exception x)
-      {
+      }catch (Exception x){
         throwError(sender);
+        x.printStackTrace();
       }
     }
     return true;

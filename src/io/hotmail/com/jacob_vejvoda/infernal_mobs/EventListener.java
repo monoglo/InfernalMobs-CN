@@ -46,9 +46,7 @@ import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-public class EventListener
-  implements Listener
-{
+public class EventListener implements Listener{
   static infernal_mobs plugin;
   HashMap<String, Long> spawnerMap = new HashMap();
   
