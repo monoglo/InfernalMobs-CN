@@ -1,28 +1,22 @@
 package io.hotmail.com.jacob_vejvoda.infernal_mobs;
 
 import java.io.IOException;
-import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Chunk;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
-import org.bukkit.entity.LightningStrike;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Snowball;
@@ -33,7 +27,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
-import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
@@ -42,13 +35,11 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.weather.LightningStrikeEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
-import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 public class EventListener implements Listener{
   static infernal_mobs plugin;
-  HashMap<String, Long> spawnerMap = new HashMap();
+  HashMap<String, Long> spawnerMap = new HashMap<String, Long>();
   
   public EventListener(infernal_mobs instance)
   {
@@ -203,7 +194,8 @@ public class EventListener implements Listener{
     }
   }
   
-  @EventHandler(priority=EventPriority.HIGH)
+  @SuppressWarnings("deprecation")
+@EventHandler(priority=EventPriority.HIGH)
   public void onMobSpawn(CreatureSpawnEvent event)
   {
     World world = event.getEntity().getWorld();
@@ -273,7 +265,8 @@ public class EventListener implements Listener{
     }
   }
   
-  @EventHandler(priority=EventPriority.HIGH)
+  @SuppressWarnings({ "unchecked", "deprecation", "rawtypes" })
+@EventHandler(priority=EventPriority.HIGH)
   public void onEntityDeath(EntityDeathEvent event)
   {
     try

@@ -29,7 +29,7 @@ nameTagsName: '&f<prefix> <mobName>'
 bossBarsName: '&fLevel <mobLevel> &f<prefix> <mobName>'
 enableBossBar: true
 bossBarSettings:
-  defaultColor: "PURPLE"
+  defaultColor: "PINK"
   defaultStyle: "SOLID"
   perMob:
     PigZombie:
@@ -47,7 +47,7 @@ bossBarSettings:
     Creeper:
       color: "GREEN"
       style: "SEGMENTED_6"
-enableScoreBoard: true
+enableScoreBoard: false
 showHealthOnScoreBoard: true
 effectAllPlayerAttacks: true
 enableParticles: true
@@ -70,7 +70,7 @@ spawnMessages:
 enabledworlds:
 - <all>
 enabledmobs:
-- Chicken
+#- Chicken
 - PigZombie
 - Zombie
 - Skeleton
@@ -79,16 +79,20 @@ enabledmobs:
 - Creeper
 - Witch
 - Enderman
-- Pig
+#- Pig
 - Slime
 - LavaSlime
-- Wolf
+#- Wolf
 - Ghast
 - Giant
 - SilverFish
 - Blaze
-- Squid
+#- Squid
 - WitherSkeleton
+- Rabbit
+- Shulker
+- Guardian
+- Endermite
 poisonous: true
 armoured: true
 blinding: true

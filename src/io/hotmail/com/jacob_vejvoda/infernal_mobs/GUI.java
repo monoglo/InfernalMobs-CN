@@ -53,9 +53,11 @@ public class GUI implements Listener{
 			//System.out.println("HP: " + ((Damageable)b).getHealth());
 			if(b.isDead() || ((Damageable)b).getHealth() <= 0){
 				if (plugin.getConfig().getBoolean("enableBossBar")){
-					for(Player p2 : bossBars.get(b).getPlayers())
-						bossBars.get(b).removePlayer(p2);
-					bossBars.remove(b);
+					try{
+						for(Player p2 : bossBars.get(b).getPlayers())
+							bossBars.get(b).removePlayer(p2);
+						bossBars.remove(b);
+					}catch(Exception x){}
 				}
 			    int mobIndex = plugin.idSearch(b.getUniqueId());
 				try{

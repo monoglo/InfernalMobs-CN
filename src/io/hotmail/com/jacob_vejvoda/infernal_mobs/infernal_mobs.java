@@ -1,6 +1,5 @@
 package io.hotmail.com.jacob_vejvoda.infernal_mobs;
 
-import io.hotmail.com.jacob_vejvoda.WizardlyMagic.ParticleEffects_1_9;
 import io.hotmail.com.jacob_vejvoda.WizardlyMagic.WizardlyMagic;
 import java.io.File;
 import java.io.IOException;
@@ -15,6 +14,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
+import java.util.logging.Level;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
@@ -1980,29 +1981,26 @@ public class infernal_mobs extends JavaPlugin implements Listener{
     return getAbilities(power);
   }
   
-  public ArrayList<String> getAbilities(int amount)
-  {
-    ArrayList<String> abilityList = new ArrayList();
-    ArrayList<String> allAbilitiesList = new ArrayList(Arrays.asList(new String[] { "confusing", "ghost", "morph", "mounted", "flying", "gravity", "firework", "necromancer", "archer", "molten", "mama", "potions", "explode", "berserk", "weakness", "vengeance", "webber", "storm", "sprint", "lifesteal", "ghastly", "ender", "cloaked", "1up", "sapper", "rust", "bullwark", "quicksand", "thief", "tosser", "withering", "blinding", "armoured", "poisonous" }));
-    int min = 1;
-    for (int i = 0; i < amount; i++)
-    {
-      int max = allAbilitiesList.size();
-      int randomNum = new Random().nextInt(max - min + 1) + min - 1;
+  	public ArrayList<String> getAbilities(int amount){
+  		ArrayList<String> abilityList = new ArrayList();
+  		ArrayList<String> allAbilitiesList = new ArrayList(Arrays.asList(new String[] { "confusing", "ghost", "morph", "mounted", "flying", "gravity", "firework", "necromancer", "archer", "molten", "mama", "potions", "explode", "berserk", "weakness", "vengeance", "webber", "storm", "sprint", "lifesteal", "ghastly", "ender", "cloaked", "1up", "sapper", "rust", "bullwark", "quicksand", "thief", "tosser", "withering", "blinding", "armoured", "poisonous" }));
+  		int min = 1;
+  		for (int i = 0; i < amount; i++){
+  			int max = allAbilitiesList.size();
+  			int randomNum = new Random().nextInt(max - min + 1) + min - 1;
       
-      String ab = (String)allAbilitiesList.get(randomNum);
-      if ((getConfig().getString(ab).equals("always")) || (getConfig().getBoolean(ab)))
-      {
-        abilityList.add(ab);
-        allAbilitiesList.remove(randomNum);
-      }
-      else
-      {
-        allAbilitiesList.remove(randomNum);
-      }
-    }
-    return abilityList;
-  }
+  			String ab = (String)allAbilitiesList.get(randomNum);
+  			if(getConfig().getString(ab) != null){
+				if ((getConfig().getString(ab).equals("always")) || (getConfig().getBoolean(ab))){
+					abilityList.add(ab);
+					allAbilitiesList.remove(randomNum);
+				}else
+					allAbilitiesList.remove(randomNum);
+  			}else
+  				this.getLogger().log(Level.WARNING, "Ability: " + ab + " is not set!");
+  		}
+  		return abilityList;
+  	}
   
   public int idSearch(UUID id)
   {
@@ -2381,11 +2379,17 @@ public class infernal_mobs extends JavaPlugin implements Listener{
             throwError(sender);
             return true;
           }
-          if ((args.length == 1) && (args[0].equals("reload")))
-          {
+          if ((args.length == 1) && (args[0].equals("reload"))){
             reloadConfig();
             reloadLoot();
-            sender.sendMessage("Config reloaded!");
+            sender.sendMessage("§eConfig reloaded!");
+          }
+          else if (args[0].equals("mobList")){
+              sender.sendMessage("§6Mob List:");
+              for(EntityType et : EntityType.values())
+            	  if(et != null && et.getName() != null)
+            		  sender.sendMessage("§e" + et.getName());
+              return true;
           }
           else if ((args.length == 1) && (args[0].equals("error")))
           {
@@ -2671,37 +2675,32 @@ public class infernal_mobs extends JavaPlugin implements Listener{
               {
                 sender.sendMessage("§cYou must be looking a spawner to make it infernal!");
               }
-            }
-            else if ((args[0].equals("kill")) && (args.length == 2))
-            {
-              int size = Integer.parseInt(args[1]);
-              for (Entity e : player.getNearbyEntities(size, size, size)) {
-                if (idSearch(e.getUniqueId()) != -1) {
-                  e.remove();
-                }
-              }
-              sender.sendMessage("§eKilled all infernal mobs near you!");
-            }
-            else if ((args[0].equals("killall")) && (args.length == 2))
-            {
-              World w = getServer().getWorld(args[1]);
-              if (w != null)
-              {
-                for (Entity e : w.getEntities()) {
-                  if (idSearch(e.getUniqueId()) != -1) {
-                    e.remove();
-                  }
-                }
-                sender.sendMessage("§eKilled all loaded infernal mobs in that world!");
-              }
-              else
-              {
-                sender.sendMessage("§cWorld not found!");
-              }
-            }
-            else
-            {
-              throwError(sender);
+            }else if ((args[0].equals("kill")) && (args.length == 2)){
+            	int size = Integer.parseInt(args[1]);
+            	for (Entity e : player.getNearbyEntities(size, size, size)) {
+            		int id = idSearch(e.getUniqueId());
+            		if (id != -1) {
+            			removeMob(id);
+            			e.remove();
+            		}
+            	}
+            	sender.sendMessage("§eKilled all infernal mobs near you!");
+            }else if ((args[0].equals("killall")) && (args.length == 2)){
+            	World w = getServer().getWorld(args[1]);
+            	if (w != null){
+            		for (Entity e : w.getEntities()) {
+                		int id = idSearch(e.getUniqueId());
+                		if (id != -1) {
+                			removeMob(id);
+                			e.remove();
+                		}
+            		}
+            		sender.sendMessage("§eKilled all loaded infernal mobs in that world!");
+            	}else{
+            		sender.sendMessage("§cWorld not found!");
+            	}
+            }else{
+            	throwError(sender);
             }
           }
         }
