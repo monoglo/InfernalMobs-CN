@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.UUID;
+import java.util.logging.Level;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -35,217 +37,189 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.weather.LightningStrikeEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
+import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.inventory.ItemStack;
 
 public class EventListener implements Listener{
-  static infernal_mobs plugin;
-  HashMap<String, Long> spawnerMap = new HashMap<String, Long>();
+	static infernal_mobs plugin;
+	HashMap<String, Long> spawnerMap = new HashMap<String, Long>();
+	
+	public EventListener(infernal_mobs instance){
+		plugin = instance;
+	}
+	
+//	@EventHandler(priority=EventPriority.HIGH)
+//	public void onInventoryClick(InventoryClickEvent e){
+//		System.out.println("RSlot: " + e.getRawSlot());
+//		System.out.println("Slot: " + e.getSlot());
+//	}
   
-  public EventListener(infernal_mobs instance)
-  {
-    plugin = instance;
-  }
+	@EventHandler(priority=EventPriority.HIGH)
+	public void onPlayerInteractEntity(PlayerInteractEntityEvent e){
+		Player p = e.getPlayer();
+		Entity ent = e.getRightClicked();
+		if (plugin.errorList.contains(p)){
+			plugin.errorList.remove(p);
+			p.sendMessage("§6Error report:");
+			
+			String name = "";
+			try{
+				name = ent.getCustomName();
+			}catch (Exception localException) {}
+			p.sendMessage("§eName: §f" + name);
+			p.sendMessage("§eSaved: §f" + plugin.mobSaveFile.getString(ent.getUniqueId().toString()));
+			p.sendMessage("§eHealth: §f" + ((Damageable)ent).getMaxHealth());
+			p.sendMessage("§eInfernal: §f" + plugin.idSearch(ent.getUniqueId()));
+		}
+	}
   
-  @EventHandler(priority=EventPriority.HIGH)
-  public void onPlayerInteractEntity(PlayerInteractEntityEvent e)
-  {
-    Player p = e.getPlayer();
-    Entity ent = e.getRightClicked();
-    if (plugin.errorList.contains(p))
-    {
-      plugin.errorList.remove(p);
-      p.sendMessage("§6Error report:");
-      
-      String name = "";
-      try
-      {
-        name = ent.getCustomName();
-      }
-      catch (Exception localException) {}
-      p.sendMessage("§eName: §f" + name);
-      p.sendMessage("§eSaved: §f" + plugin.mobSaveFile.getString(ent.getUniqueId().toString()));
-      p.sendMessage("§eHealth: §f" + ((Damageable)ent).getMaxHealth());
-      p.sendMessage("§eInfernal: §f" + plugin.idSearch(ent.getUniqueId()));
-    }
-  }
+	@EventHandler(priority=EventPriority.HIGH)
+	public void onEnitityDamaged(EntityDamageEvent e){
+		Entity mob = e.getEntity();
+		if (plugin.idSearch(mob.getUniqueId()) != -1) {
+			for (Entity entity : mob.getNearbyEntities(64.0D, 64.0D, 64.0D)) {
+				if ((entity instanceof Player)) {
+					plugin.gui.fixBar((Player)entity);
+				}
+			}
+		}
+	}
   
-  @EventHandler(priority=EventPriority.HIGH)
-  public void onEnitityDamaged(EntityDamageEvent e)
-  {
-    Entity mob = e.getEntity();
-    if (plugin.idSearch(mob.getUniqueId()) != -1) {
-      for (Entity entity : mob.getNearbyEntities(64.0D, 64.0D, 64.0D)) {
-        if ((entity instanceof Player)) {
-          plugin.gui.fixBar((Player)entity);
-        }
-      }
-    }
-  }
+	@EventHandler(priority=EventPriority.HIGH)
+	public void onLightningStrike(LightningStrikeEvent e){
+		for (Entity m : e.getLightning().getNearbyEntities(6.0D, 6.0D, 6.0D)) {
+			if (plugin.idSearch(m.getUniqueId()) != -1){
+				e.setCancelled(true);
+				break;
+			}
+		}
+	}
   
-  @EventHandler(priority=EventPriority.HIGH)
-  public void onLightningStrike(LightningStrikeEvent e)
-  {
-    for (Entity m : e.getLightning().getNearbyEntities(6.0D, 6.0D, 6.0D)) {
-      if (plugin.idSearch(m.getUniqueId()) != -1)
-      {
-        e.setCancelled(true);
-        
-        break;
-      }
-    }
-  }
+	@EventHandler(priority=EventPriority.HIGH)
+	public void onPlayerTeleport(PlayerTeleportEvent event){
+		World world = event.getPlayer().getWorld();
+		plugin.giveMobsPowers(world);
+	}
   
-  @EventHandler(priority=EventPriority.HIGH)
-  public void onPlayerTeleport(PlayerTeleportEvent event)
-  {
-    World world = event.getPlayer().getWorld();
-    plugin.giveMobsPowers(world);
-  }
+	@EventHandler(priority=EventPriority.HIGH)
+	public void onPlayerChangedWorld(PlayerChangedWorldEvent event){
+		World world = event.getPlayer().getWorld();
+		plugin.giveMobsPowers(world);
+	}
   
-  @EventHandler(priority=EventPriority.HIGH)
-  public void onPlayerChangedWorld(PlayerChangedWorldEvent event)
-  {
-    World world = event.getPlayer().getWorld();
-    plugin.giveMobsPowers(world);
-  }
+	@EventHandler(priority=EventPriority.HIGH)
+	public void onChunkLoad(ChunkLoadEvent e) throws Exception{
+		//Entity[] arrayOfEntity;
+		//int j = (arrayOfEntity = e.getChunk().getEntities()).length;
+		//for (int i = 0; i < j; i++){
+		//	Entity ent = arrayOfEntity[i];
+		for(Entity ent : e.getChunk().getEntities()){
+			if (((ent instanceof LivingEntity)) && (((LivingEntity)ent).getCustomName() != null) && (plugin.mobSaveFile.getString(ent.getUniqueId().toString()) != null)) {
+				plugin.giveMobPowers(ent);
+			}
+		}
+	}
+	
+	@EventHandler(priority=EventPriority.HIGH)
+	public void onChunkUnload(ChunkUnloadEvent e) throws Exception{
+		for(Entity ent : e.getChunk().getEntities()){
+			int s = plugin.idSearch(ent.getUniqueId());
+			if (s != -1) {
+				plugin.infernalList.remove(plugin.infernalList.get(s));
+			}	
+		}
+	}
   
-  @EventHandler(priority=EventPriority.HIGH)
-  public void onChunkLoad(ChunkLoadEvent e)
-    throws Exception
-  {
-    Entity[] arrayOfEntity;
-    int j = (arrayOfEntity = e.getChunk().getEntities()).length;
-    for (int i = 0; i < j; i++)
-    {
-      Entity ent = arrayOfEntity[i];
-      if (((ent instanceof LivingEntity)) && (((LivingEntity)ent).getCustomName() != null) && 
-        (plugin.mobSaveFile.getString(ent.getUniqueId().toString()) != null)) {
-        plugin.giveMobPowers(ent);
-      }
-    }
-  }
+	@EventHandler(priority=EventPriority.HIGH)
+	public void onEntityAttack(EntityDamageByEntityEvent event) throws Exception{
+		try{
+			Entity attacker = event.getDamager();
+			Entity victim = event.getEntity();
+			Entity mob;
+			if ((attacker instanceof Arrow)){
+				Arrow arrow = (Arrow)event.getDamager();
+				if (((arrow.getShooter() instanceof Player)) && (!(victim instanceof Player))){
+					mob = victim;
+					Player player = (Player)arrow.getShooter();
+					plugin.doEffect(player, mob, false);
+				}else if ((!(arrow.getShooter() instanceof Player)) && ((victim instanceof Player))){
+					mob = (Entity)arrow.getShooter();
+					Player player = (Player)victim;
+					plugin.doEffect(player, mob, true);
+				}
+			}else if ((attacker instanceof Snowball)){
+				Snowball snowBall = (Snowball)event.getDamager();
+				if (snowBall.getShooter() != null) {
+					if (((snowBall.getShooter() instanceof Player)) && (!(victim instanceof Player))){
+						mob = victim;
+						Player player = (Player)snowBall.getShooter();
+						plugin.doEffect(player, mob, false);
+					}else if ((!(snowBall.getShooter() instanceof Player)) && ((victim instanceof Player))) {
+						mob = (Entity)snowBall.getShooter();
+						Player player = (Player)victim;
+						plugin.doEffect(player, mob, true);
+					}
+				}
+			}else if (((attacker instanceof Player)) && (!(victim instanceof Player))){
+				Player player = (Player)attacker;
+				mob = victim;
+				plugin.doEffect(player, mob, false);
+			}else if ((!(attacker instanceof Player)) && ((victim instanceof Player))){
+				Player player = (Player)victim;
+				mob = attacker;
+				plugin.doEffect(player, mob, true);
+			}
+			if (plugin.idSearch(victim.getUniqueId()) != -1) {
+				for (Entity entity : victim.getNearbyEntities(64.0D, 64.0D, 64.0D)) {
+					if ((entity instanceof Player)) {
+						plugin.gui.fixBar((Player)entity);
+					}
+				}
+			}
+		}catch (Exception e){plugin.getLogger().log(Level.SEVERE, e.getMessage());e.printStackTrace();}
+	}
   
-  @EventHandler(priority=EventPriority.HIGH)
-  public void onEntityAttack(EntityDamageByEntityEvent event)
-    throws Exception
-  {
-    try
-    {
-      Entity attacker = event.getDamager();
-      Entity victim = event.getEntity();
-      Entity mob;
-      if ((attacker instanceof Arrow))
-      {
-        Arrow arrow = (Arrow)event.getDamager();
-        if (((arrow.getShooter() instanceof Player)) && (!(victim instanceof Player)))
-        {
-          mob = victim;
-          Player player = (Player)arrow.getShooter();
-          plugin.doEffect(player, mob, false);
-        }
-        else if ((!(arrow.getShooter() instanceof Player)) && ((victim instanceof Player)))
-        {
-          mob = (Entity)arrow.getShooter();
-          Player player = (Player)victim;
-          plugin.doEffect(player, mob, true);
-        }
-      }
-      else if ((attacker instanceof Snowball))
-      {
-        Snowball snowBall = (Snowball)event.getDamager();
-        if (snowBall.getShooter() != null) {
-          if (((snowBall.getShooter() instanceof Player)) && (!(victim instanceof Player)))
-          {
-            mob = victim;
-            Player player = (Player)snowBall.getShooter();
-            plugin.doEffect(player, mob, false);
-          }
-          else if ((!(snowBall.getShooter() instanceof Player)) && ((victim instanceof Player)))
-          {
-            mob = (Entity)snowBall.getShooter();
-            Player player = (Player)victim;
-            plugin.doEffect(player, mob, true);
-          }
-        }
-      }
-      else if (((attacker instanceof Player)) && (!(victim instanceof Player)))
-      {
-        Player player = (Player)attacker;
-        mob = victim;
-        plugin.doEffect(player, mob, false);
-      }
-      else if ((!(attacker instanceof Player)) && ((victim instanceof Player)))
-      {
-        Player player = (Player)victim;
-        mob = attacker;
-        plugin.doEffect(player, mob, true);
-      }
-      if (plugin.idSearch(victim.getUniqueId()) != -1) {
-        for (Entity entity : victim.getNearbyEntities(64.0D, 64.0D, 64.0D)) {
-          if ((entity instanceof Player)) {
-            plugin.gui.fixBar((Player)entity);
-          }
-        }
-      }
-    }
-    catch (Exception e)
-    {
-      System.out.println("Ent Attack Ent Errror: " + e);
-    }
-  }
-  
-  @SuppressWarnings("deprecation")
-@EventHandler(priority=EventPriority.HIGH)
-  public void onMobSpawn(CreatureSpawnEvent event)
-  {
-    World world = event.getEntity().getWorld();
-    if ((!event.getEntity().hasMetadata("NPC")) && (!event.getEntity().hasMetadata("shopkeeper")))
-    {
-      if (event.getSpawnReason().equals(CreatureSpawnEvent.SpawnReason.SPAWNER))
-      {
-        Block spawner = plugin.blockNear(event.getEntity().getLocation(), Material.MOB_SPAWNER, 10);
-        if (spawner != null)
-        {
-          String name = plugin.getLocationName(spawner.getLocation());
-          if (plugin.mobSaveFile.getString("infernalSpanwers." + name) != null)
-          {
-            if (this.spawnerMap.get(name) == null)
-            {
-              plugin.makeInfernal(event.getEntity(), true);
-              this.spawnerMap.put(name, Long.valueOf(plugin.serverTime));
-            }
-            else
-            {
-              long startTime = ((Long)this.spawnerMap.get(name)).longValue();
-              long endTime = plugin.serverTime;
-              long timePassed = endTime - startTime;
-              int delay = plugin.mobSaveFile.getInt("infernalSpanwers." + name);
-              if (timePassed >= delay)
-              {
-                plugin.makeInfernal(event.getEntity(), true);
-                this.spawnerMap.put(name, Long.valueOf(plugin.serverTime));
-              }
-              else
-              {
-                event.setCancelled(true);
-              }
-            }
-          }
-          else if (!plugin.getConfig().getBoolean("enableFarmingDrops")) {
-            return;
-          }
-        }
-      }
-      if ((event.getEntity().hasMetadata("NPC")) || (event.getEntity().hasMetadata("shopkeeper"))) {
-        return;
-      }
-      if (((plugin.getConfig().getList("enabledworlds").contains(world.getName())) || (plugin.getConfig().getList("enabledworlds").contains("<all>"))) && 
-        (plugin.getConfig().getList("enabledmobs").contains(event.getEntity().getType().getName())) && 
-        (plugin.getConfig().getInt("naturalSpawnHeight") < event.getEntity().getLocation().getY())) {
-        plugin.makeInfernal(event.getEntity(), false);
-      }
-    }
-  }
+	@SuppressWarnings("deprecation")
+	@EventHandler(priority=EventPriority.HIGH)
+	public void onMobSpawn(CreatureSpawnEvent event){
+		World world = event.getEntity().getWorld();
+		if ((!event.getEntity().hasMetadata("NPC")) && (!event.getEntity().hasMetadata("shopkeeper")) && event.getEntity().getCustomName() == null){
+			if (event.getSpawnReason().equals(CreatureSpawnEvent.SpawnReason.SPAWNER)){
+				Block spawner = plugin.blockNear(event.getEntity().getLocation(), Material.MOB_SPAWNER, 10);
+				if (spawner != null){
+					String name = plugin.getLocationName(spawner.getLocation());
+					if (plugin.mobSaveFile.getString("infernalSpanwers." + name) != null){
+						if (this.spawnerMap.get(name) == null){
+							plugin.makeInfernal(event.getEntity(), true);
+							this.spawnerMap.put(name, Long.valueOf(plugin.serverTime));
+						}else{
+							long startTime = ((Long)this.spawnerMap.get(name)).longValue();
+							long endTime = plugin.serverTime;
+							long timePassed = endTime - startTime;
+							int delay = plugin.mobSaveFile.getInt("infernalSpanwers." + name);
+							if (timePassed >= delay){
+								plugin.makeInfernal(event.getEntity(), true);
+								this.spawnerMap.put(name, Long.valueOf(plugin.serverTime));
+							}else{
+								event.setCancelled(true);
+							}
+						}
+					}/*else if (!plugin.getConfig().getBoolean("enableFarmingDrops")) {
+						return;
+					}*/
+				}
+			}
+			if ((event.getEntity().hasMetadata("NPC")) || (event.getEntity().hasMetadata("shopkeeper"))) {
+				return;
+			}
+			if (((plugin.getConfig().getList("enabledworlds").contains(world.getName())) || (plugin.getConfig().getList("enabledworlds").contains("<all>"))) && 
+			     (plugin.getConfig().getList("enabledmobs").contains(event.getEntity().getType().getName())) && 
+			     (plugin.getConfig().getInt("naturalSpawnHeight") < event.getEntity().getLocation().getY()) &&
+				 (plugin.getConfig().getList("enabledSpawnReasons").contains(event.getSpawnReason().toString()))){
+					plugin.makeInfernal(event.getEntity(), false);
+			}
+		}
+	}
   
   @EventHandler(priority=EventPriority.HIGH)
   public void onBlockBreak(BlockBreakEvent e)

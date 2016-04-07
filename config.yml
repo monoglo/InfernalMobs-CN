@@ -11,19 +11,21 @@
 #<abilities> = A list of about 3-5 (whatever can fit) names of abilities the boss has.
 #<mobName> = Name of the mob, so if the mob is a creeper the mobName will be "Creeper".
 chance: 100
-levelChance:
-  '3': 1
-  '4': 1
-  '5': 1
-  '6': 1
-  '7': 1
+#mobChances:
+#  Ghast: 150
+#levelChance:
+#  '3': 1
+#  '4': 1
+#  '5': 1
+#  '6': 1
+#  '7': 1
 namePrefix: '&fInfernal'
-levelPrefixs:
-  '3': '&fMad'
-  '4': '&fRabid'
-  '5': '&fGiant'
-  '6': '&fKing'
-  '7': '&fInfernal'
+#levelPrefixs:
+#  '3': '&fMad'
+#  '4': '&fRabid'
+#  '5': '&fGiant'
+#  '6': '&fKing'
+#  '7': '&fInfernal'
 nameTagsLevel: 1
 nameTagsName: '&f<prefix> <mobName>'
 bossBarsName: '&fLevel <mobLevel> &f<prefix> <mobName>'
@@ -31,22 +33,26 @@ enableBossBar: true
 bossBarSettings:
   defaultColor: "PINK"
   defaultStyle: "SOLID"
-  perMob:
-    PigZombie:
-      color: "RED"
-      style: "SEGMENTED_6"
-    Ghast:
-      color: "RED"
-      style: "SEGMENTED_12"
-    WitherSkeleton:
-      color: "RED"
-      style: "SEGMENTED_20"
-    Blaze:
-      color: "RED"
-      style: "SEGMENTED_10"
-    Creeper:
-      color: "GREEN"
-      style: "SEGMENTED_6"
+#  perMob:
+#    PigZombie:
+#      color: "RED"
+#      style: "SEGMENTED_6"
+#    Ghast:
+#      color: "RED"
+#      style: "SEGMENTED_12"
+#    WitherSkeleton:
+#      color: "RED"
+#      style: "SEGMENTED_20"
+#    Blaze:
+#      color: "RED"
+#      style: "SEGMENTED_10"
+#    Creeper:
+#      color: "GREEN"
+#      style: "SEGMENTED_6"
+#  perLevel:
+#    5:
+#      color: "GREEN"
+#      style: "SEGMENTED_6"
 enableScoreBoard: false
 showHealthOnScoreBoard: true
 effectAllPlayerAttacks: true
@@ -93,6 +99,17 @@ enabledmobs:
 - Shulker
 - Guardian
 - Endermite
+enabledCharmSlots:
+- 0
+- 1
+- 2
+- 3
+- 4
+- 5
+- 6
+- 7
+- 8
+- 36
 poisonous: true
 armoured: true
 blinding: true
@@ -125,6 +142,9 @@ gravity: true
 flying: true
 mounted: true
 morph: true
+ghost: true
+confusing: true
+ghost: true
 mamaSpawnAmount: 3
 vengeanceDamage: 6
 berserkDamage: 3
@@ -136,6 +156,32 @@ fireworkColour:
   red: 255
   green: 10
   blue: 10
+enabledSpawnReasons:
+- BREEDING
+#- BUILD_IRONGOLEM
+#- BUILD_SNOWMAN
+- BUILD_WITHER
+- CHUNK_GEN
+#- CURED
+- CUSTOM
+- DEFAULT
+#- DISPENSE_EGG
+#- EGG
+- INFECTION
+#- JOCKEY
+- LIGHTNING
+#- MOUNT
+- NATURAL
+- NETHER_PORTAL
+- OCELOT_BABY
+- REINFORCEMENTS
+- SILVERFISH_BLOCK
+- SLIME_SPLIT
+#- SPAWNER
+#- SPAWNER_EGG
+#- TRAP
+#- VILLAGE_DEFENSE
+- VILLAGE_INVASION
 mobParticles:
 - lavaSpark:1:10
 mountFate: nothing
@@ -143,9 +189,10 @@ enabledMounts:
 - Spider
 - MushroomCow
 - Cow
-- Sheep
+- "Sheep:BLACK"
 - Pig
-- EntityHorse
+- "EntityHorse:SKELETON_HORSE"
+- "EntityHorse:UNDEAD_HORSE"
 - Slime
 - Ghast
 enabledRiders:
@@ -182,10 +229,9 @@ healthByPower: false
 healthByDistance: false
 powerByDistance: false
 healthToAdd: 5
-addDistance: 200
 powerToAdd: 1
+xpMultiplier: 8
+addDistance: 200
 enableDrops: true
 dropChance: 1
-xpMultiplier: 8
-enableFarmingDrops: true
 naturalSpawnHeight: 0
