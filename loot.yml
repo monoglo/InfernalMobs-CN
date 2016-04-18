@@ -115,43 +115,6 @@ potionEffects:
       requiredItems:
         - 83
 loot:
-    0:
-      item: 258
-      amount: 1
-      name: "&aItem Name"
-      lore1: "&2Lore 1"
-      lore2: "&2Lore 2"
-      durability: 8
-      colour: "0,255,0"
-      author: Bob
-      chancePercentage: 75
-      pages:
-        1: "Page one, line one\nLine two"
-        2: "page two"
-      owner: Bob
-      patterns: ?
-      potion: "SLOW"
-      staff:
-        id: 1
-        spells:
-         - Fire-Ball
-      commands:
-       - "give <player> 1" 
-      mobs:
-       - Creeper
-       - Bat
-      powersMin: 2
-      powersMax: 6
-      minEnchantments: 1
-      maxEnchantments: 4
-      enchantments: 
-        1:
-          enchantment: DURABILITY
-          level: 1-10
-          chance: 25
-        2:
-          enchantment: DAMAGE_ALL
-          level: 2
     1:
       item: 258
       amount: 1

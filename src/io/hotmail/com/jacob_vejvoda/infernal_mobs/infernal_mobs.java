@@ -27,6 +27,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.World;
+import org.bukkit.block.Banner;
 import org.bukkit.block.Block;
 import org.bukkit.block.banner.Pattern;
 import org.bukkit.command.Command;
@@ -61,6 +62,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BannerMeta;
+import org.bukkit.inventory.meta.BlockStateMeta;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.FireworkMeta;
@@ -586,17 +588,24 @@ public class infernal_mobs extends JavaPlugin implements Listener{
   
   public ItemStack getRandomLoot(Player player, String mob, int powers){
 	  ArrayList<Integer> lootList = new ArrayList();
-	  for (int i = 0; i <= 512; i++) {
-		  if ((lootFile.getString("loot." + i) != null) && (
-			  (lootFile.getList("loot." + i + ".mobs") == null) || (this.lootFile.getList("loot." + i + ".mobs").contains(mob))) &&
-			  (lootFile.getString("loot." + i + ".chancePercentage") != null && rand(1,100) <= lootFile.getInt("loot." + i + ".chancePercentage"))) {
-			  if (mobPowerLevelFine(i, powers)) {
+	  //for (int i = 0; i <= 512; i++) {
+	  for (String i : lootFile.getConfigurationSection("loot").getKeys(false)) {
+		  if ((lootFile.getString("loot." + i) != null) && 
+		     ((lootFile.getList("loot." + i + ".mobs") == null) || 
+			 (this.lootFile.getList("loot." + i + ".mobs").contains(mob))) &&
+			 (lootFile.getString("loot." + i + ".chancePercentage") == null || 
+			 rand(1,100) <= lootFile.getInt("loot." + i + ".chancePercentage"))) {
+			  if (mobPowerLevelFine(Integer.parseInt(i), powers)) {
 				  lootList.add(Integer.valueOf(i));
 			  }
 		  }
     }
     try{
-    	 return getLoot(player, rand(1,lootList.size())-1);
+    	System.out.println("LL: " + lootList.toString());
+    	if(!lootList.isEmpty()){
+    		return getLoot(player, rand(1,lootList.size())-1);
+    	}else
+    		 return null;
     }catch (Exception e){
     	System.out.println("Error in get random loot ");e.printStackTrace();
     	System.out.println("Error: No valid drops found!");
@@ -604,13 +613,10 @@ public class infernal_mobs extends JavaPlugin implements Listener{
     return null;
   }
   
-  public ItemStack getLoot(Player player, int loot)
-  {
-    if (this.lootFile.getList("loot." + loot + ".commands") != null)
-    {
+  public ItemStack getLoot(Player player, int loot){
+    if (this.lootFile.getList("loot." + loot + ".commands") != null){
       ArrayList<String> commandList = (ArrayList)this.lootFile.getList("loot." + loot + ".commands");
-      for (String command : commandList)
-      {
+      for (String command : commandList) {
         command = ChatColor.translateAlternateColorCodes('&', command);
         command = command.replace("player", player.getName());
         Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), command);
@@ -628,15 +634,17 @@ public class infernal_mobs extends JavaPlugin implements Listener{
     return getItem(loot);
   }
   
-  public ItemStack getItem(int loot)
-  {
-    try
-    {
+  public ItemStack getItem(int loot){
+	//System.out.println("Get Loot: " + loot);
+    try {
       int setItem = this.lootFile.getInt("loot." + loot + ".item");
       
       String setAmountString = this.lootFile.getString("loot." + loot + ".amount");
-      int setAmount = getIntFromString(setAmountString);
-      
+      int setAmount;
+      if(setAmountString != null){
+    	  setAmount = getIntFromString(setAmountString);
+      }else
+    	  setAmount = 1;
       ItemStack stack = new ItemStack(setItem, setAmount);
       if (this.lootFile.getString("loot." + loot + ".durability") != null)
       {
@@ -655,15 +663,31 @@ public class infernal_mobs extends JavaPlugin implements Listener{
     		  name = prosessLootName(name, stack);
     	  }
       }
+      //Lore
       ArrayList<String> loreList = new ArrayList();
       for (int i = 0; i <= 32; i++) {
-        if (this.lootFile.getString("loot." + loot + ".lore" + i) != null)
-        {
-          String lore = this.lootFile.getString("loot." + loot + ".lore" + i);
-          lore = ChatColor.translateAlternateColorCodes('&', lore);
-          loreList.add(lore);
-        }
+    	  if (this.lootFile.getString("loot." + loot + ".lore" + i) != null){
+    		  String lore = this.lootFile.getString("loot." + loot + ".lore" + i);
+    		  lore = ChatColor.translateAlternateColorCodes('&', lore);
+    		  loreList.add(lore);
+    	  }
       }
+	  if (lootFile.getList("loot." + loot + ".lore") != null){
+		  ArrayList<String> lb = (ArrayList<String>)lootFile.getList("loot." + loot + ".lore");
+		  ArrayList<String> l = (ArrayList<String>) lb.clone();
+		  int min = l.size();
+		  if (lootFile.getString("loot." + loot + ".minLore") != null)
+			  min = lootFile.getInt("loot." + loot + ".minLore");
+		  int max = l.size();
+		  if (lootFile.getString("loot." + loot + ".maxLore") != null)
+			  max = lootFile.getInt("loot." + loot + ".maxLore");
+		  if(!l.isEmpty())
+			  for(int i = 0; i < rand(min,max); i++){
+				  String lore = l.get(rand(1,l.size())-1);
+				  l.remove(lore);
+				  loreList.add(prosessLootName(lore, stack));
+			  }
+	  }
       ItemMeta meta = stack.getItemMeta();
       if (name != null) {
         meta.setDisplayName(name);
@@ -674,16 +698,15 @@ public class infernal_mobs extends JavaPlugin implements Listener{
       if (meta != null) {
         stack.setItemMeta(meta);
       }
-      Color colour;
-      if (this.lootFile.getString("loot." + loot + ".colour") != null)
-      {
-        String c = this.lootFile.getString("loot." + loot + ".colour");
-        String[] split = c.split(",");
-        colour = Color.fromRGB(Integer.parseInt(split[0]), Integer.parseInt(split[1]), Integer.parseInt(split[2]));
-        dye(stack, colour);
+      //Colour
+      if (this.lootFile.getString("loot." + loot + ".colour") != null && stack.getType().toString().toLowerCase().contains("leather")){
+    	  String c = this.lootFile.getString("loot." + loot + ".colour");
+    	  String[] split = c.split(",");
+    	  Color colour = Color.fromRGB(Integer.parseInt(split[0]), Integer.parseInt(split[1]), Integer.parseInt(split[2]));
+    	  dye(stack, colour);
       }
-      if ((stack.getType().equals(Material.WRITTEN_BOOK)) || (stack.getType().equals(Material.BOOK_AND_QUILL)))
-      {
+      //Book
+      if ((stack.getType().equals(Material.WRITTEN_BOOK)) || (stack.getType().equals(Material.BOOK_AND_QUILL))){
         BookMeta bMeta = (BookMeta)stack.getItemMeta();
         if (this.lootFile.getString("loot." + loot + ".author") != null)
         {
@@ -707,20 +730,34 @@ public class infernal_mobs extends JavaPlugin implements Listener{
         }
         stack.setItemMeta(bMeta);
       }
-      if (stack.getType().equals(Material.BANNER))
-      {
-        BannerMeta b = (BannerMeta)stack.getItemMeta();
-        List<Pattern> patList =(List<Pattern>)this.lootFile.getList("loot." + loot + ".patterns");
-        b.setPatterns(patList);
-        stack.setItemMeta(b);
-      }
-      if ((stack.getType().equals(Material.SKULL_ITEM)) && (stack.getDurability() == 3))
-      {
-        String owner = this.lootFile.getString("loot." + loot + ".owner");
-        SkullMeta sm = (SkullMeta)stack.getItemMeta();
-        sm.setOwner(owner);
-        stack.setItemMeta(sm);
-      }
+		//Banners
+		if(stack.getType().equals(Material.BANNER)){
+			BannerMeta b = (BannerMeta) stack.getItemMeta();
+			List<Pattern> patList = (List<Pattern>) lootFile.getList("loot." + loot + ".patterns");
+			if(patList != null && (!patList.isEmpty()))
+				b.setPatterns(patList);
+			stack.setItemMeta(b);
+		}
+	    //Shield
+		if(stack.getType().equals(Material.SHIELD)){
+			ItemMeta im = stack.getItemMeta();
+			BlockStateMeta bmeta = (BlockStateMeta) im;
+
+			Banner b = (Banner) bmeta.getBlockState();
+			List<Pattern> patList = (List<Pattern>) lootFile.getList("loot." + loot + ".patterns");
+			b.setBaseColor(DyeColor.valueOf(lootFile.getString("loot." + loot + ".colour")));
+			b.setPatterns(patList);
+			b.update();
+			bmeta.setBlockState(b);
+			stack.setItemMeta(bmeta);
+		}
+		//Owner
+		if ((stack.getType().equals(Material.SKULL_ITEM)) && (stack.getDurability() == 3)){
+			String owner = this.lootFile.getString("loot." + loot + ".owner");
+			SkullMeta sm = (SkullMeta)stack.getItemMeta();
+			sm.setOwner(owner);
+			stack.setItemMeta(sm);
+		}
 		//Potions
 		if(lootFile.getString("loot." + loot + ".potion") != null)
 			if(stack.getType().equals(Material.POTION) || stack.getType().equals(Material.SPLASH_POTION) || stack.getType().equals(Material.LINGERING_POTION)){
@@ -819,12 +856,7 @@ public class infernal_mobs extends JavaPlugin implements Listener{
         }
       }
       return stack;
-    }
-    catch (Exception e)
-    {
-      System.out.println("Error: " + e);
-      System.out.println("Error in item builder: No valid drops found!");
-    }
+	}catch(Exception e){this.getLogger().log(Level.SEVERE, e.getMessage(), true); e.printStackTrace();}
     return null;
   }
   
@@ -837,8 +869,7 @@ public class infernal_mobs extends JavaPlugin implements Listener{
       return name;
   }
   
-  public int getIntFromString(String setAmountString)
-  {
+  public int getIntFromString(String setAmountString){
     int setAmount = 1;
     if (setAmountString.contains("-"))
     {
@@ -1155,29 +1186,30 @@ public class infernal_mobs extends JavaPlugin implements Listener{
 						ai = ai + 1;
 					}
 				//for(int i = 0; i < 256; i++){
-				for (String id : lootFile.getConfigurationSection("potionEffects").getKeys(false))
-					if((lootFile.getString("potionEffects." + id) != null) && (lootFile.getString("potionEffects." + id + ".attackEffect") == null) && (lootFile.getString("potionEffects." + id + ".attackHelpEffect") == null)){
-						ArrayList<ItemStack> itemsPlayerHas = new ArrayList<ItemStack>();
-						for(int neededItemIndex : lootFile.getIntegerList("potionEffects." + id + ".requiredItems"))	{
-							ItemStack neededItem = getItem(neededItemIndex);
-							//for(ItemStack check : items){
-							for (Map.Entry<Integer, ItemStack> hm : itemMap.entrySet()){
-								ItemStack check = hm.getValue();
-								try{
-									//System.out.println(neededItem.toString() + " =? " + check.toString());
-	    							if((neededItem.getItemMeta() == null) || (neededItem.getItemMeta().getDisplayName() == null) || (check.getItemMeta().getDisplayName().equals(neededItem.getItemMeta().getDisplayName()))){
-	    								if(check.getTypeId() == neededItem.getTypeId()){
-	    									if((neededItem.getType().getMaxDurability() > 0) || (check.getDurability() == (neededItem.getDurability()))){
-			    								//if(!itemsPlayerHas.contains(neededItem)){
-	    										if(isArmor(neededItem) == false || hm.getKey() >= 100)
-			    									itemsPlayerHas.add(neededItem);
-			    								//}
-	    									}
+				if(lootFile.getString("potionEffects") != null)
+					for (String id : lootFile.getConfigurationSection("potionEffects").getKeys(false))
+						if((lootFile.getString("potionEffects." + id) != null) && (lootFile.getString("potionEffects." + id + ".attackEffect") == null) && (lootFile.getString("potionEffects." + id + ".attackHelpEffect") == null)){
+							ArrayList<ItemStack> itemsPlayerHas = new ArrayList<ItemStack>();
+							for(int neededItemIndex : lootFile.getIntegerList("potionEffects." + id + ".requiredItems"))	{
+								ItemStack neededItem = getItem(neededItemIndex);
+								//for(ItemStack check : items){
+								for (Map.Entry<Integer, ItemStack> hm : itemMap.entrySet()){
+									ItemStack check = hm.getValue();
+									try{
+										//System.out.println(neededItem.toString() + " =? " + check.toString());
+		    							if((neededItem.getItemMeta() == null) || (neededItem.getItemMeta().getDisplayName() == null) || (check.getItemMeta().getDisplayName().equals(neededItem.getItemMeta().getDisplayName()))){
+		    								if(check.getTypeId() == neededItem.getTypeId()){
+		    									if((neededItem.getType().getMaxDurability() > 0) || (check.getDurability() == (neededItem.getDurability()))){
+				    								//if(!itemsPlayerHas.contains(neededItem)){
+		    										if(isArmor(neededItem) == false || hm.getKey() >= 100)
+				    									itemsPlayerHas.add(neededItem);
+				    								//}
+		    									}
+			    							}
 		    							}
-	    							}
-  							}catch(Exception e){/**System.out.println("Error: " + e);**/}
-  						}
-  					}
+	  							}catch(Exception e){/**System.out.println("Error: " + e);**/}
+	  						}
+	  					}
   					
   					if(itemsPlayerHas.size() >= lootFile.getIntegerList("potionEffects." + id + ".requiredItems").size()){
   						applyEffects(p, Integer.parseInt(id));
@@ -2291,14 +2323,10 @@ public class infernal_mobs extends JavaPlugin implements Listener{
   public String getRandomMob()
   {
     ArrayList<String> mobList = (ArrayList)getConfig().getList("enabledmobs");
-    Random rand = new Random();
-    int min = 0;
-    int max = mobList.size() - 1;
-    int randomNum = rand.nextInt(max - min + 1) + min;
     if (mobList.isEmpty()) {
       return "Zombie";
     }
-    String mob = (String)mobList.get(randomNum);
+    String mob = (String)mobList.get(rand(1,mobList.size())-1);
     if (mob != null) {
       return mob;
     }
@@ -2468,16 +2496,13 @@ public class infernal_mobs extends JavaPlugin implements Listener{
           else if ((args.length == 1) && (args[0].equals("help")))
           {
             throwError(sender);
-          }
-          else if ((args.length == 1) && (args[0].equals("getloot")))
-          {
-            Random rand = new Random();
+          } else if ((args.length == 1) && (args[0].equals("getloot"))) {
             int min = getConfig().getInt("minpowers");
             int max = getConfig().getInt("maxpowers");
-            int powers = rand.nextInt(max - min + 1) + min;
+            int powers = rand(min, max);
             ItemStack gottenLoot = getRandomLoot(player, getRandomMob(), powers);
             if (gottenLoot != null) {
-              player.getInventory().addItem(new ItemStack[] { gottenLoot });
+              player.getInventory().addItem(gottenLoot);
             }
             sender.sendMessage("§eGave you some random loot!");
           }
