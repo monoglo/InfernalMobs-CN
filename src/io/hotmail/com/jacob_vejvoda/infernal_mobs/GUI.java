@@ -3,7 +3,7 @@ package io.hotmail.com.jacob_vejvoda.infernal_mobs;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
+import java.util.Map.Entry;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -24,10 +24,14 @@ import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.ScoreboardManager;
 
+import me.confuser.barapi.BarAPI;
+import me.mgone.bossbarapi.BossbarAPI;
+
 public class GUI implements Listener{
 	static infernal_mobs plugin;
 	HashMap<String, Scoreboard> playerScoreBoard = new  HashMap<String, Scoreboard>();
-	HashMap<Entity, BossBar> bossBars = new  HashMap<Entity, BossBar>();
+	//HashMap<Entity, BossBar> bossBars = new  HashMap<Entity, BossBar>();
+	HashMap<Entity, Object> bossBars = new  HashMap<Entity, Object>();
   
 	public GUI(infernal_mobs instance){
 		plugin = instance;
@@ -52,9 +56,11 @@ public class GUI implements Listener{
 			if(b.isDead() || ((Damageable)b).getHealth() <= 0){
 				if (plugin.getConfig().getBoolean("enableBossBar")){
 					try{
-						for(Player p2 : bossBars.get(b).getPlayers())
-							bossBars.get(b).removePlayer(p2);
-						bossBars.remove(b);
+						if(plugin.is9()){
+							for(Player p2 : ((BossBar) bossBars.get(b)).getPlayers())
+								((BossBar) bossBars.get(b)).removePlayer(p2);
+							bossBars.remove(b);
+						}
 					}catch(Exception x){}
 				}
 			    int mobIndex = plugin.idSearch(b.getUniqueId());
@@ -117,42 +123,62 @@ public class GUI implements Listener{
 		//float maxHealth = (float)((Damageable)e).getMaxHealth();
 		//float setHealth = health * 100.0F / maxHealth;
 		//BossBarAPI.setMessage(p, tittle, setHealth);
-		if(!bossBars.containsKey(e)){
-			BarColor bc = BarColor.valueOf(plugin.getConfig().getString("bossBarSettings.defaultColor"));
-			BarStyle bs = BarStyle.valueOf(plugin.getConfig().getString("bossBarSettings.defaultStyle"));
-			//Per Level Setings
-			String lc = plugin.getConfig().getString("bossBarSettings.perLevel."+oldMobAbilityList.size()+".color");
-			if(lc != null)
-				bc = BarColor.valueOf(lc);
-			String ls = plugin.getConfig().getString("bossBarSettings.perLevel."+oldMobAbilityList.size()+".style");
-			if(ls != null)
-				bs = BarStyle.valueOf(ls);
-			//Per Mob Setings
-			String mc = plugin.getConfig().getString("bossBarSettings.perMob."+e.getType().getName()+".color");
-			if(mc != null)
-				bc = BarColor.valueOf(mc);
-			String ms = plugin.getConfig().getString("bossBarSettings.perMob."+e.getType().getName()+".style");
-			if(ms != null)
-				bs = BarStyle.valueOf(ms);
-			BossBar bar = Bukkit.createBossBar(tittle, bc, bs, BarFlag.CREATE_FOG);
-			bar.setVisible(true);
-			bossBars.put(e, bar);
+		if(plugin.is9()){
+			if(!bossBars.containsKey(e)){
+				BarColor bc = BarColor.valueOf(plugin.getConfig().getString("bossBarSettings.defaultColor"));
+				BarStyle bs = BarStyle.valueOf(plugin.getConfig().getString("bossBarSettings.defaultStyle"));
+				//Per Level Setings
+				String lc = plugin.getConfig().getString("bossBarSettings.perLevel."+oldMobAbilityList.size()+".color");
+				if(lc != null)
+					bc = BarColor.valueOf(lc);
+				String ls = plugin.getConfig().getString("bossBarSettings.perLevel."+oldMobAbilityList.size()+".style");
+				if(ls != null)
+					bs = BarStyle.valueOf(ls);
+				//Per Mob Setings
+				String mc = plugin.getConfig().getString("bossBarSettings.perMob."+e.getType().getName()+".color");
+				if(mc != null)
+					bc = BarColor.valueOf(mc);
+				String ms = plugin.getConfig().getString("bossBarSettings.perMob."+e.getType().getName()+".style");
+				if(ms != null)
+					bs = BarStyle.valueOf(ms);
+				BossBar bar = Bukkit.createBossBar(tittle, bc, bs, BarFlag.CREATE_FOG);
+				bar.setVisible(true);
+				bossBars.put(e, bar);
+			}
+			if(!((BossBar) bossBars.get(e)).getPlayers().contains(p))
+				((BossBar) bossBars.get(e)).addPlayer(p);
+	    	float health = (float) ((Damageable) e).getHealth();
+	    	float maxHealth = (float) ((Damageable) e).getMaxHealth();
+	    	float setHealth = (health * 100.0f) / maxHealth;
+	    	((BossBar) bossBars.get(e)).setProgress(setHealth/100.0f);
+		}else{
+			//1.8 boss bar shit
+			float health = (float) ((Damageable) e).getHealth();
+	    	float maxHealth = (float) ((Damageable) e).getMaxHealth();
+	    	float setHealth = (health * 100.0f) / maxHealth;
+	    	//BarAPI.setHealth(p, setHealth);
+	    	try{
+	    		if(plugin.getServer().getPluginManager().getPlugin("BarAPI") != null){
+	    			BarAPI.setMessage(p, tittle, setHealth);
+	    		}else if(plugin.getServer().getPluginManager().getPlugin("BossbarAPI") != null)
+	    			BossbarAPI.setMessage(p, tittle, setHealth);
+	    	}catch(Exception x){}
 		}
-		if(!bossBars.get(e).getPlayers().contains(p))
-			bossBars.get(e).addPlayer(p);
-    	float health = (float) ((Damageable) e).getHealth();
-    	float maxHealth = (float) ((Damageable) e).getMaxHealth();
-    	float setHealth = (health * 100.0f) / maxHealth;
-    	bossBars.get(e).setProgress(setHealth/100.0f);
 	}
   
 	@SuppressWarnings("deprecation")
 	public void clearInfo(Player player){
 		if (plugin.getConfig().getBoolean("enableBossBar")) {
 			//BossBarAPI.removeBar(player);
-			for (Map.Entry<Entity, BossBar> hm : bossBars.entrySet())
-				if(hm.getValue().getPlayers().contains(player))
-					hm.getValue().removePlayer(player);
+			if(plugin.is9()){
+				for (Entry<Entity, Object> hm : bossBars.entrySet())
+					if(((BossBar) hm.getValue()).getPlayers().contains(player))
+						((BossBar) hm.getValue()).removePlayer(player);
+			}else
+	    		if(plugin.getServer().getPluginManager().getPlugin("BarAPI") != null){
+	    			BarAPI.removeBar(player);
+	    		}else if(plugin.getServer().getPluginManager().getPlugin("BossbarAPI") != null)
+	    			BossbarAPI.removeBar(player);
 		}
 		if (plugin.getConfig().getBoolean("enableScoreBoard")) {
 			try{

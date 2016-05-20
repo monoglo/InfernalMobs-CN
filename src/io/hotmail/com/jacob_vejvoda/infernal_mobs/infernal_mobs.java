@@ -1,9 +1,17 @@
 package io.hotmail.com.jacob_vejvoda.infernal_mobs;
 
+import io.hotmail.com.jacob_vejvoda.infernal_mobs.versionStuff.ParticleEffects_1_8;
+import io.hotmail.com.jacob_vejvoda.infernal_mobs.versionStuff.ParticleEffects_1_8_3;
+import io.hotmail.com.jacob_vejvoda.infernal_mobs.versionStuff.ParticleEffects_1_8_6;
+import io.hotmail.com.jacob_vejvoda.infernal_mobs.versionStuff.ParticleEffects_1_9_4;
+import io.hotmail.com.jacob_vejvoda.infernal_mobs.versionStuff.ParticleEffects_1_9;
 import io.hotmail.com.jacob_vejvoda.WizardlyMagic.WizardlyMagic;
+
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -104,17 +112,49 @@ public class infernal_mobs extends JavaPlugin implements Listener{
 		getServer().getPluginManager().registerEvents(this.events, this);
 		this.gui = new GUI(this);
 		getServer().getPluginManager().registerEvents(this.gui, this);
+		//Folder 
+		File dir = new File(this.getDataFolder().getParentFile().getPath()+File.separator+this.getName());
+		if(!dir.exists())
+			dir.mkdir();
 		//Register Config
 		if (!new File(getDataFolder(), "config.yml").exists()) {
-			saveDefaultConfig();
+			//saveDefaultConfig();
+	  		this.getLogger().log(Level.INFO, "No config.yml found, generating...");
+	  		//Generate Config
+	  		if(Bukkit.getVersion().contains("1.9")){
+	  	        InputStream in = getClass().getResourceAsStream("1_9_config.yml");
+	  	        isSave(in, "config.yml");
+	  	        this.getLogger().log(Level.INFO, "Config successfully generated!");
+	  		}else if(Bukkit.getVersion().contains("1.8")){
+	  	        InputStream in = getClass().getResourceAsStream("1_8_config.yml");
+	  	        isSave(in, "config.yml");
+	  	        this.getLogger().log(Level.INFO, "Config successfully generated!");
+	  		}else{
+	  			this.getLogger().log(Level.SEVERE, "No config available, " + Bukkit.getVersion() + " is not supported!");
+	  			Bukkit.getPluginManager().disablePlugin(this);
+	  		}
 		}
 		//Register Loots
 		if (!lootYML.exists()) {
-			try {
-				lootYML.createNewFile();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+//			try {
+//				lootYML.createNewFile();
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
+	  		this.getLogger().log(Level.INFO, "No loot.yml found, generating...");
+	  		//Generate Config
+	  		if(Bukkit.getVersion().contains("1.9")){
+	  	        InputStream in = getClass().getResourceAsStream("1_9_loot.yml");
+	  	        isSave(in, "loot.yml");
+	  	        this.getLogger().log(Level.INFO, "Loot successfully generated!");
+	  		}else if(Bukkit.getVersion().contains("1.8")){
+	  	        InputStream in = getClass().getResourceAsStream("1_8_loot.yml");
+	  	        isSave(in, "loot.yml");
+	  	        this.getLogger().log(Level.INFO, "Loot successfully generated!");
+	  		}else{
+	  			this.getLogger().log(Level.SEVERE, "No loot available, " + Bukkit.getVersion() + " is not supported!");
+	  			Bukkit.getPluginManager().disablePlugin(this);
+	  		}
 		}
 		//Register Mob Saves
 		if (!saveYML.exists()) {
@@ -139,6 +179,46 @@ public class infernal_mobs extends JavaPlugin implements Listener{
 		reloadPowers();
 		showEffect();
 	}
+	
+	  public void isSave(InputStream inputStream, String dFile) {
+
+			OutputStream outputStream = null;
+
+			try {
+				// write the inputStream to a FileOutputStream
+			    File plugins = Bukkit.getServer().getPluginManager().getPlugin(this.getName()).getDataFolder().getParentFile();
+				outputStream = new FileOutputStream(new File(plugins.getPath() + File.separator + this.getName() + File.separator + dFile));
+
+				int read = 0;
+				byte[] bytes = new byte[1024];
+
+				while ((read = inputStream.read(bytes)) != -1) {
+					outputStream.write(bytes, 0, read);
+				}
+
+				System.out.println("Done!");
+
+			} catch (IOException e) {
+				e.printStackTrace();
+			} finally {
+				if (inputStream != null) {
+					try {
+						inputStream.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+				if (outputStream != null) {
+					try {
+						// outputStream.flush();
+						outputStream.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+
+				}
+			}
+		  }
   
   public void reloadPowers(){
     ArrayList<World> wList = new ArrayList();
@@ -739,18 +819,19 @@ public class infernal_mobs extends JavaPlugin implements Listener{
 			stack.setItemMeta(b);
 		}
 	    //Shield
-		if(stack.getType().equals(Material.SHIELD)){
-			ItemMeta im = stack.getItemMeta();
-			BlockStateMeta bmeta = (BlockStateMeta) im;
-
-			Banner b = (Banner) bmeta.getBlockState();
-			List<Pattern> patList = (List<Pattern>) lootFile.getList("loot." + loot + ".patterns");
-			b.setBaseColor(DyeColor.valueOf(lootFile.getString("loot." + loot + ".colour")));
-			b.setPatterns(patList);
-			b.update();
-			bmeta.setBlockState(b);
-			stack.setItemMeta(bmeta);
-		}
+		if(is9())
+			if(stack.getType().equals(Material.SHIELD)){
+				ItemMeta im = stack.getItemMeta();
+				BlockStateMeta bmeta = (BlockStateMeta) im;
+	
+				Banner b = (Banner) bmeta.getBlockState();
+				List<Pattern> patList = (List<Pattern>) lootFile.getList("loot." + loot + ".patterns");
+				b.setBaseColor(DyeColor.valueOf(lootFile.getString("loot." + loot + ".colour")));
+				b.setPatterns(patList);
+				b.update();
+				bmeta.setBlockState(b);
+				stack.setItemMeta(bmeta);
+			}
 		//Owner
 		if ((stack.getType().equals(Material.SKULL_ITEM)) && (stack.getDurability() == 3)){
 			String owner = this.lootFile.getString("loot." + loot + ".owner");
@@ -759,13 +840,14 @@ public class infernal_mobs extends JavaPlugin implements Listener{
 			stack.setItemMeta(sm);
 		}
 		//Potions
-		if(lootFile.getString("loot." + loot + ".potion") != null)
-			if(stack.getType().equals(Material.POTION) || stack.getType().equals(Material.SPLASH_POTION) || stack.getType().equals(Material.LINGERING_POTION)){
-				PotionMeta pMeta = (PotionMeta) stack.getItemMeta();
-				String pn = lootFile.getString("loot." + loot + ".potion");
-				pMeta.setBasePotionData(new PotionData(PotionType.getByEffect(PotionEffectType.getByName(pn)), false, false));
-				stack.setItemMeta(pMeta);
-			}
+		if(is9())
+			if(lootFile.getString("loot." + loot + ".potion") != null)
+				if(stack.getType().equals(Material.POTION) || stack.getType().equals(Material.SPLASH_POTION) || stack.getType().equals(Material.LINGERING_POTION)){
+					PotionMeta pMeta = (PotionMeta) stack.getItemMeta();
+					String pn = lootFile.getString("loot." + loot + ".potion");
+					pMeta.setBasePotionData(new PotionData(PotionType.getByEffect(PotionEffectType.getByName(pn)), false, false));
+					stack.setItemMeta(pMeta);
+				}
       int enchAmount = 0;
       for (int e = 0; e <= 10; e++) {
         if (this.lootFile.getString("loot." + loot + ".enchantments." + e) != null) {
@@ -922,6 +1004,7 @@ public class infernal_mobs extends JavaPlugin implements Listener{
 		return effect;
 	}
   
+	@SuppressWarnings("unused")
 	public void displayEffect(Location l, String effect){
 		if(effect == null){
 			try{
@@ -943,57 +1026,60 @@ public class infernal_mobs extends JavaPlugin implements Listener{
 //    					pList.add((Player)ent);
 //    	e.remove();
     	try{
-    		ParticleEffects_1_9 f = null;
+    		String f = "FLAME";
 			if(effect.equals("potionBrake")){
-				f = ParticleEffects_1_9.SWIRL;
+				f = "SWIRL";
 			}else if(effect.equals("smoke")){
-				f = ParticleEffects_1_9.SMOKE;
+				f = "SMOKE";
 			}else if(effect.equals("blockBrake")){
-				f = ParticleEffects_1_9.FOOTSTEP;
+				f = "FOOTSTEP";
 			}else if(effect.equals("hugeExplode")){
-				f = ParticleEffects_1_9.BIG_EXPLODE;
+				f = "BIG_EXPLODE";
 			}else if(effect.equals("angryVillager")){
-				f = ParticleEffects_1_9.THUNDERCLOUD;
+				f = "THUNDERCLOUD";
 			}else if(effect.equals("cloud")){
-				f = ParticleEffects_1_9.CLOUD;
+				f = "CLOUD";
 			}else if(effect.equals("criticalHit")){
-				f = ParticleEffects_1_9.CRITICALS;
+				f = "CRITICALS";
 			}else if(effect.equals("mobSpell")){
-				f = ParticleEffects_1_9.INVIS_SWIRL;
+				f = "INVIS_SWIRL";
 			}else if(effect.equals("enchantmentTable")){
-				//ParticleEffect.ENCHANTMENT_TABLE.display((float)0, (float)0, (float)0, (float)data1, data2, l, radius);
-				//return;
-				f = ParticleEffects_1_9.ENCHANTS;
+				//ParticleEffect.ENCHANTMENT_TABLE.display((float)0, (float)0, (float)0, (float)data1, data2, l, radius)";
+				//return";
+				f = "ENCHANTS";
 			}else if(effect.equals("ender")){
-				f = ParticleEffects_1_9.ENDER;
+				f = "ENDER";
 			}else if(effect.equals("explode")){
-				f = ParticleEffects_1_9.EXPLODE;
+				f = "EXPLODE";
 			}else if(effect.equals("greenSparkle")){
-				f = ParticleEffects_1_9.HAPPY;
+				f = "HAPPY";
 			}else if(effect.equals("heart")){
-				f = ParticleEffects_1_9.HEARTS;
+				f = "HEARTS";
 			}else if(effect.equals("largeExplode")){
-				f = ParticleEffects_1_9.LARGE_SMOKE;
+				f = "LARGE_SMOKE";
 			}else if(effect.equals("splash")){
-				f = ParticleEffects_1_9.SPLASH;
+				f = "SPLASH";
 			}else if(effect.equals("largeSmoke")){
-				f = ParticleEffects_1_9.LARGE_SMOKE;
+				f = "LARGE_SMOKE";
 			}else if(effect.equals("lavaSpark")){
-				f = ParticleEffects_1_9.LAVA_SPARK;
+				f = "LAVA_SPARK";
 			}else if(effect.equals("magicCriticalHit")){
-				f = ParticleEffects_1_9.ENCHANT_CRITS;
+				f = "ENCHANT_CRITS";
 			}else if(effect.equals("noteBlock")){
-				f = ParticleEffects_1_9.NOTES;
+				f = "NOTES";
 			}else if(effect.equals("tileDust")){
-				f = ParticleEffects_1_9.ITEM_CRACK;
+				f = "ITEM_CRACK";
 			}else if(effect.equals("colouredDust")){
-				f = ParticleEffects_1_9.REDSTONE_DUST;
+				f = "REDSTONE_DUST";
 			}else if(effect.equals("flame")){
-				f = ParticleEffects_1_9.FLAME;
-			}else if(effect.equals("witchMagic"))
-				f = ParticleEffects_1_9.WITCH_MAGIC;
+				f = "FLAME";
+			}else if(effect.equals("witchMagic")){
+				f = "WITCH_MAGIC";
+			}else if(effect != null)
+				f = effect;
 			if(f != null){
-				ParticleEffects_1_9.sendToLocation(f, l, 0, 0, 0, data1, data2);
+				displayParticle(f, l, 1.0, data1, data2);
+				//ParticleEffects_1_9_4.sendToLocation(f, l, 0, 0, 0, data1, data2);
 				//p.spigot().playEffect(l, f, data1, data2, 0, 0, 0, data1, data2, radius);
 			}else
 				l.getWorld().playEffect(l, Effect.MOBSPAWNER_FLAMES, data2);					
@@ -1100,7 +1186,10 @@ public class infernal_mobs extends JavaPlugin implements Listener{
 							    			Fireball fb = null;
 							    			if (ability.equals("ghastly")){
 							    				fb = ((LivingEntity) mob).launchProjectile(Fireball.class);
-							    				player.getWorld().playSound(player.getLocation(), Sound.AMBIENT_CAVE, 5, 1);
+							    				if(is9()){
+							    					player.getWorld().playSound(player.getLocation(), Sound.AMBIENT_CAVE, 5, 1);
+							    				}else
+							    					player.getWorld().playSound(player.getLocation(), Sound.valueOf("AMBIENCE_CAVE"), 5, 1);
 							    			}else{
 												fb = ((LivingEntity) mob).launchProjectile(WitherSkull.class);
 							    			}
@@ -1171,7 +1260,7 @@ public class infernal_mobs extends JavaPlugin implements Listener{
 				//for(int i = 0; i < 9; i++){
 				for(int i : (ArrayList<Integer>)getConfig().getList("enabledCharmSlots")){
 				    ItemStack in;
-				    if(i == 36){
+				    if(i == 36 && is9()){
 				    	in = p.getInventory().getItemInOffHand();
 				    }else
 				    	in = p.getInventory().getItem(i);
@@ -2267,10 +2356,32 @@ public class infernal_mobs extends JavaPlugin implements Listener{
   
   public void changeIntoWither(Skeleton skeleton){
     try{
-        net.minecraft.server.v1_9_R1.EntitySkeleton ent = ((org.bukkit.craftbukkit.v1_9_R1.entity.CraftSkeleton)skeleton).getHandle();
-        ent.setSkeletonType(1);
-        Field selector = net.minecraft.server.v1_9_R1.EntityInsentient.class.getDeclaredField("goalSelector");
-        selector.setAccessible(true);
+    	if(Bukkit.getVersion().contains("1.9.4")){
+	        net.minecraft.server.v1_9_R2.EntitySkeleton ent = ((org.bukkit.craftbukkit.v1_9_R2.entity.CraftSkeleton)skeleton).getHandle();
+	        ent.setSkeletonType(1);
+	        Field selector = net.minecraft.server.v1_9_R2.EntityInsentient.class.getDeclaredField("goalSelector");
+	        selector.setAccessible(true);
+    	}else if(Bukkit.getVersion().contains("1.9")){
+	        net.minecraft.server.v1_9_R1.EntitySkeleton ent = ((org.bukkit.craftbukkit.v1_9_R1.entity.CraftSkeleton)skeleton).getHandle();
+	        ent.setSkeletonType(1);
+	        Field selector = net.minecraft.server.v1_9_R1.EntityInsentient.class.getDeclaredField("goalSelector");
+	        selector.setAccessible(true);
+    	}else if(getServer().getVersion().contains("1.8.3")){
+	        net.minecraft.server.v1_8_R2.EntitySkeleton ent = ((org.bukkit.craftbukkit.v1_8_R2.entity.CraftSkeleton)skeleton).getHandle();
+	        ent.setSkeletonType(1);
+	        Field selector = net.minecraft.server.v1_8_R2.EntityInsentient.class.getDeclaredField("goalSelector");
+	        selector.setAccessible(true);
+    	}else if(getServer().getVersion().contains("1.8.6") || getServer().getVersion().contains("1.8.7") || getServer().getVersion().contains("1.8.8") || getServer().getVersion().contains("1.8.9")){
+	        net.minecraft.server.v1_8_R3.EntitySkeleton ent = ((org.bukkit.craftbukkit.v1_8_R3.entity.CraftSkeleton)skeleton).getHandle();
+	        ent.setSkeletonType(1);
+	        Field selector = net.minecraft.server.v1_8_R3.EntityInsentient.class.getDeclaredField("goalSelector");
+	        selector.setAccessible(true);
+    	}else if(getServer().getVersion().contains("1.8")){
+	        net.minecraft.server.v1_8_R1.EntitySkeleton ent = ((org.bukkit.craftbukkit.v1_8_R1.entity.CraftSkeleton)skeleton).getHandle();
+	        ent.setSkeletonType(1);
+	        Field selector = net.minecraft.server.v1_8_R1.EntityInsentient.class.getDeclaredField("goalSelector");
+	        selector.setAccessible(true);
+    	}
         EntityEquipment ee = skeleton.getEquipment();
         if (ee.getItemInHand().equals(null))
         {
@@ -2284,9 +2395,29 @@ public class infernal_mobs extends JavaPlugin implements Listener{
     }
   }
   
+  boolean is9(){
+	  if(Bukkit.getVersion().contains("1.9"))
+		  return true;
+	  return false;
+  }
+  
   public void changeIntoElder(Guardian g){
-      net.minecraft.server.v1_9_R1.EntityGuardian ent = (net.minecraft.server.v1_9_R1.EntityGuardian)((org.bukkit.craftbukkit.v1_9_R1.entity.CraftGuardian)g).getHandle();
-      ((Guardian)ent).setElder(true);
+	  if(Bukkit.getVersion().contains("1.9.4")){
+		  net.minecraft.server.v1_9_R2.EntityGuardian ent = (net.minecraft.server.v1_9_R2.EntityGuardian)((org.bukkit.craftbukkit.v1_9_R2.entity.CraftGuardian)g).getHandle();
+		  ((Guardian)ent).setElder(true);
+	  }else if(Bukkit.getVersion().contains("1.9")){
+		  net.minecraft.server.v1_9_R1.EntityGuardian ent = (net.minecraft.server.v1_9_R1.EntityGuardian)((org.bukkit.craftbukkit.v1_9_R1.entity.CraftGuardian)g).getHandle();
+		  ((Guardian)ent).setElder(true);
+	  }else if(getServer().getVersion().contains("1.8.3")){
+		  net.minecraft.server.v1_8_R2.EntityGuardian ent = (net.minecraft.server.v1_8_R2.EntityGuardian)((org.bukkit.craftbukkit.v1_8_R2.entity.CraftGuardian)g).getHandle();
+		  ((Guardian)ent).setElder(true);
+	  }else if(getServer().getVersion().contains("1.8.6") || getServer().getVersion().contains("1.8.7") || getServer().getVersion().contains("1.8.8") || getServer().getVersion().contains("1.8.9")){
+		  net.minecraft.server.v1_8_R3.EntityGuardian ent = (net.minecraft.server.v1_8_R3.EntityGuardian)((org.bukkit.craftbukkit.v1_8_R3.entity.CraftGuardian)g).getHandle();
+		  ((Guardian)ent).setElder(true);
+	  }else if(getServer().getVersion().contains("1.8")){
+		  net.minecraft.server.v1_8_R1.EntityGuardian ent = (net.minecraft.server.v1_8_R1.EntityGuardian)((org.bukkit.craftbukkit.v1_8_R1.entity.CraftGuardian)g).getHandle();
+		  ((Guardian)ent).setElder(true);
+	  }
   }
   
   public void displayParticle(String effect, Location l, double radius, int speed, int amount){
@@ -2295,16 +2426,64 @@ public class infernal_mobs extends JavaPlugin implements Listener{
   
   private void displayParticle(String effect, World w, double x, double y, double z, double radius, int speed, int amount){
 		Location l = new Location(w, x, y, z);
-		if(radius == 0){
-			ParticleEffects_1_9.sendToLocation(ParticleEffects_1_9.valueOf(effect), l, 0, 0, 0, speed, amount);
-		}else{
-			ArrayList<Location> ll = getArea(l, radius, 0.2);
-			for(int i = 0; i < amount; i++){
-		        int index = new Random().nextInt(ll.size());
-		        ParticleEffects_1_9.sendToLocation(ParticleEffects_1_9.valueOf(effect), ll.get(index), 0, 0, 0, speed, 1);
-		        ll.remove(index);
+		try{
+		if(Bukkit.getVersion().contains("1.9.3") || Bukkit.getVersion().contains("1.9.4") || Bukkit.getVersion().contains("1.9.5")){
+			if(radius == 0){
+				ParticleEffects_1_9_4.sendToLocation(ParticleEffects_1_9_4.valueOf(effect), l, 0, 0, 0, speed, amount);
+			}else{
+				ArrayList<Location> ll = getArea(l, radius, 0.2);
+				for(int i = 0; i < amount; i++){
+			        int index = new Random().nextInt(ll.size());
+			        ParticleEffects_1_9_4.sendToLocation(ParticleEffects_1_9_4.valueOf(effect), ll.get(index), 0, 0, 0, speed, 1);
+			        ll.remove(index);
+				}
+			}
+		}else if(Bukkit.getVersion().contains("1.9")){
+			if(radius == 0){
+				ParticleEffects_1_9.sendToLocation(ParticleEffects_1_9.valueOf(effect), l, 0, 0, 0, speed, amount);
+			}else{
+				ArrayList<Location> ll = getArea(l, radius, 0.2);
+				for(int i = 0; i < amount; i++){
+			        int index = new Random().nextInt(ll.size());
+			        ParticleEffects_1_9.sendToLocation(ParticleEffects_1_9.valueOf(effect), ll.get(index), 0, 0, 0, speed, 1);
+			        ll.remove(index);
+				}
+			}
+		}else if(getServer().getVersion().contains("1.8.3")){
+			if(radius == 0){
+				ParticleEffects_1_8_3.sendToLocation(ParticleEffects_1_8_3.valueOf(effect), l, 0, 0, 0, speed, amount);
+			}else{
+				ArrayList<Location> ll = getArea(l, radius, 0.2);
+				for(int i = 0; i < amount; i++){
+			        int index = new Random().nextInt(ll.size());
+			        ParticleEffects_1_8_3.sendToLocation(ParticleEffects_1_8_3.valueOf(effect), ll.get(index), 0, 0, 0, speed, 1);
+			        ll.remove(index);
+				}
+			}
+		}else if(getServer().getVersion().contains("1.8.6") || getServer().getVersion().contains("1.8.7") || getServer().getVersion().contains("1.8.8") || getServer().getVersion().contains("1.8.9")){
+			if(radius == 0){
+				ParticleEffects_1_8_6.sendToLocation(ParticleEffects_1_8_6.valueOf(effect), l, 0, 0, 0, speed, amount);
+			}else{
+				ArrayList<Location> ll = getArea(l, radius, 0.2);
+				for(int i = 0; i < amount; i++){
+			        int index = new Random().nextInt(ll.size());
+			        ParticleEffects_1_8_6.sendToLocation(ParticleEffects_1_8_6.valueOf(effect), ll.get(index), 0, 0, 0, speed, 1);
+			        ll.remove(index);
+				}
+			}
+		}else if(getServer().getVersion().contains("1.8")){
+			if(radius == 0){
+				ParticleEffects_1_8.sendToLocation(ParticleEffects_1_8.valueOf(effect), l, 0, 0, 0, speed, amount);
+			}else{
+				ArrayList<Location> ll = getArea(l, radius, 0.2);
+				for(int i = 0; i < amount; i++){
+			        int index = new Random().nextInt(ll.size());
+			        ParticleEffects_1_8.sendToLocation(ParticleEffects_1_8.valueOf(effect), ll.get(index), 0, 0, 0, speed, 1);
+			        ll.remove(index);
+				}
 			}
 		}
+		}catch(Exception ex){System.out.println("V: " + getServer().getVersion());ex.printStackTrace();}
   }
   
   private ArrayList<Location> getArea(Location l, double r, double t)
