@@ -79,7 +79,7 @@ public class EventListener implements Listener{
 		if (plugin.idSearch(mob.getUniqueId()) != -1) {
 			for (Entity entity : mob.getNearbyEntities(64.0D, 64.0D, 64.0D)) {
 				if ((entity instanceof Player)) {
-					plugin.gui.fixBar((Player)entity);
+					GUI.fixBar((Player)entity);
 				}
 			}
 		}
@@ -172,7 +172,7 @@ public class EventListener implements Listener{
 			if (plugin.idSearch(victim.getUniqueId()) != -1) {
 				for (Entity entity : victim.getNearbyEntities(64.0D, 64.0D, 64.0D)) {
 					if ((entity instanceof Player)) {
-						plugin.gui.fixBar((Player)entity);
+						GUI.fixBar((Player)entity);
 					}
 				}
 			}

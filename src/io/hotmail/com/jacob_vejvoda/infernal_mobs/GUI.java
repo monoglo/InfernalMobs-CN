@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
+import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -29,15 +30,15 @@ import me.mgone.bossbarapi.BossbarAPI;
 
 public class GUI implements Listener{
 	static infernal_mobs plugin;
-	HashMap<String, Scoreboard> playerScoreBoard = new  HashMap<String, Scoreboard>();
-	//HashMap<Entity, BossBar> bossBars = new  HashMap<Entity, BossBar>();
+	static HashMap<String, Scoreboard> playerScoreBoard = new  HashMap<String, Scoreboard>();
+	static //HashMap<Entity, BossBar> bossBars = new  HashMap<Entity, BossBar>();
 	HashMap<Entity, Object> bossBars = new  HashMap<Entity, Object>();
   
 	public GUI(infernal_mobs instance){
 		plugin = instance;
 	}
   
-	public void fixBar(Player p){
+	public static void fixBar(Player p){
 		//System.out.println("fixBar");
 		double dis = 26.0D;
 		Entity b = null;
@@ -82,7 +83,7 @@ public class GUI implements Listener{
 	}
   
 	@SuppressWarnings("deprecation")
-	public void showBossBar(Player p, Entity e){
+	public static void showBossBar(Player p, Entity e){
 		ArrayList<String> oldMobAbilityList = plugin.findMobAbilities(e.getUniqueId());
 		String tittle;
 		if (plugin.getConfig().getString("bossBarsName") != null) {
@@ -167,7 +168,7 @@ public class GUI implements Listener{
 	}
   
 	@SuppressWarnings("deprecation")
-	public void clearInfo(Player player){
+	public static void clearInfo(Player player){
 		if (plugin.getConfig().getBoolean("enableBossBar")) {
 			//BossBarAPI.removeBar(player);
 			if(plugin.is9()){
@@ -190,7 +191,7 @@ public class GUI implements Listener{
 	}
   
 	@SuppressWarnings("deprecation")
-	public void fixScoreboard(Player player, Entity e, ArrayList<String> abilityList){
+	public static void fixScoreboard(Player player, Entity e, ArrayList<String> abilityList){
 		if((plugin.getConfig().getBoolean("enableScoreBoard") == true) && (e instanceof Damageable)){
 			//String name = getMobNameTag(e);
 			//Get Display
@@ -278,36 +279,38 @@ public class GUI implements Listener{
 	public String getMobNameTag(Entity entity){
 		ArrayList<String> oldMobAbilityList = plugin.findMobAbilities(entity.getUniqueId());
 		//System.out.println("OMAL: " + oldMobAbilityList);
-		String tittle;
-		if (plugin.getConfig().getString("nameTagsName") != null){
-			tittle = plugin.getConfig().getString("nameTagsName");
-		}else{
-			tittle = "&fInfernal <mobName>";
-		}
-		String mobName = entity.getType().getName();
-		if (entity.getType().equals(EntityType.SKELETON)){
-			Skeleton sk = (Skeleton) entity;
-			if(sk.getSkeletonType().equals(SkeletonType.WITHER)){
-				mobName = "WitherSkeleton";
+		String tittle = null;
+			try{
+			if (plugin.getConfig().getString("nameTagsName") != null){
+				tittle = plugin.getConfig().getString("nameTagsName");
+			}else{
+				tittle = "&fInfernal <mobName>";
 			}
-		}else if (entity.getType().equals(EntityType.HORSE)){
-				mobName = "Horse";
-		}
-		tittle = tittle.replace("<mobName>", mobName);	
-		tittle = tittle.replace("<mobLevel>", ""+oldMobAbilityList.size());	
-		String abilities = plugin.generateString(5, oldMobAbilityList);
-		int count = 4;
-		do{
-			abilities = plugin.generateString(count, oldMobAbilityList);
-			count--;
-		}while((tittle.length() + abilities.length() + mobName.length()) > 64);
-		tittle = tittle.replace("<abilities>", abilities);
-		//Prefix
-		String prefix = plugin.getConfig().getString("namePrefix");
-		if(plugin.getConfig().getString("levelPrefixs." + oldMobAbilityList.size()) != null)
-			prefix = plugin.getConfig().getString("levelPrefixs." + oldMobAbilityList.size());
-		tittle = tittle.replace("<prefix>", prefix);	
-		tittle = ChatColor.translateAlternateColorCodes('&', tittle);	
+			String mobName = entity.getType().getName();
+			if (entity.getType().equals(EntityType.SKELETON)){
+				Skeleton sk = (Skeleton) entity;
+				if(sk.getSkeletonType().equals(SkeletonType.WITHER)){
+					mobName = "WitherSkeleton";
+				}
+			}else if (entity.getType().equals(EntityType.HORSE)){
+					mobName = "Horse";
+			}
+			tittle = tittle.replace("<mobName>", mobName);	
+			tittle = tittle.replace("<mobLevel>", ""+oldMobAbilityList.size());	
+			String abilities = plugin.generateString(5, oldMobAbilityList);
+			int count = 4;
+			do{
+				abilities = plugin.generateString(count, oldMobAbilityList);
+				count--;
+			}while((tittle.length() + abilities.length() + mobName.length()) > 64);
+			tittle = tittle.replace("<abilities>", abilities);
+			//Prefix
+			String prefix = plugin.getConfig().getString("namePrefix");
+			if(plugin.getConfig().getString("levelPrefixs." + oldMobAbilityList.size()) != null)
+				prefix = plugin.getConfig().getString("levelPrefixs." + oldMobAbilityList.size());
+			tittle = tittle.replace("<prefix>", prefix);	
+			tittle = ChatColor.translateAlternateColorCodes('&', tittle);	
+		}catch(Exception x){plugin.getLogger().log(Level.SEVERE, x.getMessage());x.printStackTrace();}
 		return tittle;
 	}
 }
