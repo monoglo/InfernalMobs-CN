@@ -141,6 +141,7 @@ public class infernal_mobs extends JavaPlugin implements Listener{
 	  			this.getLogger().log(Level.SEVERE, "No config available, " + Bukkit.getVersion() + " is not supported!");
 	  			Bukkit.getPluginManager().disablePlugin(this);
 	  		}
+            reloadConfig();
 		}
 		//Register Loots
 		if (!lootYML.exists()) {
@@ -152,17 +153,18 @@ public class infernal_mobs extends JavaPlugin implements Listener{
 	  		this.getLogger().log(Level.INFO, "No loot.yml found, generating...");
 	  		//Generate Config
 	  		if(Bukkit.getVersion().contains("1.9") || Bukkit.getVersion().contains("1.10")){
-	  	        InputStream in = getClass().getResourceAsStream("1_9_loot.yml");
+	  	        InputStream in = getClass().getResourceAsStream("1_9_10loot.yml");
 	  	        isSave(in, "loot.yml");
-	  	        this.getLogger().log(Level.INFO, "Loot successfully generated!");
+	  	        this.getLogger().log(Level.INFO, "1.9/1.10 Loot successfully generated!");
 	  		}else if(Bukkit.getVersion().contains("1.8")){
 	  	        InputStream in = getClass().getResourceAsStream("1_8_loot.yml");
 	  	        isSave(in, "loot.yml");
-	  	        this.getLogger().log(Level.INFO, "Loot successfully generated!");
+	  	        this.getLogger().log(Level.INFO, "1.8 Loot successfully generated!");
 	  		}else{
 	  			this.getLogger().log(Level.SEVERE, "No loot available, " + Bukkit.getVersion() + " is not supported!");
 	  			Bukkit.getPluginManager().disablePlugin(this);
 	  		}
+            reloadLoot();
 		}
 		//Register Mob Saves
 		if (!saveYML.exists()) {
@@ -204,7 +206,7 @@ public class infernal_mobs extends JavaPlugin implements Listener{
 					outputStream.write(bytes, 0, read);
 				}
 
-				System.out.println("Done!");
+				//System.out.println("Done!");
 
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -2424,7 +2426,7 @@ public class infernal_mobs extends JavaPlugin implements Listener{
   }
   
   boolean is9(){
-	  if(Bukkit.getVersion().contains("1.9"))
+	  if(Bukkit.getVersion().contains("1.9") || Bukkit.getVersion().contains("1.10"))
 		  return true;
 	  return false;
   }
@@ -2727,19 +2729,17 @@ public class infernal_mobs extends JavaPlugin implements Listener{
             }
             sender.sendMessage("§eGave you some random loot!");
           }
-          else if ((args.length == 2) && (args[0].equals("getloot")))
-          {
-            try
-            {
-              int index = Integer.parseInt(args[1]);
-              
-              player.getInventory().addItem(new ItemStack[] { getLoot(player, index) });
-              sender.sendMessage("§eGave you the loot at index §9" + index);
-            }
-            catch (Exception e)
-            {
-              sender.sendMessage("§cUnable to get that loot!");
-            }
+          else if ((args.length == 2) && (args[0].equals("getloot"))){
+        	  try{
+        		  int index = Integer.parseInt(args[1]);
+        		  ItemStack i = getLoot(player, index);
+        		  if(i != null){
+	        		  player.getInventory().addItem(i);
+	        		  sender.sendMessage("§eGave you the loot at index §9" + index);
+	            	  return true;
+        		  }
+        	  }catch (Exception e){}
+        	  sender.sendMessage("§cUnable to get that loot!");
           }
           else if (((args.length == 2) && (args[0].equals("spawn"))) || ((args[0].equals("cspawn")) && (args.length == 6)))
           {
@@ -2986,7 +2986,7 @@ public class infernal_mobs extends JavaPlugin implements Listener{
         }
       }catch (Exception x){
         throwError(sender);
-        //x.printStackTrace();
+        x.printStackTrace();
       }
     }
     return true;
