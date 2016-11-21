@@ -1,3 +1,4 @@
+configVersion: "1.10"
 #Chance is the chance that a mob will not be infernal, the lower the number the higher the chance. (min 1)
 #Enabledworlds are the worlds that infernal mobs can spawn in.
 #Enabledmobs are the mobs that can become infernal.

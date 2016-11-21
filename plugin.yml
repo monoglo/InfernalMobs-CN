@@ -1,6 +1,6 @@
 name: InfernalMobs
 main: io.hotmail.com.jacob_vejvoda.infernal_mobs.infernal_mobs
-version: 4.9
+version: 5.0
 softdepend: [Vault, WizardlyMagic]
 
 commands:

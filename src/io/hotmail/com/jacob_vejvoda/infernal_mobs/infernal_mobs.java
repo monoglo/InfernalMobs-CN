@@ -4,9 +4,9 @@ import io.hotmail.com.jacob_vejvoda.infernal_mobs.versionStuff.ParticleEffects_1
 import io.hotmail.com.jacob_vejvoda.infernal_mobs.versionStuff.ParticleEffects_1_8_3;
 import io.hotmail.com.jacob_vejvoda.infernal_mobs.versionStuff.ParticleEffects_1_8_6;
 import io.hotmail.com.jacob_vejvoda.infernal_mobs.versionStuff.ParticleEffects_1_9_4;
-import net.minecraft.server.v1_10_R1.EnumSkeletonType;
 import io.hotmail.com.jacob_vejvoda.infernal_mobs.versionStuff.ParticleEffects_1_9;
 import io.hotmail.com.jacob_vejvoda.infernal_mobs.versionStuff.ParticleEffects_1_10;
+import io.hotmail.com.jacob_vejvoda.infernal_mobs.versionStuff.ParticleEffects_1_11;
 import io.hotmail.com.jacob_vejvoda.WizardlyMagic.WizardlyMagic;
 
 import java.io.File;
@@ -66,7 +66,6 @@ import org.bukkit.entity.Sheep;
 import org.bukkit.entity.Skeleton;
 import org.bukkit.entity.ThrownPotion;
 import org.bukkit.entity.Villager;
-import org.bukkit.entity.Villager.Profession;
 import org.bukkit.entity.WitherSkull;
 import org.bukkit.entity.Wolf;
 import org.bukkit.entity.Zombie;
@@ -120,27 +119,52 @@ public class infernal_mobs extends JavaPlugin implements Listener{
 		File dir = new File(this.getDataFolder().getParentFile().getPath()+File.separator+this.getName());
 		if(!dir.exists())
 			dir.mkdir();
+		//Old config check
+		if (new File(getDataFolder(), "config.yml").exists()) {
+			if(getConfig().getString("configVersion") == null){
+				this.getLogger().log(Level.INFO, "No config version found!");
+				getConfig().set("configVersion", Bukkit.getVersion().split(":")[1].replace(")", "").trim());
+				saveConfig();
+			}
+			if(!Bukkit.getVersion().contains(getConfig().getString("configVersion"))){
+				this.getLogger().log(Level.INFO, "Old config found, deleting!");
+				new File(Bukkit.getServer().getPluginManager().getPlugin(this.getName()).getDataFolder() + File.separator + "config.yml").delete();
+			}
+		}
 		//Register Config
 		if (!new File(getDataFolder(), "config.yml").exists()) {
 			//saveDefaultConfig();
 	  		this.getLogger().log(Level.INFO, "No config.yml found, generating...");
 	  		//Generate Config
-	  		if(Bukkit.getVersion().contains("1.10")){
-	  	        InputStream in = getClass().getResourceAsStream("1_10_config.yml");
-	  	        isSave(in, "config.yml");
-	  	        this.getLogger().log(Level.INFO, "Config successfully generated!");
-	  		}else if(Bukkit.getVersion().contains("1.9")){
-	  	        InputStream in = getClass().getResourceAsStream("1_9_config.yml");
-	  	        isSave(in, "config.yml");
-	  	        this.getLogger().log(Level.INFO, "Config successfully generated!");
-	  		}else if(Bukkit.getVersion().contains("1.8")){
-	  	        InputStream in = getClass().getResourceAsStream("1_8_config.yml");
-	  	        isSave(in, "config.yml");
-	  	        this.getLogger().log(Level.INFO, "Config successfully generated!");
-	  		}else{
+	  		boolean generatedConfig = false;
+	  		for(String version : Arrays.asList("1.11","1.10","1.9","1.8"))
+	  			if(Bukkit.getVersion().contains(version)){
+	  	  	        InputStream in = getClass().getResourceAsStream(version.replace(".", "_") + "_config.yml");
+	  	  	        isSave(in, "config.yml");
+	  	  	        this.getLogger().log(Level.INFO, "Config successfully generated!");
+	  	  	        generatedConfig = true;
+	  	  	        break;
+	  			}
+	  		if(!generatedConfig){
 	  			this.getLogger().log(Level.SEVERE, "No config available, " + Bukkit.getVersion() + " is not supported!");
 	  			Bukkit.getPluginManager().disablePlugin(this);
 	  		}
+//	  		if(Bukkit.getVersion().contains("1.10")){
+//	  	        InputStream in = getClass().getResourceAsStream("1_10_config.yml");
+//	  	        isSave(in, "config.yml");
+//	  	        this.getLogger().log(Level.INFO, "Config successfully generated!");
+//	  		}else if(Bukkit.getVersion().contains("1.9")){
+//	  	        InputStream in = getClass().getResourceAsStream("1_9_config.yml");
+//	  	        isSave(in, "config.yml");
+//	  	        this.getLogger().log(Level.INFO, "Config successfully generated!");
+//	  		}else if(Bukkit.getVersion().contains("1.8")){
+//	  	        InputStream in = getClass().getResourceAsStream("1_8_config.yml");
+//	  	        isSave(in, "config.yml");
+//	  	        this.getLogger().log(Level.INFO, "Config successfully generated!");
+//	  		}else{
+//	  			this.getLogger().log(Level.SEVERE, "No config available, " + Bukkit.getVersion() + " is not supported!");
+//	  			Bukkit.getPluginManager().disablePlugin(this);
+//	  		}
             reloadConfig();
 		}
 		//Register Loots
@@ -152,7 +176,11 @@ public class infernal_mobs extends JavaPlugin implements Listener{
 //			}
 	  		this.getLogger().log(Level.INFO, "No loot.yml found, generating...");
 	  		//Generate Config
-	  		if(Bukkit.getVersion().contains("1.9") || Bukkit.getVersion().contains("1.10")){
+	  		if(Bukkit.getVersion().contains("1.11")){
+	  	        InputStream in = getClass().getResourceAsStream("1_11loot.yml");
+	  	        isSave(in, "loot.yml");
+	  	        this.getLogger().log(Level.INFO, "1.11 Loot successfully generated!");
+	  		}else if(Bukkit.getVersion().contains("1.9") || Bukkit.getVersion().contains("1.10")){
 	  	        InputStream in = getClass().getResourceAsStream("1_9_10loot.yml");
 	  	        isSave(in, "loot.yml");
 	  	        this.getLogger().log(Level.INFO, "1.9/1.10 Loot successfully generated!");
@@ -166,7 +194,7 @@ public class infernal_mobs extends JavaPlugin implements Listener{
 	  		}
             reloadLoot();
 		}
-		//Register Mob Saves
+		//Register Save File
 		if (!saveYML.exists()) {
 			try {
 				saveYML.createNewFile();
@@ -321,19 +349,19 @@ public class infernal_mobs extends JavaPlugin implements Listener{
 	  boolean mobEnabled = true;
 	  if ((!e.hasMetadata("NPC")) && (!e.hasMetadata("shopkeeper"))){
 		  if (!fixed) {
-			  if (e.getType().equals(EntityType.SKELETON)){
-				  Skeleton sk = (Skeleton)e;
-				  if ((sk.getSkeletonType().equals(Skeleton.SkeletonType.WITHER)) && (!getConfig().getList("enabledmobs").contains("WitherSkeleton"))) {
-					  mobEnabled = false;
-				  }else if (is9() && (sk.getSkeletonType().equals(Skeleton.SkeletonType.STRAY)) && (!getConfig().getList("enabledmobs").contains("Stray"))) {
-					  mobEnabled = false;
-				  }
-			  }else if (e.getType().equals(EntityType.ZOMBIE)){
-				  Zombie zo = (Zombie)e;
-				  if (is9() && (zo.getVillagerProfession().equals(Profession.HUSK)) && (!getConfig().getList("enabledmobs").contains("Husk"))) {
-					  mobEnabled = false;
-				  }
-			  }else {
+//			  if (e.getType().equals(EntityType.SKELETON)){
+//				  Skeleton sk = (Skeleton)e;
+//				  if ((sk.getSkeletonType().equals(Skeleton.SkeletonType.WITHER)) && (!getConfig().getList("enabledmobs").contains("WitherSkeleton"))) {
+//					  mobEnabled = false;
+//				  }else if (is10() && (sk.getSkeletonType().equals(Skeleton.SkeletonType.STRAY)) && (!getConfig().getList("enabledmobs").contains("Stray"))) {
+//					  mobEnabled = false;
+//				  }
+//			  }else if (e.getType().equals(EntityType.ZOMBIE)){
+//				  Zombie zo = (Zombie)e;
+//				  if (is10() && (zo.getVillagerProfession().equals(Profession.HUSK)) && (!getConfig().getList("enabledmobs").contains("Husk"))) {
+//					  mobEnabled = false;
+//				  }
+//			  }else {
           ArrayList<String> babyList = (ArrayList)getConfig().getList("disabledBabyMobs");
           if (e.getType().equals(EntityType.MUSHROOM_COW))
           {
@@ -399,7 +427,7 @@ public class infernal_mobs extends JavaPlugin implements Listener{
                 return;
               }
             }
-        }
+        //}
       }
       final UUID id = e.getUniqueId();
       final int chance = getConfig().getInt("chance");
@@ -487,60 +515,45 @@ public class infernal_mobs extends JavaPlugin implements Listener{
     }
   }
   
-  public void addHealth(Entity ent, ArrayList<String> powerList)
-  {
-    double maxHealth = ((Damageable)ent).getHealth();
-    float setHealth;
-    if (getConfig().getBoolean("healthByPower"))
-    {
-      int mobIndex = idSearch(ent.getUniqueId());
-      try
-      {
-        Mob m = (Mob)this.infernalList.get(mobIndex);
-        setHealth = (float)(maxHealth * m.abilityList.size());
-      }
-      catch (Exception e)
-      {
-        setHealth = (float)(maxHealth * 5.0D);
-      }
-    }
-    else
-    {
-      if (getConfig().getBoolean("healthByDistance"))
-      {
-        Location l = ent.getWorld().getSpawnLocation();
-        int m = (int)l.distance(ent.getLocation()) / getConfig().getInt("addDistance");
-        if (m < 1) {
-          m = 1;
-        }
-        int add = getConfig().getInt("healthToAdd");
-        setHealth = m * add;
-      }
-      else
-      {
-        int healthMultiplier = getConfig().getInt("healthMultiplier");
-        setHealth = (float)(maxHealth * healthMultiplier);
-      }
-    }
-    if (setHealth >= 1.0F) {
-      try
-      {
-        ((LivingEntity)ent).setMaxHealth(setHealth);
-        ((LivingEntity)ent).setHealth(setHealth);
-      }
-      catch (Exception e)
-      {
-        System.out.println("addHealth: " + e);
-      }
-    }
-    String list = getPowerString(ent, powerList);
-    ent.setMetadata("infernalMetadata", new FixedMetadataValue(this, list));
-    try
-    {
-      this.mobSaveFile.set(ent.getUniqueId().toString(), list);
-      this.mobSaveFile.save(this.saveYML);
-    }
-    catch (IOException localIOException) {}
+  public void addHealth(Entity ent, ArrayList<String> powerList){
+	  double maxHealth = ((Damageable)ent).getHealth();
+	  float setHealth;
+	  if (getConfig().getBoolean("healthByPower")){
+		  int mobIndex = idSearch(ent.getUniqueId());
+		  try{
+			  Mob m = (Mob)this.infernalList.get(mobIndex);
+			  setHealth = (float)(maxHealth * m.abilityList.size());
+		  }catch (Exception e){
+			  setHealth = (float)(maxHealth * 5.0D);
+		  }
+	  }else{
+		  if (getConfig().getBoolean("healthByDistance")) {
+			  Location l = ent.getWorld().getSpawnLocation();
+			  int m = (int)l.distance(ent.getLocation()) / getConfig().getInt("addDistance");
+			  if (m < 1) {
+				  m = 1;
+			  }
+			  int add = getConfig().getInt("healthToAdd");
+			  setHealth = m * add;
+		  }else{
+			  int healthMultiplier = getConfig().getInt("healthMultiplier");
+			  setHealth = (float)(maxHealth * healthMultiplier);
+		  }
+	  }
+	  if (setHealth >= 1.0F) {
+		  try{
+			  ((LivingEntity)ent).setMaxHealth(setHealth);
+			  ((LivingEntity)ent).setHealth(setHealth);
+		  }catch (Exception e){
+			  System.out.println("addHealth: " + e);
+		  }
+	  }
+	  String list = getPowerString(ent, powerList);
+	  ent.setMetadata("infernalMetadata", new FixedMetadataValue(this, list));
+	  try{
+		  this.mobSaveFile.set(ent.getUniqueId().toString(), list);
+		  this.mobSaveFile.save(this.saveYML);
+	  }catch (IOException localIOException) {}
   }
   
   public String getPowerString(Entity ent, ArrayList<String> powerList)
@@ -1600,10 +1613,10 @@ public class infernal_mobs extends JavaPlugin implements Listener{
 							}
 						}catch (Exception localException1) {}
 					}
-					if (mobName.equals("WitherSkeleton")){
-						newEnt = vic.getWorld().spawnEntity(l, EntityType.SKELETON);
-						((Skeleton)newEnt).setSkeletonType(Skeleton.SkeletonType.WITHER);
-					}
+//					if (mobName.equals("WitherSkeleton")){
+//						newEnt = vic.getWorld().spawnEntity(l, EntityType.SKELETON);
+//						((Skeleton)newEnt).setSkeletonType(Skeleton.SkeletonType.WITHER);
+//					}
 					if (newEnt == null){
 						System.out.println("Infernal Mobs can't find mob type: " + mobName + "!");
 						return;
@@ -2381,9 +2394,11 @@ public class infernal_mobs extends JavaPlugin implements Listener{
   
   public void changeIntoWither(Skeleton skeleton){
     try{
-    	if(Bukkit.getVersion().contains("1.10")){
+    	if(Bukkit.getVersion().contains("1.11")){
+    		skeleton.setSkeletonType(Skeleton.SkeletonType.WITHER);
+    	}else if(Bukkit.getVersion().contains("1.10")){
 	        net.minecraft.server.v1_10_R1.EntitySkeleton ent = ((org.bukkit.craftbukkit.v1_10_R1.entity.CraftSkeleton)skeleton).getHandle();
-	        ent.setSkeletonType(EnumSkeletonType.WITHER);
+	        ent.setSkeletonType(net.minecraft.server.v1_10_R1.EnumSkeletonType.WITHER);
 	        Field selector = net.minecraft.server.v1_10_R1.EntityInsentient.class.getDeclaredField("goalSelector");
 	        selector.setAccessible(true);
     	}else if(Bukkit.getVersion().contains("1.9.4")){
@@ -2426,13 +2441,22 @@ public class infernal_mobs extends JavaPlugin implements Listener{
   }
   
   boolean is9(){
-	  if(Bukkit.getVersion().contains("1.9") || Bukkit.getVersion().contains("1.10"))
+	  if(Bukkit.getVersion().contains("1.9") || Bukkit.getVersion().contains("1.10") || Bukkit.getVersion().contains("1.11"))
+		  return true;
+	  return false;
+  }
+  
+  boolean is10(){
+	  if(Bukkit.getVersion().contains("1.10") || Bukkit.getVersion().contains("1.11"))
 		  return true;
 	  return false;
   }
   
   public void changeIntoElder(Guardian g){
-	  if(Bukkit.getVersion().contains("1.10")){
+	  if(Bukkit.getVersion().contains("1.11")){
+		  net.minecraft.server.v1_11_R1.EntityGuardian ent = (net.minecraft.server.v1_11_R1.EntityGuardian)((org.bukkit.craftbukkit.v1_11_R1.entity.CraftGuardian)g).getHandle();
+		  ((Guardian)ent).setElder(true);
+	  }else if(Bukkit.getVersion().contains("1.10")){
 		  net.minecraft.server.v1_10_R1.EntityGuardian ent = (net.minecraft.server.v1_10_R1.EntityGuardian)((org.bukkit.craftbukkit.v1_10_R1.entity.CraftGuardian)g).getHandle();
 		  ((Guardian)ent).setElder(true);
 	  }else if(Bukkit.getVersion().contains("1.9.4")){
@@ -2460,7 +2484,18 @@ public class infernal_mobs extends JavaPlugin implements Listener{
   private void displayParticle(String effect, World w, double x, double y, double z, double radius, int speed, int amount){
 		Location l = new Location(w, x, y, z);
 		try{
-			if(Bukkit.getVersion().contains("1.10")){
+			if(Bukkit.getVersion().contains("1.11")){
+				if(radius == 0){
+					ParticleEffects_1_11.sendToLocation(ParticleEffects_1_11.valueOf(effect), l, 0, 0, 0, speed, amount);
+				}else{
+					ArrayList<Location> ll = getArea(l, radius, 0.2);
+					for(int i = 0; i < amount; i++){
+				        int index = new Random().nextInt(ll.size());
+				        ParticleEffects_1_11.sendToLocation(ParticleEffects_1_11.valueOf(effect), ll.get(index), 0, 0, 0, speed, 1);
+				        ll.remove(index);
+					}
+				}
+			}else if(Bukkit.getVersion().contains("1.10")){
 				if(radius == 0){
 					ParticleEffects_1_10.sendToLocation(ParticleEffects_1_10.valueOf(effect), l, 0, 0, 0, speed, amount);
 				}else{
@@ -2616,18 +2651,18 @@ public class infernal_mobs extends JavaPlugin implements Listener{
   
   private boolean cSpawn(CommandSender sender, String mob, Location l, ArrayList<String> abList){
 	  //cspawn <mob> <world> <x> <y> <z> <ability> <ability>
-	  if ((EntityType.fromName(mob) != null) || (mob.equalsIgnoreCase("WitherSkeleton"))){
-		  boolean isWither = false;
-          if (mob.equalsIgnoreCase("WitherSkeleton")){
-        	  mob = "Skeleton";
-        	  isWither = true;
-          }
+	  if ((EntityType.fromName(mob) != null)/* || (mob.equalsIgnoreCase("WitherSkeleton")*/){
+//		  boolean isWither = false;
+//          if (mob.equalsIgnoreCase("WitherSkeleton")){
+//        	  mob = "Skeleton";
+//        	  isWither = true;
+//          }
           Entity ent = l.getWorld().spawnEntity(l, EntityType.fromName(mob));
-          if (isWither){
-        	  Skeleton skel = (Skeleton)ent;
-        	  changeIntoWither(skel);
-        	  mob = "WitherSkeleton";
-          }
+//          if (isWither){
+//        	  Skeleton skel = (Skeleton)ent;
+//        	  changeIntoWither(skel);
+//        	  mob = "WitherSkeleton";
+//          }
           Mob newMob = null;
           UUID id = ent.getUniqueId();
           if (abList.contains("1up")) {
@@ -2743,14 +2778,14 @@ public class infernal_mobs extends JavaPlugin implements Listener{
           }
           else if (((args.length == 2) && (args[0].equals("spawn"))) || ((args[0].equals("cspawn")) && (args.length == 6)))
           {
-            if ((EntityType.fromName(args[1]) != null) || (args[1].equalsIgnoreCase("WitherSkeleton")))
+            if ((EntityType.fromName(args[1]) != null)/* || (args[1].equalsIgnoreCase("WitherSkeleton"))*/)
             {
-              boolean isWither = false;
-              if (args[1].equalsIgnoreCase("WitherSkeleton"))
-              {
-                args[1] = "Skeleton";
-                isWither = true;
-              }
+//              boolean isWither = false;
+//              if (args[1].equalsIgnoreCase("WitherSkeleton"))
+//              {
+//                args[1] = "Skeleton";
+//                isWither = true;
+//              }
               boolean exmsg;
               World world;
               Entity ent;
@@ -2775,12 +2810,12 @@ public class infernal_mobs extends JavaPlugin implements Listener{
                 ent = player.getWorld().spawnEntity(farSpawnLoc, EntityType.fromName(args[1]));
                 exmsg = false;
               }
-              if (isWither)
-              {
-                Skeleton skel = (Skeleton)ent;
-                changeIntoWither(skel);
-                args[1] = "WitherSkeleton";
-              }
+//              if (isWither)
+//              {
+//                Skeleton skel = (Skeleton)ent;
+//                changeIntoWither(skel);
+//                args[1] = "WitherSkeleton";
+//              }
               ArrayList<String> abList = getAbilitiesAmount(ent);
               Mob newMob = null;
               UUID id = ent.getUniqueId();
@@ -2813,23 +2848,23 @@ public class infernal_mobs extends JavaPlugin implements Listener{
           {
             if (args[0].equals("spawn")){
               World world = player.getWorld();
-              if ((EntityType.fromName(args[1]) != null) || (args[1].equalsIgnoreCase("WitherSkeleton")))
+              if ((EntityType.fromName(args[1]) != null)/* || (args[1].equalsIgnoreCase("WitherSkeleton"))*/)
               {
-                boolean isWither = false;
-                if (args[1].equalsIgnoreCase("WitherSkeleton"))
-                {
-                  args[1] = "Skeleton";
-                  isWither = true;
-                }
+//                boolean isWither = false;
+//                if (args[1].equalsIgnoreCase("WitherSkeleton"))
+//                {
+//                  args[1] = "Skeleton";
+//                  isWither = true;
+//                }
                 Location farSpawnLoc = player.getTargetBlock((HashSet<Byte>)null, 200).getLocation();
                 farSpawnLoc.setY(farSpawnLoc.getY() + 1.0D);
                 Entity ent = player.getWorld().spawnEntity(farSpawnLoc, EntityType.fromName(args[1]));
-                if (isWither)
-                {
-                  Skeleton skel = (Skeleton)ent;
-                  changeIntoWither(skel);
-                  args[1] = "WitherSkeleton";
-                }
+//                if (isWither)
+//                {
+//                  Skeleton skel = (Skeleton)ent;
+//                  changeIntoWither(skel);
+//                  args[1] = "WitherSkeleton";
+//                }
                 ArrayList<String> spesificAbList = new ArrayList();
                 for (int i = 0; i <= args.length - 3; i++) {
                   if (getConfig().getString(args[(i + 2)]) != null)

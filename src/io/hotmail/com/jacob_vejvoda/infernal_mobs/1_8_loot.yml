@@ -956,7 +956,7 @@ loot:
           level: 5
         3:
           enchantment: ARROW_INFINITE
-          level: 1mine
+          level: 1
     65:
       item: 322
       amount: 1

@@ -1,4 +1,4 @@
-configVersion: "1.9"
+configVersion: "1.11"
 #Chance is the chance that a mob will not be infernal, the lower the number the higher the chance. (min 1)
 #Enabledworlds are the worlds that infernal mobs can spawn in.
 #Enabledmobs are the mobs that can become infernal.
@@ -79,8 +79,6 @@ enabledworlds:
 enabledmobs:
 #- Chicken
 - PigZombie
-- Zombie
-- Skeleton
 - Spider
 - CaveSpider
 - Creeper
@@ -95,11 +93,20 @@ enabledmobs:
 - SilverFish
 - Blaze
 #- Squid
-- WitherSkeleton
 - Rabbit
 - Shulker
 - Guardian
 - Endermite
+- PolarBear
+- Zombie
+- Husk
+- Skeleton
+- WitherSkeleton
+- Stray
+- Evoker
+- Vindicator
+- Vex
+- Llama
 enabledCharmSlots:
 - 0
 - 1
@@ -196,6 +203,7 @@ enabledMounts:
 - "EntityHorse:UNDEAD_HORSE"
 - Slime
 - Ghast
+- PolarBear
 enabledRiders:
 - PigZombie
 - Skeleton

@@ -136,6 +136,21 @@ potionEffects:
       level: 2
       requiredItems:
         - 90
+    24:
+      potion: "SPEED"
+      level: 4
+      requiredItems:
+        - 92
+    25:
+      potion: "SLOW_DIGGING"
+      level: 5
+      requiredItems:
+        - 93
+    26:
+      potion: "FAST_DIGGING"
+      level: 3
+      requiredItems:
+        - 94
 loot:
     1:
       item: 258
@@ -183,10 +198,6 @@ loot:
     5:
       item: 264
       amount: 5
-      durability: 0
-      name: "&bDiamond?"
-      lore1: "Better than the normal kind!"
-
     6:
       item: 272
       amount: 1
@@ -1266,3 +1277,28 @@ loot:
         2:
           enchantment: DAMAGE_ALL
           level: 1-3
+    92:
+      item: 353
+      amount: 1
+      name: "&fSugar of Ianite"
+      lore1: "&8Gives you the speed of Ianite."
+      enchantments: 
+        1:
+          enchantment: DURABILITY
+          level: 1
+    93:
+      item: 449
+      amount: 1
+      name: "&4Totem of Death"
+      enchantments: 
+        1:
+          enchantment: THORNS
+          level: 1
+    94:
+      item: 449
+      amount: 1
+      name: "&eTotem of Life"
+      enchantments: 
+        1:
+          enchantment: DURABILITY
+          level: 1
