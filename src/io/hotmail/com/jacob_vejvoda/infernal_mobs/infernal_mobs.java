@@ -115,6 +115,7 @@ public class infernal_mobs extends JavaPlugin implements Listener{
 		getServer().getPluginManager().registerEvents(this.events, this);
 		this.gui = new GUI(this);
 		getServer().getPluginManager().registerEvents(this.gui, this);
+		this.getLogger().log(Level.INFO, "Registered Events.");
 		//Folder 
 		File dir = new File(this.getDataFolder().getParentFile().getPath()+File.separator+this.getName());
 		if(!dir.exists())
@@ -217,6 +218,11 @@ public class infernal_mobs extends JavaPlugin implements Listener{
 		reloadPowers();
 		showEffect();
 	}
+	
+//	@EventHandler(priority=EventPriority.HIGH)
+//	public void onEntitySpawn(EntitySpawnEvent event){
+//		System.out.println("Mob Spawn X");
+//	}
 	
 	  public void isSave(InputStream inputStream, String dFile) {
 
@@ -347,6 +353,11 @@ public class infernal_mobs extends JavaPlugin implements Listener{
   
   public void makeInfernal(final Entity e, final boolean fixed) {
 	  boolean mobEnabled = true;
+		String entName;
+		if(is11()){
+			entName = e.getType().name();
+		}else
+			entName = e.getType().getName();
 	  if ((!e.hasMetadata("NPC")) && (!e.hasMetadata("shopkeeper"))){
 		  if (!fixed) {
 //			  if (e.getType().equals(EntityType.SKELETON)){
@@ -366,66 +377,62 @@ public class infernal_mobs extends JavaPlugin implements Listener{
           if (e.getType().equals(EntityType.MUSHROOM_COW))
           {
             MushroomCow minion = (MushroomCow)e;
-            if ((minion.isAdult()) || (!babyList.contains(e.getType().getName()))) {}
+            if ((!minion.isAdult()) || (babyList.contains(entName))) {return;}
           }
           else if (e.getType().equals(EntityType.COW))
           {
             Cow minion = (Cow)e;
-            if ((minion.isAdult()) || (!babyList.contains(e.getType().getName()))) {}
+            if ((!minion.isAdult()) || (babyList.contains(entName))) {return;}
           }
           else if (e.getType().equals(EntityType.SHEEP))
           {
             Sheep minion = (Sheep)e;
-            if ((minion.isAdult()) || (!babyList.contains(e.getType().getName()))) {}
+            if ((!minion.isAdult()) || (babyList.contains(entName))) {return;}
           }
           else if (e.getType().equals(EntityType.PIG))
           {
             Pig minion = (Pig)e;
-            if ((minion.isAdult()) || (!babyList.contains(e.getType().getName()))) {}
+            if ((!minion.isAdult()) || (babyList.contains(entName))) {return;}
           }
           else if (e.getType().equals(EntityType.CHICKEN))
           {
             Chicken minion = (Chicken)e;
-            if ((minion.isAdult()) || (!babyList.contains(e.getType().getName()))) {}
+            if ((!minion.isAdult()) || (babyList.contains(entName))) {return;}
           }
           else if (e.getType().equals(EntityType.WOLF))
           {
             Wolf minion = (Wolf)e;
-            if ((minion.isAdult()) || (!babyList.contains(e.getType().getName()))) {}
+            if ((!minion.isAdult()) || (babyList.contains(entName))) {return;}
           }
           else if (e.getType().equals(EntityType.ZOMBIE))
           {
             Zombie minion = (Zombie)e;
-            if ((!minion.isBaby()) || (!babyList.contains(e.getType().getName()))) {}
+            if ((!minion.isBaby()) || (babyList.contains(entName))) {return;}
           }
           else if (e.getType().equals(EntityType.PIG_ZOMBIE))
           {
             PigZombie minion = (PigZombie)e;
-            if ((!minion.isBaby()) || (!babyList.contains(e.getType().getName()))) {}
+            if ((!minion.isBaby()) || (babyList.contains(entName))) {return;}
           }
           else if (e.getType().equals(EntityType.OCELOT))
           {
             Ocelot minion = (Ocelot)e;
-            if ((minion.isAdult()) || (!babyList.contains(e.getType().getName()))) {}
+            if ((!minion.isAdult()) || (babyList.contains(entName))) {return;}
           }
           else if (e.getType().equals(EntityType.HORSE))
           {
             Horse minion = (Horse)e;
-            if ((minion.isAdult()) || (!babyList.contains(e.getType().getName()))) {}
+            if ((!minion.isAdult()) || (babyList.contains(entName))) {return;}
           }
           else if (e.getType().equals(EntityType.VILLAGER))
           {
             Villager minion = (Villager)e;
-            if ((!minion.isAdult()) && (babyList.contains(e.getType().getName()))) {
-              return;
-            }
+            if ((!minion.isAdult()) && (babyList.contains(entName))) {return;}
           }          
           else if (e.getType().equals(EntityType.RABBIT))
           {
         	  Rabbit minion = (Rabbit)e;
-              if ((!minion.isAdult()) && (babyList.contains(e.getType().getName()))) {
-                return;
-              }
+              if ((!minion.isAdult()) && (babyList.contains(entName))) {return;}
             }
         //}
       }
@@ -435,14 +442,19 @@ public class infernal_mobs extends JavaPlugin implements Listener{
       final Entity ent = e;
       Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable(){
         public void run(){
+        	String entName;
+    		if(is11()){
+    			entName = e.getType().name();
+    		}else
+    			entName = e.getType().getName();
           if ((!ent.isDead()) && (ent.isValid()) && (ent != null) && (
-            ((getConfig().getList("enabledmobs").contains(ent.getType().getName())) && (mobEnabled2)) || ((fixed) && 
+            ((getConfig().getList("enabledmobs").contains(entName)) && (mobEnabled2)) || ((fixed) && 
             (idSearch(id) == -1)))){
         	//Default
             int min = 1;
             int max = chance;
             //Pe Mob
-            int mc = getConfig().getInt("mobChances." + ent.getType().getName());
+            int mc = getConfig().getInt("mobChances." + entName);
             if(mc > 0)
             	max = mc;
             if (fixed)
@@ -2448,6 +2460,12 @@ public class infernal_mobs extends JavaPlugin implements Listener{
   
   boolean is10(){
 	  if(Bukkit.getVersion().contains("1.10") || Bukkit.getVersion().contains("1.11"))
+		  return true;
+	  return false;
+  }
+  
+  boolean is11(){
+	  if(Bukkit.getVersion().contains("1.11"))
 		  return true;
 	  return false;
   }

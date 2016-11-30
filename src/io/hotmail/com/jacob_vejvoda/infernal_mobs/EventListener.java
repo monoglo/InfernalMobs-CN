@@ -182,6 +182,7 @@ public class EventListener implements Listener{
 	@SuppressWarnings("deprecation")
 	@EventHandler(priority=EventPriority.HIGH)
 	public void onMobSpawn(CreatureSpawnEvent event){
+		//System.out.println("Mob Spawn 1");
 		World world = event.getEntity().getWorld();
 		if ((!event.getEntity().hasMetadata("NPC")) && (!event.getEntity().hasMetadata("shopkeeper")) && event.getEntity().getCustomName() == null){
 			if (event.getSpawnReason().equals(CreatureSpawnEvent.SpawnReason.SPAWNER)){
@@ -209,13 +210,30 @@ public class EventListener implements Listener{
 					}*/
 				}
 			}
+			//System.out.println("Mob Spawn 2");
 			if ((event.getEntity().hasMetadata("NPC")) || (event.getEntity().hasMetadata("shopkeeper"))) {
 				return;
 			}
+			String entName;
+			if(plugin.is11()){
+				entName = event.getEntity().getType().name();
+			}else
+				entName = event.getEntity().getType().getName();
+//			System.out.println("Mob Spawn 3");
+//			System.out.println((plugin.getConfig().getList("enabledworlds").contains(world.getName())) || (plugin.getConfig().getList("enabledworlds").contains("<all>")));
+//			System.out.println((plugin.getConfig().getList("enabledmobs").contains(entName)));
+//			System.out.println(plugin.getConfig().getList("enabledmobs"));
+//			System.out.println(entName);
+//			for(EntityType et : EntityType.values())
+//				System.out.println(et.name());
+//			System.out.println((plugin.getConfig().getInt("naturalSpawnHeight") < event.getEntity().getLocation().getY()));
+//			System.out.println((plugin.getConfig().getList("enabledSpawnReasons").contains(event.getSpawnReason().toString())));
+//			System.out.println(event.getSpawnReason());
 			if (((plugin.getConfig().getList("enabledworlds").contains(world.getName())) || (plugin.getConfig().getList("enabledworlds").contains("<all>"))) && 
-			     (plugin.getConfig().getList("enabledmobs").contains(event.getEntity().getType().getName())) && 
+			     (plugin.getConfig().getList("enabledmobs").contains(entName)) && 
 			     (plugin.getConfig().getInt("naturalSpawnHeight") < event.getEntity().getLocation().getY()) &&
 				 (plugin.getConfig().getList("enabledSpawnReasons").contains(event.getSpawnReason().toString()))){
+				    //System.out.println("Mob Spawn 4");
 					plugin.makeInfernal(event.getEntity(), false);
 			}
 		}

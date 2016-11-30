@@ -5,7 +5,6 @@
 	<classpathentry kind="lib" path="/home/eliminator/eclipse/BarAPI_real_1.8.jar"/>
 	<classpathentry kind="lib" path="/home/eliminator/eclipse/BossbarAPI.jar"/>
 	<classpathentry kind="lib" path="/home/eliminator/Desktop/WizardlyMagic.jar"/>
-	<classpathentry kind="lib" path="/home/eliminator/eclipse/1.11/spigot-1.11.jar"/>
 	<classpathentry kind="lib" path="/home/eliminator/eclipse/1.10/spigot-1.10.2.jar"/>
 	<classpathentry kind="lib" path="/home/eliminator/eclipse/1.10/spigot-1.10.jar"/>
 	<classpathentry kind="lib" path="/home/eliminator/eclipse/1.9/spigot-1.9.4.jar"/>
@@ -13,5 +12,6 @@
 	<classpathentry kind="lib" path="/home/eliminator/eclipse/craftbukkit-1.8-R0.1-SNAPSHOT-latest.jar"/>
 	<classpathentry kind="lib" path="/home/eliminator/eclipse/1.8/spigot-1.8.8.jar"/>
 	<classpathentry kind="lib" path="/home/eliminator/eclipse/1.8/spigot-1.8.3.jar"/>
+	<classpathentry kind="lib" path="/home/eliminator/eclipse/1.11/spigot-1.11.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
