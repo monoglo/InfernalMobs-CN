@@ -7,6 +7,7 @@ import io.hotmail.com.jacob_vejvoda.infernal_mobs.versionStuff.ParticleEffects_1
 import io.hotmail.com.jacob_vejvoda.infernal_mobs.versionStuff.ParticleEffects_1_9;
 import io.hotmail.com.jacob_vejvoda.infernal_mobs.versionStuff.ParticleEffects_1_10;
 import io.hotmail.com.jacob_vejvoda.infernal_mobs.versionStuff.ParticleEffects_1_11;
+import io.hotmail.com.jacob_vejvoda.infernal_mobs.versionStuff.ParticleEffects_1_12;
 import io.hotmail.com.jacob_vejvoda.WizardlyMagic.WizardlyMagic;
 
 import java.io.File;
@@ -44,6 +45,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Ageable;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Chicken;
 import org.bukkit.entity.Cow;
@@ -61,11 +63,11 @@ import org.bukkit.entity.Ocelot;
 import org.bukkit.entity.Pig;
 import org.bukkit.entity.PigZombie;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Rabbit;
 import org.bukkit.entity.Sheep;
 import org.bukkit.entity.Skeleton;
 import org.bukkit.entity.ThrownPotion;
 import org.bukkit.entity.Villager;
+import org.bukkit.entity.Villager.Profession;
 import org.bukkit.entity.WitherSkull;
 import org.bukkit.entity.Wolf;
 import org.bukkit.entity.Zombie;
@@ -102,6 +104,7 @@ public class infernal_mobs extends JavaPlugin implements Listener{
 	YamlConfiguration mobSaveFile = YamlConfiguration.loadConfiguration(this.saveYML);
 	HashMap<Entity, Entity> mountList = new HashMap();
 	ArrayList<Player> errorList = new ArrayList();
+	ArrayList<Player> levitateList = new ArrayList();
 	public GUI gui;
 	private EventListener events;
 	public long serverTime = 0L;
@@ -138,7 +141,7 @@ public class infernal_mobs extends JavaPlugin implements Listener{
 	  		this.getLogger().log(Level.INFO, "No config.yml found, generating...");
 	  		//Generate Config
 	  		boolean generatedConfig = false;
-	  		for(String version : Arrays.asList("1.11","1.10","1.9","1.8"))
+	  		for(String version : Arrays.asList("1.12","1.11","1.10","1.9","1.8"))
 	  			if(Bukkit.getVersion().contains(version)){
 	  	  	        InputStream in = getClass().getResourceAsStream(version.replace(".", "_") + "_config.yml");
 	  	  	        isSave(in, "config.yml");
@@ -177,7 +180,11 @@ public class infernal_mobs extends JavaPlugin implements Listener{
 //			}
 	  		this.getLogger().log(Level.INFO, "No loot.yml found, generating...");
 	  		//Generate Config
-	  		if(Bukkit.getVersion().contains("1.11")){
+	  		if(Bukkit.getVersion().contains("1.12")){
+	  	        InputStream in = getClass().getResourceAsStream("1_12loot.yml");
+	  	        isSave(in, "loot.yml");
+	  	        this.getLogger().log(Level.INFO, "1.12 Loot successfully generated!");
+	  		}else if(Bukkit.getVersion().contains("1.11")){
 	  	        InputStream in = getClass().getResourceAsStream("1_11loot.yml");
 	  	        isSave(in, "loot.yml");
 	  	        this.getLogger().log(Level.INFO, "1.11 Loot successfully generated!");
@@ -360,81 +367,28 @@ public class infernal_mobs extends JavaPlugin implements Listener{
 			entName = e.getType().getName();
 	  if ((!e.hasMetadata("NPC")) && (!e.hasMetadata("shopkeeper"))){
 		  if (!fixed) {
-//			  if (e.getType().equals(EntityType.SKELETON)){
-//				  Skeleton sk = (Skeleton)e;
-//				  if ((sk.getSkeletonType().equals(Skeleton.SkeletonType.WITHER)) && (!getConfig().getList("enabledmobs").contains("WitherSkeleton"))) {
-//					  mobEnabled = false;
-//				  }else if (is10() && (sk.getSkeletonType().equals(Skeleton.SkeletonType.STRAY)) && (!getConfig().getList("enabledmobs").contains("Stray"))) {
-//					  mobEnabled = false;
-//				  }
-//			  }else if (e.getType().equals(EntityType.ZOMBIE)){
-//				  Zombie zo = (Zombie)e;
-//				  if (is10() && (zo.getVillagerProfession().equals(Profession.HUSK)) && (!getConfig().getList("enabledmobs").contains("Husk"))) {
-//					  mobEnabled = false;
-//				  }
-//			  }else {
+			  if (e.getType().equals(EntityType.SKELETON)){
+				  Skeleton sk = (Skeleton)e;
+				  if (is11() == false && (sk.getSkeletonType().equals(Skeleton.SkeletonType.WITHER)) && (!getConfig().getList("enabledmobs").contains("WitherSkeleton"))) {
+					  mobEnabled = false;
+				  }else if (is10() && is11() == false && (sk.getSkeletonType().equals(Skeleton.SkeletonType.STRAY)) && (!getConfig().getList("enabledmobs").contains("Stray"))) {
+					  mobEnabled = false;
+				  }
+			  }else if (e.getType().equals(EntityType.ZOMBIE)){
+				  Zombie zo = (Zombie)e;
+				  if (is10() && is11() == false && (zo.getVillagerProfession().equals(Profession.HUSK)) && (!getConfig().getList("enabledmobs").contains("Husk"))) {
+					  mobEnabled = false;
+				  }
+			  }else {
           ArrayList<String> babyList = (ArrayList)getConfig().getList("disabledBabyMobs");
-          if (e.getType().equals(EntityType.MUSHROOM_COW))
-          {
-            MushroomCow minion = (MushroomCow)e;
-            if ((!minion.isAdult()) || (babyList.contains(entName))) {return;}
+          if((e instanceof LivingEntity) && (e instanceof Ageable)) {
+        	  Ageable age = (Ageable) e;
+        	  boolean baby = !age.isAdult();
+        	  if (baby &&  babyList.contains(entName)) {
+        		  return;
+        	  }
           }
-          else if (e.getType().equals(EntityType.COW))
-          {
-            Cow minion = (Cow)e;
-            if ((!minion.isAdult()) || (babyList.contains(entName))) {return;}
-          }
-          else if (e.getType().equals(EntityType.SHEEP))
-          {
-            Sheep minion = (Sheep)e;
-            if ((!minion.isAdult()) || (babyList.contains(entName))) {return;}
-          }
-          else if (e.getType().equals(EntityType.PIG))
-          {
-            Pig minion = (Pig)e;
-            if ((!minion.isAdult()) || (babyList.contains(entName))) {return;}
-          }
-          else if (e.getType().equals(EntityType.CHICKEN))
-          {
-            Chicken minion = (Chicken)e;
-            if ((!minion.isAdult()) || (babyList.contains(entName))) {return;}
-          }
-          else if (e.getType().equals(EntityType.WOLF))
-          {
-            Wolf minion = (Wolf)e;
-            if ((!minion.isAdult()) || (babyList.contains(entName))) {return;}
-          }
-          else if (e.getType().equals(EntityType.ZOMBIE))
-          {
-            Zombie minion = (Zombie)e;
-            if ((!minion.isBaby()) || (babyList.contains(entName))) {return;}
-          }
-          else if (e.getType().equals(EntityType.PIG_ZOMBIE))
-          {
-            PigZombie minion = (PigZombie)e;
-            if ((!minion.isBaby()) || (babyList.contains(entName))) {return;}
-          }
-          else if (e.getType().equals(EntityType.OCELOT))
-          {
-            Ocelot minion = (Ocelot)e;
-            if ((!minion.isAdult()) || (babyList.contains(entName))) {return;}
-          }
-          else if (e.getType().equals(EntityType.HORSE))
-          {
-            Horse minion = (Horse)e;
-            if ((!minion.isAdult()) || (babyList.contains(entName))) {return;}
-          }
-          else if (e.getType().equals(EntityType.VILLAGER))
-          {
-            Villager minion = (Villager)e;
-            if ((!minion.isAdult()) && (babyList.contains(entName))) {return;}
-          }          
-          else if (e.getType().equals(EntityType.RABBIT))
-          {
-        	  Rabbit minion = (Rabbit)e;
-              if ((!minion.isAdult()) && (babyList.contains(entName))) {return;}
-            }
-        //}
+        }
       }
       final UUID id = e.getUniqueId();
       final int chance = getConfig().getInt("chance");
@@ -1301,7 +1255,7 @@ public class infernal_mobs extends JavaPlugin implements Listener{
 		//Check Players
 		for(Player p : this.getServer().getOnlinePlayers()){
 			World world = p.getWorld();
-			if((getConfig().getList("enabledworlds").contains(world.getName())) || (getConfig().getList("enabledworlds").contains("<all>"))){
+			if((getConfig().getList("effectworlds").contains(world.getName())) || (getConfig().getList("effectworlds").contains("<all>"))){
 				//Get Player Items
 				//ArrayList<ItemStack> items = new ArrayList<ItemStack>();
 				HashMap<Integer, ItemStack> itemMap = new HashMap<Integer, ItemStack>();
@@ -1398,61 +1352,46 @@ public class infernal_mobs extends JavaPlugin implements Listener{
     }
   }
   
-  private void levitate(final Entity e, final int time)
-  {
-    boolean couldFly = false;
-    if (((e instanceof Player)) && 
-      (((Player)e).getAllowFlight())) {
-      couldFly = true;
-    }
-    final boolean couldFly2 = couldFly;
-    if ((e instanceof Player)) {
-      ((Player)e).setAllowFlight(true);
-    }
-    for (int i = 0; i < 40; i++) {
-      Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable()
-      {
-        public void run()
-        {
-          Vector vec = e.getVelocity();
-          vec.add(new Vector(0.0D, 0.1D, 0.0D));
-          e.setVelocity(vec);
-        }
-      }, i);
-    }
-    Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable()
-    {
-      public void run()
-      {
-        infernal_mobs.this.airHold(e, time - 2, couldFly2);
-      }
-    }, 20L);
+  private void levitate(final Entity e, final int time){
+	  if (((e instanceof Player)) && (((Player)e).getAllowFlight()) == false) {
+	    	((Player)e).setAllowFlight(true);
+	    	levitateList.add(((Player)e));
+	  }
+	  for (int i = 0; i < 40; i++) {
+		  Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable(){
+			  public void run(){
+				  Vector vec = e.getVelocity();
+				  vec.add(new Vector(0.0D, 0.1D, 0.0D));
+				  e.setVelocity(vec);
+			  }
+		  }, i);
+	  }
+	  Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable(){
+		  public void run(){
+			  infernal_mobs.this.airHold(e, time - 2);
+		  }
+	  }, 20L);
   }
   
-  public void airHold(final Entity e, int time, boolean couldFly)
-  {
-    for (int i = 0; i < time * 20; i++)
-    {
-      Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable()
-      {
-        public void run()
-        {
-          Vector vec = e.getVelocity();
-          vec.setY(0.01D);
-          e.setVelocity(vec);
-        }
-      }, i);
-      i++;
-    }
-    Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable()
-    {
-      public void run()
-      {
-        if ((e instanceof Player)) {
-          ((Player)e).setAllowFlight(false);
-        }
-      }
-    }, 20 * time);
+  public void airHold(final Entity e, int time){
+	  for (int i = 0; i < time * 20; i++){
+		  Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable(){
+			  public void run(){
+				  Vector vec = e.getVelocity();
+				  vec.setY(0.01D);
+				  e.setVelocity(vec);
+			  }
+		  }, i);
+		  i++;
+	  }
+	  Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable(){
+		  public void run(){
+			  if ((e instanceof Player) && levitateList.contains(((Player)e))) {
+				  ((Player)e).setAllowFlight(false);
+				  levitateList.remove(((Player)e));
+			  }
+		  }
+	  }, 20 * time);
   }
   
 	public boolean doEffect(Player player, final Entity mob, boolean playerIsVictom) throws Exception {
@@ -2453,25 +2392,34 @@ public class infernal_mobs extends JavaPlugin implements Listener{
   }
   
   boolean is9(){
-	  if(Bukkit.getVersion().contains("1.9") || Bukkit.getVersion().contains("1.10") || Bukkit.getVersion().contains("1.11"))
+	  if(Bukkit.getVersion().contains("1.9") || is10())
 		  return true;
 	  return false;
   }
   
   boolean is10(){
-	  if(Bukkit.getVersion().contains("1.10") || Bukkit.getVersion().contains("1.11"))
+	  if(Bukkit.getVersion().contains("1.10") || is11())
 		  return true;
 	  return false;
   }
   
   boolean is11(){
-	  if(Bukkit.getVersion().contains("1.11"))
+	  if(Bukkit.getVersion().contains("1.11") || is12())
+		  return true;
+	  return false;
+  }
+  
+  boolean is12(){
+	  if(Bukkit.getVersion().contains("1.12"))
 		  return true;
 	  return false;
   }
   
   public void changeIntoElder(Guardian g){
-	  if(Bukkit.getVersion().contains("1.11")){
+	  if(Bukkit.getVersion().contains("1.12")){
+		  net.minecraft.server.v1_12_R1.EntityGuardian ent = (net.minecraft.server.v1_12_R1.EntityGuardian)((org.bukkit.craftbukkit.v1_12_R1.entity.CraftGuardian)g).getHandle();
+		  ((Guardian)ent).setElder(true);
+	  }else if(Bukkit.getVersion().contains("1.11")){
 		  net.minecraft.server.v1_11_R1.EntityGuardian ent = (net.minecraft.server.v1_11_R1.EntityGuardian)((org.bukkit.craftbukkit.v1_11_R1.entity.CraftGuardian)g).getHandle();
 		  ((Guardian)ent).setElder(true);
 	  }else if(Bukkit.getVersion().contains("1.10")){
@@ -2502,7 +2450,18 @@ public class infernal_mobs extends JavaPlugin implements Listener{
   private void displayParticle(String effect, World w, double x, double y, double z, double radius, int speed, int amount){
 		Location l = new Location(w, x, y, z);
 		try{
-			if(Bukkit.getVersion().contains("1.11")){
+			if(Bukkit.getVersion().contains("1.12")){
+				if(radius == 0){
+					ParticleEffects_1_12.sendToLocation(ParticleEffects_1_12.valueOf(effect), l, 0, 0, 0, speed, amount);
+				}else{
+					ArrayList<Location> ll = getArea(l, radius, 0.2);
+					for(int i = 0; i < amount; i++){
+				        int index = new Random().nextInt(ll.size());
+				        ParticleEffects_1_12.sendToLocation(ParticleEffects_1_12.valueOf(effect), ll.get(index), 0, 0, 0, speed, 1);
+				        ll.remove(index);
+					}
+				}
+			}else if(Bukkit.getVersion().contains("1.11")){
 				if(radius == 0){
 					ParticleEffects_1_11.sendToLocation(ParticleEffects_1_11.valueOf(effect), l, 0, 0, 0, speed, amount);
 				}else{
@@ -2717,7 +2676,7 @@ public class infernal_mobs extends JavaPlugin implements Listener{
         boolean plyr = true;
         if (!(sender instanceof Player))
         {
-          if ((!args[0].equals("cspawn")) && (!args[0].equals("reload")) && (!args[0].equals("killall")))
+          if (args != null && args.length > 0 && (!args[0].equals("cspawn")) && (!args[0].equals("reload")) && (!args[0].equals("killall")))
           {
             sender.sendMessage("This command can only be run by a player!");
             return true;
@@ -2760,14 +2719,14 @@ public class infernal_mobs extends JavaPlugin implements Listener{
           }
           else if ((args.length == 1) && (args[0].equals("worldInfo")))
           {
-            ArrayList<String> enWorldList = (ArrayList)getConfig().getList("enabledworlds");
+            ArrayList<String> enWorldList = (ArrayList)getConfig().getList("mobworlds");
             World world = player.getWorld();
             String enabled = "is not";
             if ((enWorldList.contains(world.getName())) || (enWorldList.contains("<all>"))) {
               enabled = "is";
             }
             sender.sendMessage("The world you are currently in, " + world + " " + enabled + " enabled.");
-            sender.sendMessage("All the world that are enabled are: " + enWorldList.toString());
+            sender.sendMessage("All the worlds that are enabled are: " + enWorldList.toString());
           }
           else if ((args.length == 1) && (args[0].equals("help")))
           {
@@ -3028,6 +2987,11 @@ public class infernal_mobs extends JavaPlugin implements Listener{
             	}else{
             		sender.sendMessage("§cWorld not found!");
             	}
+            }else if (args[0].equals("mobs")){
+            	sender.sendMessage("§6List of Mobs:");
+            	for(EntityType e : EntityType.values())
+            		if(e != null)
+            			sender.sendMessage(e.toString());
             }else{
             	throwError(sender);
             }

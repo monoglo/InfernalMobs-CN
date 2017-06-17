@@ -34,6 +34,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.weather.LightningStrikeEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
@@ -84,7 +85,16 @@ public class EventListener implements Listener{
 			}
 		}
 	}
-  
+	  
+	@EventHandler(priority=EventPriority.HIGH)
+	public void onPlayerQuit(PlayerQuitEvent e){
+		Player p = e.getPlayer();
+		if(plugin.levitateList.contains(p)){
+			p.setAllowFlight(false);
+			plugin.levitateList.remove(p);
+		}
+	}
+	
 	@EventHandler(priority=EventPriority.HIGH)
 	public void onLightningStrike(LightningStrikeEvent e){
 		for (Entity m : e.getLightning().getNearbyEntities(6.0D, 6.0D, 6.0D)) {
@@ -220,7 +230,7 @@ public class EventListener implements Listener{
 			}else
 				entName = event.getEntity().getType().getName();
 //			System.out.println("Mob Spawn 3");
-//			System.out.println((plugin.getConfig().getList("enabledworlds").contains(world.getName())) || (plugin.getConfig().getList("enabledworlds").contains("<all>")));
+//			System.out.println((plugin.getConfig().getList("mobworlds").contains(world.getName())) || (plugin.getConfig().getList("mobworlds").contains("<all>")));
 //			System.out.println((plugin.getConfig().getList("enabledmobs").contains(entName)));
 //			System.out.println(plugin.getConfig().getList("enabledmobs"));
 //			System.out.println(entName);
@@ -229,7 +239,7 @@ public class EventListener implements Listener{
 //			System.out.println((plugin.getConfig().getInt("naturalSpawnHeight") < event.getEntity().getLocation().getY()));
 //			System.out.println((plugin.getConfig().getList("enabledSpawnReasons").contains(event.getSpawnReason().toString())));
 //			System.out.println(event.getSpawnReason());
-			if (((plugin.getConfig().getList("enabledworlds").contains(world.getName())) || (plugin.getConfig().getList("enabledworlds").contains("<all>"))) && 
+			if (((plugin.getConfig().getList("mobworlds").contains(world.getName())) || (plugin.getConfig().getList("mobworlds").contains("<all>"))) && 
 			     (plugin.getConfig().getList("enabledmobs").contains(entName)) && 
 			     (plugin.getConfig().getInt("naturalSpawnHeight") < event.getEntity().getLocation().getY()) &&
 				 (plugin.getConfig().getList("enabledSpawnReasons").contains(event.getSpawnReason().toString()))){

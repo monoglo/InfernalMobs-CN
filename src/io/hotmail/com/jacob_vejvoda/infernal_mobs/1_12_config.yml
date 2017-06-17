@@ -1,4 +1,4 @@
-configVersion: "1.11"
+configVersion: "1.12
 #Chance is the chance that a mob will not be infernal, the lower the number the higher the chance. (min 1)
 #Enabledworlds are the worlds that infernal mobs can spawn in.
 #Enabledmobs are the mobs that can become infernal.
@@ -111,6 +111,8 @@ enabledmobs:
 - ENDERMITE
 - GUARDIAN
 - SHULKER
+- ILLUSIONER
+- PARROT
 #- PIG
 #- SHEEP
 #- COW
@@ -245,6 +247,7 @@ enabledRiders:
 - WITCH
 - SNOWMAN
 - VILLAGER
+- ILLUSIONER
 disabledBabyMobs:
 - WOLF
 - MUSHROOM_COW

@@ -51,7 +51,9 @@ spawnMessages:
 - '&cYou hear a faint scream...'
 - '&cSomething is coming...'
 - '&cYou hear a mob nearby...'
-enabledworlds:
+mobworlds:
+- <all>
+effectworlds:
 - <all>
 enabledmobs:
 #- Chicken
