@@ -43,6 +43,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.banner.Pattern;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Ageable;
@@ -73,6 +74,7 @@ import org.bukkit.entity.Wolf;
 import org.bukkit.entity.Zombie;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.EntityEquipment;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BannerMeta;
 import org.bukkit.inventory.meta.BlockStateMeta;
@@ -944,6 +946,136 @@ public class infernal_mobs extends JavaPlugin implements Listener{
     return null;
   }
   
+  
+  private void setItem(ItemStack s, String path, FileConfiguration fc){
+    if (s != null){
+      fc.set(path + ".item", Integer.valueOf(s.getTypeId()));
+      fc.set(path + ".amount", Integer.valueOf(s.getAmount()));
+      fc.set(path + ".durability", Short.valueOf(s.getDurability()));
+      if (s.getItemMeta() != null){
+        if (s.getItemMeta().getDisplayName() != null) {
+          fc.set(path + ".name", s.getItemMeta().getDisplayName());
+        }
+        if (s.getItemMeta().getLore() != null) {
+          for (int l = 0; l < s.getItemMeta().getLore().size(); l++) {
+            if (s.getItemMeta().getLore().get(l) != null) {
+              fc.set(path + ".lore" + l, s.getItemMeta().getLore().get(l));
+            }
+          }
+        }
+      }
+      Enchantment e;
+      if (s.getEnchantments() != null) {
+        for (Map.Entry<Enchantment, Integer> hm : s.getEnchantments().entrySet()){
+          e = (Enchantment)hm.getKey();
+          int level = ((Integer)hm.getValue()).intValue();
+          for (int ei = 0; ei < 13; ei++) {
+            if (fc.getString(path + ".enchantments." + ei) == null){
+              fc.set(path + ".enchantments." + ei + ".enchantment", e.getName());
+              fc.set(path + ".enchantments." + ei + ".level", Integer.valueOf(level));
+              break;
+            }
+          }
+        }
+      }
+      if (s.getType().equals(Material.ENCHANTED_BOOK)) {
+        EnchantmentStorageMeta em = (EnchantmentStorageMeta)s.getItemMeta();
+        if (em.getStoredEnchants() != null) {
+          for (Object hm : em.getStoredEnchants().entrySet()){
+            e = (Enchantment)((Map.Entry)hm).getKey();
+            int level = ((Integer)((Map.Entry)hm).getValue()).intValue();
+            for (int ei = 0; ei < 13; ei++) {
+              if (fc.getString(path + ".enchantments." + ei) == null){
+                fc.set(path + ".enchantments." + ei + ".enchantment", e.getName());
+                fc.set(path + ".enchantments." + ei + ".level", Integer.valueOf(level));
+                break;
+              }
+            }
+          }
+        }
+      }
+      if ((s.getType().equals(Material.WRITTEN_BOOK)) || (s.getType().equals(Material.BOOK_AND_QUILL)))
+      {
+        BookMeta meta = (BookMeta)s.getItemMeta();
+        if (meta.getAuthor() != null) {
+          fc.set(path + ".author", meta.getAuthor());
+        }
+        if (meta.getTitle() != null) {
+          fc.set(path + ".title", meta.getTitle());
+        }
+        int i = 0;
+        if (meta.getPages() != null) {
+          for (String p : meta.getPages())
+          {
+            fc.set(path + ".pages." + i, p);
+            i++;
+          }
+        }
+      }
+      //Banner
+      if (s.getType().equals(Material.BANNER)){
+    	  BannerMeta b = (BannerMeta)s.getItemMeta();
+    	  if(b != null){
+	    	  List patList = b.getPatterns();
+	    	  if(patList != null && (!patList.isEmpty()))
+	    		  fc.set(path + ".patterns", patList);
+    	  }
+      }
+      //Shield
+      if(is9())
+	      if (s.getType().equals(Material.SHIELD)){
+	    	  ItemMeta im = s.getItemMeta();
+	    	  BlockStateMeta bmeta = (BlockStateMeta) im;
+	    	  Banner b = (Banner) bmeta.getBlockState();
+	    	  if(b != null){
+	    		  fc.set(path + ".colour", b.getBaseColor().toString());
+		    	  List patList = b.getPatterns();
+		    	  if(patList != null && (!patList.isEmpty()))
+		    		  fc.set(path + ".patterns", patList);
+	    	  }
+	      }
+      //Potions
+      if(is9())
+	      if(s.getType().equals(Material.POTION) || s.getType().equals(Material.SPLASH_POTION) || s.getType().equals(Material.LINGERING_POTION)){
+				PotionMeta pMeta = (PotionMeta) s.getItemMeta();
+				org.bukkit.potion.PotionData pd = pMeta.getBasePotionData();
+				//System.out.println("CP: " + pMeta.getCustomEffects());
+				//String ps = pd.getType().getEffectType().getName()+":"+pd.getType().get;
+				fc.set(path+".potion", pd.getType().getEffectType().getName());
+	      }
+      if ((s.getType().equals(Material.LEATHER_BOOTS)) || (s.getType().equals(Material.LEATHER_CHESTPLATE)) || (s.getType().equals(Material.LEATHER_HELMET)) || (s.getType().equals(Material.LEATHER_LEGGINGS))){
+    	  LeatherArmorMeta l = (LeatherArmorMeta)s.getItemMeta();
+    	  Color c = l.getColor();
+    	  String color = c.getRed() + "," + c.getGreen() + "," + c.getBlue();
+    	  fc.set(path + ".colour", color);
+      }
+      if ((s.getType().equals(Material.SKULL_ITEM)) && (s.getDurability() == 3)) {
+    	  SkullMeta sm = (SkullMeta)s.getItemMeta();
+//    	  fc.set(path + ".flags", sm.getItemFlags());
+//    	  for(ItemFlag f : s)
+    	  fc.set(path + ".owner", sm.getOwner());
+    	  //fc.set(path + ".SkullOwner", getSkullOwner(s));
+      }
+      //Flags
+     // System.out.println("FLAGS: " + s.getItemMeta().getItemFlags());
+      if(s.getItemMeta().getItemFlags() != null){
+    	  ArrayList<String> flags = new ArrayList<String>();
+    	  for(ItemFlag f : s.getItemMeta().getItemFlags())
+    		  if(f != null)
+    			  flags.add(f.name());
+    	  //System.out.println("FLAGS2: " + flags);
+    	  if(!flags.isEmpty())
+    		  fc.set(path + ".flags", flags);
+      }
+    }else{
+    	System.out.println("Item is null!");
+    }
+    try {
+      this.lootFile.save(this.lootYML);
+    }catch (IOException localIOException) {}
+    saveConfig();
+  }
+  
   private String prosessLootName(String name, ItemStack stack){
       name = ChatColor.translateAlternateColorCodes('&', name);
       String itemName = stack.getType().name();
@@ -1353,24 +1485,28 @@ public class infernal_mobs extends JavaPlugin implements Listener{
   }
   
   private void levitate(final Entity e, final int time){
-	  if (((e instanceof Player)) && (((Player)e).getAllowFlight()) == false) {
-	    	((Player)e).setAllowFlight(true);
-	    	levitateList.add(((Player)e));
-	  }
-	  for (int i = 0; i < 40; i++) {
+	  if(is9() && (e instanceof LivingEntity)){
+		  ((LivingEntity)e).addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, time*20, 0));
+	  }else{
+		  if (((e instanceof Player)) && (((Player)e).getAllowFlight()) == false) {
+		    	((Player)e).setAllowFlight(true);
+		    	levitateList.add(((Player)e));
+		  }
+		  for (int i = 0; i < 40; i++) {
+			  Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable(){
+				  public void run(){
+					  Vector vec = e.getVelocity();
+					  vec.add(new Vector(0.0D, 0.1D, 0.0D));
+					  e.setVelocity(vec);
+				  }
+			  }, i);
+		  }
 		  Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable(){
 			  public void run(){
-				  Vector vec = e.getVelocity();
-				  vec.add(new Vector(0.0D, 0.1D, 0.0D));
-				  e.setVelocity(vec);
+				  infernal_mobs.this.airHold(e, time - 2);
 			  }
-		  }, i);
+		  }, 20L);
 	  }
-	  Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable(){
-		  public void run(){
-			  infernal_mobs.this.airHold(e, time - 2);
-		  }
-	  }, 20L);
   }
   
   public void airHold(final Entity e, int time){
@@ -2345,7 +2481,7 @@ public class infernal_mobs extends JavaPlugin implements Listener{
   
   public void changeIntoWither(Skeleton skeleton){
     try{
-    	if(Bukkit.getVersion().contains("1.11")){
+    	if(Bukkit.getVersion().contains("1.11") || Bukkit.getVersion().contains("1.12")){
     		skeleton.setSkeletonType(Skeleton.SkeletonType.WITHER);
     	}else if(Bukkit.getVersion().contains("1.10")){
 	        net.minecraft.server.v1_10_R1.EntitySkeleton ent = ((org.bukkit.craftbukkit.v1_10_R1.entity.CraftSkeleton)skeleton).getHandle();
@@ -2992,6 +3128,9 @@ public class infernal_mobs extends JavaPlugin implements Listener{
             	for(EntityType e : EntityType.values())
             		if(e != null)
             			sender.sendMessage(e.toString());
+            }else if (args[0].equals("setloot")) {            	
+            	setItem(player.getInventory().getItemInHand(),"loot."+args[1],lootFile);       	
+            	sender.sendMessage("§eSet loot at index "+args[1]+" §eto item in hand.");
             }else{
             	throwError(sender);
             }
@@ -3016,6 +3155,7 @@ public class infernal_mobs extends JavaPlugin implements Listener{
     sender.sendMessage("Usage: /im worldInfo");
     sender.sendMessage("Usage: /im error");
     sender.sendMessage("Usage: /im getloot <index>");
+    sender.sendMessage("Usage: /im setloot <index>");
     sender.sendMessage("Usage: /im abilities");
     sender.sendMessage("Usage: /im showAbilities");
     sender.sendMessage("Usage: /im setInfernal <time delay>");
