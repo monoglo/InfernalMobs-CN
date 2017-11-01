@@ -12,7 +12,7 @@
 	<classpathentry kind="lib" path="/home/eliminator/eclipse/1.8/spigot-1.8.8.jar"/>
 	<classpathentry kind="lib" path="/home/eliminator/eclipse/1.8/spigot-1.8.3.jar"/>
 	<classpathentry kind="lib" path="/home/eliminator/eclipse/WizardlyMagic.jar"/>
-	<classpathentry kind="lib" path="/home/eliminator/eclipse/1.12/spigot-1.12.jar"/>
+	<classpathentry kind="lib" path="/home/eliminator/eclipse/1.12/spigot-1.12.1.jar"/>
 	<classpathentry kind="lib" path="/home/eliminator/eclipse/1.11/spigot-1.11.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
