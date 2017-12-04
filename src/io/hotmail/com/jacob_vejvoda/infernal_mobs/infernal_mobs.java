@@ -2803,24 +2803,18 @@ public class infernal_mobs extends JavaPlugin implements Listener{
     return r;
   }
   
-  public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args)
-  {
+  public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args){
     if ((cmd.getName().equals("infernalmobs")) || (cmd.getName().equals("im"))) {
-      try
-      {
+      try{
         Player player = null;
         boolean plyr = true;
-        if (!(sender instanceof Player))
-        {
-          if (args != null && args.length > 0 && (!args[0].equals("cspawn")) && (!args[0].equals("reload")) && (!args[0].equals("killall")))
-          {
+        if (!(sender instanceof Player)){
+          if (args != null && args.length > 0 && (!args[0].equals("cspawn")) && (!args[0].equals("giveloot")) && (!args[0].equals("reload")) && (!args[0].equals("killall"))) {
             sender.sendMessage("This command can only be run by a player!");
             return true;
           }
           plyr = false;
-        }
-        else
-        {
+        }else{
           player = (Player)sender;
         }
         if ((!plyr) || (player.hasPermission("infernal_mobs.commands")))
