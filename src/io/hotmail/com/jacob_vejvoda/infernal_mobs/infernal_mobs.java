@@ -2888,9 +2888,24 @@ public class infernal_mobs extends JavaPlugin implements Listener{
         		  }
         	  }catch (Exception e){}
         	  sender.sendMessage("§cUnable to get that loot!");
-          }
-          else if (((args.length == 2) && (args[0].equals("spawn"))) || ((args[0].equals("cspawn")) && (args.length == 6)))
-          {
+          }else if ((args.length == 3) && (args[0].equals("giveloot"))){
+        	  try{
+        		  Player p = getServer().getPlayer(args[1]);
+        		  if(p != null) {
+	        		  int index = Integer.parseInt(args[2]);
+	        		  ItemStack i = getLoot(p, index);
+	        		  if(i != null){
+		        		  p.getInventory().addItem(i);
+		        		  sender.sendMessage("§eGave the player the loot at index §9" + index);
+		            	  return true;
+	        		  }
+        		  }else{
+        			  sender.sendMessage("§cPlayer not found!!");
+        			  return true;
+        		  }
+        	  }catch (Exception e){}
+        	  sender.sendMessage("§cUnable to get that loot!");
+          }else if (((args.length == 2) && (args[0].equals("spawn"))) || ((args[0].equals("cspawn")) && (args.length == 6))){
             if ((EntityType.fromName(args[1]) != null)/* || (args[1].equalsIgnoreCase("WitherSkeleton"))*/)
             {
 //              boolean isWither = false;
@@ -3155,7 +3170,8 @@ public class infernal_mobs extends JavaPlugin implements Listener{
     sender.sendMessage("Usage: /im worldInfo");
     sender.sendMessage("Usage: /im error");
     sender.sendMessage("Usage: /im getloot <index>");
-    sender.sendMessage("Usage: /im setloot <index>");
+    sender.sendMessage("Usage: /im setloot <index>");    
+    sender.sendMessage("Usage: /im giveloot <player> <index>");
     sender.sendMessage("Usage: /im abilities");
     sender.sendMessage("Usage: /im showAbilities");
     sender.sendMessage("Usage: /im setInfernal <time delay>");
