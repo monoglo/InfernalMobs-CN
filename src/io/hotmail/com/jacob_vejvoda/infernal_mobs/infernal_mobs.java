@@ -2729,6 +2729,7 @@ public class infernal_mobs extends JavaPlugin implements Listener{
     return namesString;
   }
   
+<<<<<<< HEAD
   public void reloadLoot(){
 	  if (this.lootYML == null) {
 		  this.lootYML = new File(getDataFolder(), "loot.yml");
@@ -2743,6 +2744,21 @@ public class infernal_mobs extends JavaPlugin implements Listener{
 //		  YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
 //		  this.lootFile.setDefaults(defConfig);
 //	  }
+=======
+  public void reloadLoot()
+  {
+    if (this.lootYML == null) {
+      this.lootYML = new File(getDataFolder(), "loot.yml");
+    }
+    this.lootFile = YamlConfiguration.loadConfiguration(this.lootYML);
+    
+    InputStreamReader defConfigStream = new InputStreamReader(getClass().getResourceAsStream("loot.yml"));
+    if (defConfigStream != null)
+    {
+      YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
+      this.lootFile.setDefaults(defConfig);
+    }
+>>>>>>> refs/remotes/origin/master
   }
   
   public String getLocationName(Location l){
@@ -2934,6 +2950,10 @@ public class infernal_mobs extends JavaPlugin implements Listener{
                 exmsg = true;
               } else{
                 world = player.getWorld();
+<<<<<<< HEAD
+=======
+                
+>>>>>>> refs/remotes/origin/master
                 Location farSpawnLoc = player.getTargetBlock((HashSet<Material>)null, 200).getLocation();
                 farSpawnLoc.setY(farSpawnLoc.getY() + 1.0D);
                 ent = player.getWorld().spawnEntity(farSpawnLoc, EntityType.fromName(args[1]));
@@ -2985,7 +3005,11 @@ public class infernal_mobs extends JavaPlugin implements Listener{
 //                  args[1] = "Skeleton";
 //                  isWither = true;
 //                }
+<<<<<<< HEAD
             	Location farSpawnLoc = player.getTargetBlock((HashSet<Material>)null, 200).getLocation();
+=======
+                Location farSpawnLoc = player.getTargetBlock((HashSet<Material>)null, 200).getLocation();
+>>>>>>> refs/remotes/origin/master
                 farSpawnLoc.setY(farSpawnLoc.getY() + 1.0D);
                 Entity ent = player.getWorld().spawnEntity(farSpawnLoc, EntityType.fromName(args[1]));
 //                if (isWither)
@@ -3099,7 +3123,12 @@ public class infernal_mobs extends JavaPlugin implements Listener{
             }
             else if ((args[0].equals("setInfernal")) && (args.length == 2))
             {
+<<<<<<< HEAD
             	if (player.getTargetBlock((HashSet<Material>)null, 25).getType().equals(Material.MOB_SPAWNER)) {
+=======
+              if (player.getTargetBlock((HashSet<Material>)null, 25).getType().equals(Material.MOB_SPAWNER))
+              {
+>>>>>>> refs/remotes/origin/master
                 int delay = Integer.parseInt(args[1]);
                 
                 String name = getLocationName(player.getTargetBlock((HashSet<Material>)null, 25).getLocation());
