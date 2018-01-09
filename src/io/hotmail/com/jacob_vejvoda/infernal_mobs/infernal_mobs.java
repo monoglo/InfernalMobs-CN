@@ -1,10 +1,7 @@
 package io.hotmail.com.jacob_vejvoda.infernal_mobs;
 
-import io.hotmail.com.jacob_vejvoda.infernal_mobs.versionStuff.ParticleEffects_1_8;
-import io.hotmail.com.jacob_vejvoda.infernal_mobs.versionStuff.ParticleEffects_1_8_3;
 import io.hotmail.com.jacob_vejvoda.infernal_mobs.versionStuff.ParticleEffects_1_8_6;
 import io.hotmail.com.jacob_vejvoda.infernal_mobs.versionStuff.ParticleEffects_1_9_4;
-import io.hotmail.com.jacob_vejvoda.infernal_mobs.versionStuff.ParticleEffects_1_9;
 import io.hotmail.com.jacob_vejvoda.infernal_mobs.versionStuff.ParticleEffects_1_10;
 import io.hotmail.com.jacob_vejvoda.infernal_mobs.versionStuff.ParticleEffects_1_11;
 import io.hotmail.com.jacob_vejvoda.infernal_mobs.versionStuff.ParticleEffects_1_12;
@@ -19,11 +16,11 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
 
@@ -57,6 +54,7 @@ import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Guardian;
 import org.bukkit.entity.Horse;
+import org.bukkit.entity.Husk;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.MushroomCow;
@@ -66,9 +64,10 @@ import org.bukkit.entity.PigZombie;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Sheep;
 import org.bukkit.entity.Skeleton;
+import org.bukkit.entity.Stray;
 import org.bukkit.entity.ThrownPotion;
 import org.bukkit.entity.Villager;
-import org.bukkit.entity.Villager.Profession;
+import org.bukkit.entity.WitherSkeleton;
 import org.bukkit.entity.WitherSkull;
 import org.bukkit.entity.Wolf;
 import org.bukkit.entity.Zombie;
@@ -88,7 +87,6 @@ import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -96,7 +94,7 @@ import org.bukkit.potion.PotionType;
 import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
 
-@SuppressWarnings({ "unchecked", "rawtypes", "deprecation" })
+@SuppressWarnings({ "unchecked", "rawtypes", "deprecation"})
 public class infernal_mobs extends JavaPlugin implements Listener{
 	ArrayList<Mob> infernalList = new ArrayList();
 	ArrayList<UUID> dropedLootList = new ArrayList();
@@ -371,14 +369,14 @@ public class infernal_mobs extends JavaPlugin implements Listener{
 		  if (!fixed) {
 			  if (e.getType().equals(EntityType.SKELETON)){
 				  Skeleton sk = (Skeleton)e;
-				  if (is11() == false && (sk.getSkeletonType().equals(Skeleton.SkeletonType.WITHER)) && (!getConfig().getList("enabledmobs").contains("WitherSkeleton"))) {
+				  if (is11() == false && (sk instanceof WitherSkeleton) && (!getConfig().getList("enabledmobs").contains("WitherSkeleton"))) {
 					  mobEnabled = false;
-				  }else if (is10() && is11() == false && (sk.getSkeletonType().equals(Skeleton.SkeletonType.STRAY)) && (!getConfig().getList("enabledmobs").contains("Stray"))) {
+				  }else if (is10() && is11() == false && (sk instanceof Stray) && (!getConfig().getList("enabledmobs").contains("Stray"))) {
 					  mobEnabled = false;
 				  }
 			  }else if (e.getType().equals(EntityType.ZOMBIE)){
 				  Zombie zo = (Zombie)e;
-				  if (is10() && is11() == false && (zo.getVillagerProfession().equals(Profession.HUSK)) && (!getConfig().getList("enabledmobs").contains("Husk"))) {
+				  if (is10() && is11() == false && (zo instanceof Husk) && (!getConfig().getList("enabledmobs").contains("Husk"))) {
 					  mobEnabled = false;
 				  }
 			  }else {
@@ -1887,25 +1885,37 @@ public class infernal_mobs extends JavaPlugin implements Listener{
                   }
                 }
               }
-              else if ((ability.equals("potions")) && (isLegitVictim(atc, playerIsVictom, ability)))
-              {
-                Potion potion = null;
-                if (randomNum == 5) {
-                  potion = new Potion(PotionType.INSTANT_DAMAGE, 2);
-                } else if (randomNum == 6) {
-                  potion = new Potion(PotionType.INSTANT_DAMAGE, 1);
-                } else if (randomNum == 7) {
-                  potion = new Potion(PotionType.WEAKNESS, 2);
-                } else if (randomNum == 8) {
-                  potion = new Potion(PotionType.POISON, 2);
-                } else if (randomNum == 9) {
-                  potion = new Potion(PotionType.SLOWNESS, 2);
-                }
-                if (potion != null)
-                {
-                  potion.setSplash(true);
+              else if ((ability.equals("potions")) && (isLegitVictim(atc, playerIsVictom, ability))){
+//                Potion potion = null;
+//                if (randomNum == 5) {
+//                  potion = new Potion(PotionType.INSTANT_DAMAGE, 2);
+//                } else if (randomNum == 6) {
+//                  potion = new Potion(PotionType.INSTANT_DAMAGE, 1);
+//                } else if (randomNum == 7) {
+//                  potion = new Potion(PotionType.WEAKNESS, 2);
+//                } else if (randomNum == 8) {
+//                  potion = new Potion(PotionType.POISON, 2);
+//                } else if (randomNum == 9) {
+//                  potion = new Potion(PotionType.SLOWNESS, 2);
+//                }
+//                if (potion != null){
+              //potion.setSplash(true);
+              //potion.apply(iStack);
                   ItemStack iStack = new ItemStack(Material.POTION);
-                  potion.apply(iStack);
+                  PotionMeta potion = (PotionMeta) iStack.getItemMeta();
+            	  switch(randomNum) {
+            	  	case 5 :
+            	  		potion.addCustomEffect(new PotionEffect(PotionEffectType.HARM, 1, 2), true);
+            	  	case 6 :
+            	  		potion.addCustomEffect(new PotionEffect(PotionEffectType.HARM, 1, 1), true);
+            	  	case 7 :
+            	  		potion.addCustomEffect(new PotionEffect(PotionEffectType.WEAKNESS, (20*15), 2), true);
+            	  	case 8 :
+            	  		potion.addCustomEffect(new PotionEffect(PotionEffectType.POISON, (20*5), 2), true);
+            	  	case 9 :
+            	  		potion.addCustomEffect(new PotionEffect(PotionEffectType.SLOW, (20*10), 2), true);
+            	  }
+            	  iStack.setItemMeta(potion);
                   Location sploc = atc.getLocation();
                   sploc.setY(sploc.getY() + 3.0D);
                   ThrownPotion thrownPotion = (ThrownPotion)vic.getWorld().spawnEntity(sploc, EntityType.SPLASH_POTION);
@@ -1919,7 +1929,7 @@ public class infernal_mobs extends JavaPlugin implements Listener{
                   dist /= 15.0D;
                   direction.multiply(dist);
                   thrownPotion.setVelocity(direction);
-                }
+//                }
               }
               else if ((ability.equals("mama")) && (isLegitVictim(atc, playerIsVictom, ability)))
               {
@@ -2493,7 +2503,7 @@ public class infernal_mobs extends JavaPlugin implements Listener{
 	        ent.setSkeletonType(1);
 	        Field selector = net.minecraft.server.v1_9_R2.EntityInsentient.class.getDeclaredField("goalSelector");
 	        selector.setAccessible(true);
-    	}else if(Bukkit.getVersion().contains("1.9")){
+    	}/*else if(Bukkit.getVersion().contains("1.9")){
 	        net.minecraft.server.v1_9_R1.EntitySkeleton ent = ((org.bukkit.craftbukkit.v1_9_R1.entity.CraftSkeleton)skeleton).getHandle();
 	        ent.setSkeletonType(1);
 	        Field selector = net.minecraft.server.v1_9_R1.EntityInsentient.class.getDeclaredField("goalSelector");
@@ -2503,17 +2513,17 @@ public class infernal_mobs extends JavaPlugin implements Listener{
 	        ent.setSkeletonType(1);
 	        Field selector = net.minecraft.server.v1_8_R2.EntityInsentient.class.getDeclaredField("goalSelector");
 	        selector.setAccessible(true);
-    	}else if(getServer().getVersion().contains("1.8.6") || getServer().getVersion().contains("1.8.7") || getServer().getVersion().contains("1.8.8") || getServer().getVersion().contains("1.8.9")){
+    	}*/else if(getServer().getVersion().contains("1.8.6") || getServer().getVersion().contains("1.8.7") || getServer().getVersion().contains("1.8.8") || getServer().getVersion().contains("1.8.9")){
 	        net.minecraft.server.v1_8_R3.EntitySkeleton ent = ((org.bukkit.craftbukkit.v1_8_R3.entity.CraftSkeleton)skeleton).getHandle();
 	        ent.setSkeletonType(1);
 	        Field selector = net.minecraft.server.v1_8_R3.EntityInsentient.class.getDeclaredField("goalSelector");
 	        selector.setAccessible(true);
-    	}else if(getServer().getVersion().contains("1.8")){
+    	}/*else if(getServer().getVersion().contains("1.8")){
 	        net.minecraft.server.v1_8_R1.EntitySkeleton ent = ((org.bukkit.craftbukkit.v1_8_R1.entity.CraftSkeleton)skeleton).getHandle();
 	        ent.setSkeletonType(1);
 	        Field selector = net.minecraft.server.v1_8_R1.EntityInsentient.class.getDeclaredField("goalSelector");
 	        selector.setAccessible(true);
-    	}
+    	}*/
         EntityEquipment ee = skeleton.getEquipment();
         if (ee.getItemInHand().equals(null))
         {
@@ -2564,19 +2574,19 @@ public class infernal_mobs extends JavaPlugin implements Listener{
 	  }else if(Bukkit.getVersion().contains("1.9.4")){
 		  net.minecraft.server.v1_9_R2.EntityGuardian ent = (net.minecraft.server.v1_9_R2.EntityGuardian)((org.bukkit.craftbukkit.v1_9_R2.entity.CraftGuardian)g).getHandle();
 		  ((Guardian)ent).setElder(true);
-	  }else if(Bukkit.getVersion().contains("1.9")){
+	  }/*else if(Bukkit.getVersion().contains("1.9")){
 		  net.minecraft.server.v1_9_R1.EntityGuardian ent = (net.minecraft.server.v1_9_R1.EntityGuardian)((org.bukkit.craftbukkit.v1_9_R1.entity.CraftGuardian)g).getHandle();
 		  ((Guardian)ent).setElder(true);
 	  }else if(getServer().getVersion().contains("1.8.3")){
 		  net.minecraft.server.v1_8_R2.EntityGuardian ent = (net.minecraft.server.v1_8_R2.EntityGuardian)((org.bukkit.craftbukkit.v1_8_R2.entity.CraftGuardian)g).getHandle();
 		  ((Guardian)ent).setElder(true);
-	  }else if(getServer().getVersion().contains("1.8.6") || getServer().getVersion().contains("1.8.7") || getServer().getVersion().contains("1.8.8") || getServer().getVersion().contains("1.8.9")){
+	  }*/else if(getServer().getVersion().contains("1.8.6") || getServer().getVersion().contains("1.8.7") || getServer().getVersion().contains("1.8.8") || getServer().getVersion().contains("1.8.9")){
 		  net.minecraft.server.v1_8_R3.EntityGuardian ent = (net.minecraft.server.v1_8_R3.EntityGuardian)((org.bukkit.craftbukkit.v1_8_R3.entity.CraftGuardian)g).getHandle();
 		  ((Guardian)ent).setElder(true);
-	  }else if(getServer().getVersion().contains("1.8")){
+	  }/*else if(getServer().getVersion().contains("1.8")){
 		  net.minecraft.server.v1_8_R1.EntityGuardian ent = (net.minecraft.server.v1_8_R1.EntityGuardian)((org.bukkit.craftbukkit.v1_8_R1.entity.CraftGuardian)g).getHandle();
 		  ((Guardian)ent).setElder(true);
-	  }
+	  }*/
   }
   
   public void displayParticle(String effect, Location l, double radius, int speed, int amount){
@@ -2630,7 +2640,7 @@ public class infernal_mobs extends JavaPlugin implements Listener{
 				        ll.remove(index);
 					}
 				}
-			}else if(Bukkit.getVersion().contains("1.9")){
+			}/*else if(Bukkit.getVersion().contains("1.9")){
 				if(radius == 0){
 					ParticleEffects_1_9.sendToLocation(ParticleEffects_1_9.valueOf(effect), l, 0, 0, 0, speed, amount);
 				}else{
@@ -2652,7 +2662,7 @@ public class infernal_mobs extends JavaPlugin implements Listener{
 				        ll.remove(index);
 					}
 				}
-			}else if(getServer().getVersion().contains("1.8.6") || getServer().getVersion().contains("1.8.7") || getServer().getVersion().contains("1.8.8") || getServer().getVersion().contains("1.8.9")){
+			}*/else if(getServer().getVersion().contains("1.8.6") || getServer().getVersion().contains("1.8.7") || getServer().getVersion().contains("1.8.8") || getServer().getVersion().contains("1.8.9")){
 				if(radius == 0){
 					ParticleEffects_1_8_6.sendToLocation(ParticleEffects_1_8_6.valueOf(effect), l, 0, 0, 0, speed, amount);
 				}else{
@@ -2663,7 +2673,7 @@ public class infernal_mobs extends JavaPlugin implements Listener{
 				        ll.remove(index);
 					}
 				}
-			}else if(getServer().getVersion().contains("1.8")){
+			}/*else if(getServer().getVersion().contains("1.8")){
 				if(radius == 0){
 					ParticleEffects_1_8.sendToLocation(ParticleEffects_1_8.valueOf(effect), l, 0, 0, 0, speed, amount);
 				}else{
@@ -2674,7 +2684,7 @@ public class infernal_mobs extends JavaPlugin implements Listener{
 				        ll.remove(index);
 					}
 				}
-			}
+			}*/
 		}catch(Exception ex){System.out.println("V: " + getServer().getVersion());ex.printStackTrace();}
   }
   
@@ -2719,24 +2729,24 @@ public class infernal_mobs extends JavaPlugin implements Listener{
     return namesString;
   }
   
-  public void reloadLoot()
-  {
-    if (this.lootYML == null) {
-      this.lootYML = new File(getDataFolder(), "loot.yml");
-    }
-    this.lootFile = YamlConfiguration.loadConfiguration(this.lootYML);
-    
-    InputStream defConfigStream = getResource("loot.yml");
-    if (defConfigStream != null)
-    {
-      YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
-      this.lootFile.setDefaults(defConfig);
-    }
+  public void reloadLoot(){
+	  if (this.lootYML == null) {
+		  this.lootYML = new File(getDataFolder(), "loot.yml");
+	  }
+	  this.lootFile = YamlConfiguration.loadConfiguration(this.lootYML);
+	  
+	  YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(lootYML);
+	  this.lootFile.setDefaults(defConfig);
+	  
+//	  InputStream defConfigStream = getResource("loot.yml");
+//	  if (defConfigStream != null){
+//		  YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
+//		  this.lootFile.setDefaults(defConfig);
+//	  }
   }
   
-  public String getLocationName(Location l)
-  {
-    return (l.getX() + "." + l.getY() + "." + l.getZ() + l.getWorld().getName()).replace(".", "");
+  public String getLocationName(Location l){
+	  return (l.getX() + "." + l.getY() + "." + l.getZ() + l.getWorld().getName()).replace(".", "");
   }
   
   public Block blockNear(Location l, Material mat, int radius)
@@ -2927,7 +2937,7 @@ public class infernal_mobs extends JavaPlugin implements Listener{
               {
                 world = player.getWorld();
                 
-                Location farSpawnLoc = player.getTargetBlock((HashSet<Byte>)null, 200).getLocation();
+                Location farSpawnLoc = player.getTargetBlock((Set<Material>)null, 200).getLocation();
                 farSpawnLoc.setY(farSpawnLoc.getY() + 1.0D);
                 ent = player.getWorld().spawnEntity(farSpawnLoc, EntityType.fromName(args[1]));
                 exmsg = false;
@@ -2978,7 +2988,7 @@ public class infernal_mobs extends JavaPlugin implements Listener{
 //                  args[1] = "Skeleton";
 //                  isWither = true;
 //                }
-                Location farSpawnLoc = player.getTargetBlock((HashSet<Byte>)null, 200).getLocation();
+                Location farSpawnLoc = player.getTargetBlock((Set<Material>)null, 200).getLocation();
                 farSpawnLoc.setY(farSpawnLoc.getY() + 1.0D);
                 Entity ent = player.getWorld().spawnEntity(farSpawnLoc, EntityType.fromName(args[1]));
 //                if (isWither)
@@ -3092,11 +3102,11 @@ public class infernal_mobs extends JavaPlugin implements Listener{
             }
             else if ((args[0].equals("setInfernal")) && (args.length == 2))
             {
-              if (player.getTargetBlock((HashSet<Byte>)null, 25).getType().equals(Material.MOB_SPAWNER))
+              if (player.getTargetBlock((Set<Material>)null, 25).getType().equals(Material.MOB_SPAWNER))
               {
                 int delay = Integer.parseInt(args[1]);
                 
-                String name = getLocationName(player.getTargetBlock((HashSet<Byte>)null, 25).getLocation());
+                String name = getLocationName(player.getTargetBlock((Set<Material>)null, 25).getLocation());
                 
                 this.mobSaveFile.set("infernalSpanwers." + name, Integer.valueOf(delay));
                 this.mobSaveFile.save(this.saveYML);
