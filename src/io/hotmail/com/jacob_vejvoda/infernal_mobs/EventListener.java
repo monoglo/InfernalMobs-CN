@@ -13,6 +13,7 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Damageable;
@@ -55,6 +56,7 @@ public class EventListener implements Listener{
 //		System.out.println("Slot: " + e.getSlot());
 //	}
   
+	@SuppressWarnings("deprecation")
 	@EventHandler(priority=EventPriority.HIGH)
 	public void onPlayerInteractEntity(PlayerInteractEntityEvent e){
 		Player p = e.getPlayer();
@@ -69,7 +71,7 @@ public class EventListener implements Listener{
 			}catch (Exception localException) {}
 			p.sendMessage("§eName: §f" + name);
 			p.sendMessage("§eSaved: §f" + plugin.mobSaveFile.getString(ent.getUniqueId().toString()));
-			p.sendMessage("§eHealth: §f" + ((Damageable)ent).getMaxHealth());
+			p.sendMessage("§eHealth: §f" + (plugin.is9() ? ((LivingEntity)ent).getAttribute(Attribute.GENERIC_MAX_HEALTH ).getValue() : ((Damageable)ent).getMaxHealth()));
 			p.sendMessage("§eInfernal: §f" + plugin.idSearch(ent.getUniqueId()));
 		}
 	}

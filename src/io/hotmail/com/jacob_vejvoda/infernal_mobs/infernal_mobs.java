@@ -16,11 +16,11 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
 
@@ -2932,12 +2932,9 @@ public class infernal_mobs extends JavaPlugin implements Listener{
                 Location spoint = new Location(Bukkit.getServer().getWorld(args[2]), Integer.parseInt(args[3]), Integer.parseInt(args[4]), Integer.parseInt(args[5]));
                 ent = world.spawnEntity(spoint, EntityType.fromName(args[1]));
                 exmsg = true;
-              }
-              else
-              {
+              } else{
                 world = player.getWorld();
-                
-                Location farSpawnLoc = player.getTargetBlock((Set<Material>)null, 200).getLocation();
+                Location farSpawnLoc = player.getTargetBlock((HashSet<Material>)null, 200).getLocation();
                 farSpawnLoc.setY(farSpawnLoc.getY() + 1.0D);
                 ent = player.getWorld().spawnEntity(farSpawnLoc, EntityType.fromName(args[1]));
                 exmsg = false;
@@ -2988,7 +2985,7 @@ public class infernal_mobs extends JavaPlugin implements Listener{
 //                  args[1] = "Skeleton";
 //                  isWither = true;
 //                }
-                Location farSpawnLoc = player.getTargetBlock((Set<Material>)null, 200).getLocation();
+            	Location farSpawnLoc = player.getTargetBlock((HashSet<Material>)null, 200).getLocation();
                 farSpawnLoc.setY(farSpawnLoc.getY() + 1.0D);
                 Entity ent = player.getWorld().spawnEntity(farSpawnLoc, EntityType.fromName(args[1]));
 //                if (isWither)
@@ -3102,11 +3099,10 @@ public class infernal_mobs extends JavaPlugin implements Listener{
             }
             else if ((args[0].equals("setInfernal")) && (args.length == 2))
             {
-              if (player.getTargetBlock((Set<Material>)null, 25).getType().equals(Material.MOB_SPAWNER))
-              {
+            	if (player.getTargetBlock((HashSet<Material>)null, 25).getType().equals(Material.MOB_SPAWNER)) {
                 int delay = Integer.parseInt(args[1]);
                 
-                String name = getLocationName(player.getTargetBlock((Set<Material>)null, 25).getLocation());
+                String name = getLocationName(player.getTargetBlock((HashSet<Material>)null, 25).getLocation());
                 
                 this.mobSaveFile.set("infernalSpanwers." + name, Integer.valueOf(delay));
                 this.mobSaveFile.save(this.saveYML);
