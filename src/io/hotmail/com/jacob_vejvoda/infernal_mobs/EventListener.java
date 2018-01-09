@@ -71,11 +71,7 @@ public class EventListener implements Listener{
 			}catch (Exception localException) {}
 			p.sendMessage("§eName: §f" + name);
 			p.sendMessage("§eSaved: §f" + plugin.mobSaveFile.getString(ent.getUniqueId().toString()));
-<<<<<<< HEAD
-			p.sendMessage("§eHealth: §f" + (plugin.is9() ? ((LivingEntity)ent).getAttribute(Attribute.GENERIC_MAX_HEALTH ).getValue() : ((Damageable)ent).getMaxHealth()));
-=======
 			p.sendMessage("§eHealth: §f" + (plugin.is9() ? ((LivingEntity)ent).getAttribute( Attribute.GENERIC_MAX_HEALTH ).getValue() : ((Damageable)ent).getMaxHealth()));
->>>>>>> refs/remotes/origin/master
 			p.sendMessage("§eInfernal: §f" + plugin.idSearch(ent.getUniqueId()));
 		}
 	}
