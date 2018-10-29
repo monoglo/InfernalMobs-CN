@@ -18,15 +18,11 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Skeleton;
-import org.bukkit.entity.Skeleton.SkeletonType;
 import org.bukkit.event.Listener;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.ScoreboardManager;
-
-import me.confuser.barapi.BarAPI;
-import me.mgone.bossbarapi.BossbarAPI;
 
 public class GUI implements Listener{
 	static infernal_mobs plugin;
@@ -57,11 +53,9 @@ public class GUI implements Listener{
 			if(b.isDead() || ((Damageable)b).getHealth() <= 0){
 				if (plugin.getConfig().getBoolean("enableBossBar")){
 					try{
-						if(plugin.is9()){
-							for(Player p2 : ((BossBar) bossBars.get(b)).getPlayers())
-								((BossBar) bossBars.get(b)).removePlayer(p2);
-							bossBars.remove(b);
-						}
+						for(Player p2 : ((BossBar) bossBars.get(b)).getPlayers())
+							((BossBar) bossBars.get(b)).removePlayer(p2);
+						bossBars.remove(b);
 					}catch(Exception x){}
 				}
 			    int mobIndex = plugin.idSearch(b.getUniqueId());
@@ -124,62 +118,42 @@ public class GUI implements Listener{
 		//float maxHealth = (float)((Damageable)e).getMaxHealth();
 		//float setHealth = health * 100.0F / maxHealth;
 		//BossBarAPI.setMessage(p, tittle, setHealth);
-		if(plugin.is9()){
-			if(!bossBars.containsKey(e)){
-				BarColor bc = BarColor.valueOf(plugin.getConfig().getString("bossBarSettings.defaultColor"));
-				BarStyle bs = BarStyle.valueOf(plugin.getConfig().getString("bossBarSettings.defaultStyle"));
-				//Per Level Setings
-				String lc = plugin.getConfig().getString("bossBarSettings.perLevel."+oldMobAbilityList.size()+".color");
-				if(lc != null)
-					bc = BarColor.valueOf(lc);
-				String ls = plugin.getConfig().getString("bossBarSettings.perLevel."+oldMobAbilityList.size()+".style");
-				if(ls != null)
-					bs = BarStyle.valueOf(ls);
-				//Per Mob Setings
-				String mc = plugin.getConfig().getString("bossBarSettings.perMob."+e.getType().getName()+".color");
-				if(mc != null)
-					bc = BarColor.valueOf(mc);
-				String ms = plugin.getConfig().getString("bossBarSettings.perMob."+e.getType().getName()+".style");
-				if(ms != null)
-					bs = BarStyle.valueOf(ms);
-				BossBar bar = Bukkit.createBossBar(tittle, bc, bs, BarFlag.CREATE_FOG);
-				bar.setVisible(true);
-				bossBars.put(e, bar);
-			}
-			if(!((BossBar) bossBars.get(e)).getPlayers().contains(p))
-				((BossBar) bossBars.get(e)).addPlayer(p);
-	    	float health = (float) ((Damageable) e).getHealth();
-	    	float maxHealth = (float) ((Damageable) e).getMaxHealth();
-	    	float setHealth = (health * 100.0f) / maxHealth;
-	    	((BossBar) bossBars.get(e)).setProgress(setHealth/100.0f);
-		}else{
-			//1.8 boss bar shit
-			float health = (float) ((Damageable) e).getHealth();
-	    	float maxHealth = (float) ((Damageable) e).getMaxHealth();
-	    	float setHealth = (health * 100.0f) / maxHealth;
-	    	//BarAPI.setHealth(p, setHealth);
-	    	try{
-	    		if(plugin.getServer().getPluginManager().getPlugin("BarAPI") != null){
-	    			BarAPI.setMessage(p, tittle, setHealth);
-	    		}else if(plugin.getServer().getPluginManager().getPlugin("BossbarAPI") != null)
-	    			BossbarAPI.setMessage(p, tittle, setHealth);
-	    	}catch(Exception x){}
+		if(!bossBars.containsKey(e)){
+			BarColor bc = BarColor.valueOf(plugin.getConfig().getString("bossBarSettings.defaultColor"));
+			BarStyle bs = BarStyle.valueOf(plugin.getConfig().getString("bossBarSettings.defaultStyle"));
+			//Per Level Setings
+			String lc = plugin.getConfig().getString("bossBarSettings.perLevel."+oldMobAbilityList.size()+".color");
+			if(lc != null)
+				bc = BarColor.valueOf(lc);
+			String ls = plugin.getConfig().getString("bossBarSettings.perLevel."+oldMobAbilityList.size()+".style");
+			if(ls != null)
+				bs = BarStyle.valueOf(ls);
+			//Per Mob Setings
+			String mc = plugin.getConfig().getString("bossBarSettings.perMob."+e.getType().getName()+".color");
+			if(mc != null)
+				bc = BarColor.valueOf(mc);
+			String ms = plugin.getConfig().getString("bossBarSettings.perMob."+e.getType().getName()+".style");
+			if(ms != null)
+				bs = BarStyle.valueOf(ms);
+			BossBar bar = Bukkit.createBossBar(tittle, bc, bs, BarFlag.CREATE_FOG);
+			bar.setVisible(true);
+			bossBars.put(e, bar);
 		}
+		if(!((BossBar) bossBars.get(e)).getPlayers().contains(p))
+			((BossBar) bossBars.get(e)).addPlayer(p);
+    	float health = (float) ((Damageable) e).getHealth();
+    	float maxHealth = (float) ((Damageable) e).getMaxHealth();
+    	float setHealth = (health * 100.0f) / maxHealth;
+    	((BossBar) bossBars.get(e)).setProgress(setHealth/100.0f);
 	}
   
 	@SuppressWarnings("deprecation")
 	public static void clearInfo(Player player){
 		if (plugin.getConfig().getBoolean("enableBossBar")) {
 			//BossBarAPI.removeBar(player);
-			if(plugin.is9()){
-				for (Entry<Entity, Object> hm : bossBars.entrySet())
-					if(((BossBar) hm.getValue()).getPlayers().contains(player))
-						((BossBar) hm.getValue()).removePlayer(player);
-			}else
-	    		if(plugin.getServer().getPluginManager().getPlugin("BarAPI") != null){
-	    			BarAPI.removeBar(player);
-	    		}else if(plugin.getServer().getPluginManager().getPlugin("BossbarAPI") != null)
-	    			BossbarAPI.removeBar(player);
+			for (Entry<Entity, Object> hm : bossBars.entrySet())
+				if(((BossBar) hm.getValue()).getPlayers().contains(player))
+					((BossBar) hm.getValue()).removePlayer(player);
 		}
 		if (plugin.getConfig().getBoolean("enableScoreBoard")) {
 			try{
@@ -287,12 +261,7 @@ public class GUI implements Listener{
 				tittle = "&fInfernal <mobName>";
 			}
 			String mobName = entity.getType().getName();
-			if (entity.getType().equals(EntityType.SKELETON)){
-				Skeleton sk = (Skeleton) entity;
-				if(sk.getSkeletonType().equals(SkeletonType.WITHER)){
-					mobName = "WitherSkeleton";
-				}
-			}else if (entity.getType().equals(EntityType.HORSE)){
+			if (entity.getType().equals(EntityType.HORSE)){
 					mobName = "Horse";
 			}
 			tittle = tittle.replace("<mobName>", mobName);	

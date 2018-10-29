@@ -1,4 +1,4 @@
-configVersion: "1.12"
+configVersion: "1.13"
 #Chance is the chance that a mob will not be infernal, the lower the number the higher the chance. (min 1)
 #Enabledworlds are the worlds that infernal mobs can spawn in.
 #Enabledmobs are the mobs that can become infernal.
@@ -128,6 +128,9 @@ enabledmobs:
 - POLAR_BEAR
 - LLAMA
 #- VILLAGER
+- DROWNED
+- PHANTOM
+- PUFFERFISH
 enabledCharmSlots:
 - 0
 - 1
@@ -233,6 +236,7 @@ enabledMounts:
 - HORSE
 - POLAR_BEAR
 - LLAMA
+- PHANTOM
 enabledRiders:
 - WITHER_SKELETON
 - STRAY
@@ -248,6 +252,7 @@ enabledRiders:
 - SNOWMAN
 - VILLAGER
 - ILLUSIONER
+- DROWNED
 disabledBabyMobs:
 - WOLF
 - MUSHROOM_COW

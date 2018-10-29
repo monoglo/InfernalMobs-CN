@@ -16,7 +16,6 @@ import org.bukkit.World;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Arrow;
-import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
@@ -56,7 +55,6 @@ public class EventListener implements Listener{
 //		System.out.println("Slot: " + e.getSlot());
 //	}
   
-	@SuppressWarnings("deprecation")
 	@EventHandler(priority=EventPriority.HIGH)
 	public void onPlayerInteractEntity(PlayerInteractEntityEvent e){
 		Player p = e.getPlayer();
@@ -71,7 +69,7 @@ public class EventListener implements Listener{
 			}catch (Exception localException) {}
 			p.sendMessage("§eName: §f" + name);
 			p.sendMessage("§eSaved: §f" + plugin.mobSaveFile.getString(ent.getUniqueId().toString()));
-			p.sendMessage("§eHealth: §f" + (plugin.is9() ? ((LivingEntity)ent).getAttribute( Attribute.GENERIC_MAX_HEALTH ).getValue() : ((Damageable)ent).getMaxHealth()));
+			p.sendMessage("§eHealth: §f" + ((LivingEntity)ent).getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
 			p.sendMessage("§eInfernal: §f" + plugin.idSearch(ent.getUniqueId()));
 		}
 	}
@@ -191,14 +189,14 @@ public class EventListener implements Listener{
 		}catch (Exception e){plugin.getLogger().log(Level.SEVERE, e.getMessage());e.printStackTrace();}
 	}
   
-	@SuppressWarnings("deprecation")
+
 	@EventHandler(priority=EventPriority.HIGH)
 	public void onMobSpawn(CreatureSpawnEvent event){
 		//System.out.println("Mob Spawn 1");
 		World world = event.getEntity().getWorld();
 		if ((!event.getEntity().hasMetadata("NPC")) && (!event.getEntity().hasMetadata("shopkeeper")) && event.getEntity().getCustomName() == null){
 			if (event.getSpawnReason().equals(CreatureSpawnEvent.SpawnReason.SPAWNER)){
-				Block spawner = plugin.blockNear(event.getEntity().getLocation(), Material.MOB_SPAWNER, 10);
+				Block spawner = plugin.blockNear(event.getEntity().getLocation(), Material.SPAWNER, 10);
 				if (spawner != null){
 					String name = plugin.getLocationName(spawner.getLocation());
 					if (plugin.mobSaveFile.getString("infernalSpanwers." + name) != null){
@@ -226,11 +224,7 @@ public class EventListener implements Listener{
 			if ((event.getEntity().hasMetadata("NPC")) || (event.getEntity().hasMetadata("shopkeeper"))) {
 				return;
 			}
-			String entName;
-			if(plugin.is11()){
-				entName = event.getEntity().getType().name();
-			}else
-				entName = event.getEntity().getType().getName();
+			String entName = event.getEntity().getType().name();
 //			System.out.println("Mob Spawn 3");
 //			System.out.println((plugin.getConfig().getList("mobworlds").contains(world.getName())) || (plugin.getConfig().getList("mobworlds").contains("<all>")));
 //			System.out.println((plugin.getConfig().getList("enabledmobs").contains(entName)));
@@ -255,7 +249,7 @@ public class EventListener implements Listener{
   public void onBlockBreak(BlockBreakEvent e)
     throws IOException
   {
-    if (e.getBlock().getType().equals(Material.MOB_SPAWNER))
+    if (e.getBlock().getType().equals(Material.SPAWNER))
     {
       String name = plugin.getLocationName(e.getBlock().getLocation());
       if (plugin.mobSaveFile.getString("infernalSpanwers." + name) != null)
