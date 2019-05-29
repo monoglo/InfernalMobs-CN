@@ -153,6 +153,16 @@ potionEffects:
     level: 1
     requiredItems:
     - 95
+  '28':
+    potion: SLOW_FALLING
+    level: 1
+    requiredItems:
+    - 97
+  '29':
+    potion: WEAKNESS
+    level: 5
+    requiredItems:
+    - 98
 loot:
   '1':
     item: IRON_AXE
@@ -1309,4 +1319,20 @@ loot:
         level: 4
       '4':
         enchantment: CHANNELING
+        level: 1
+  '97':
+    item: FEATHER
+    amount: 1
+    name: '&eAngel Feather'
+    enchantments:
+      '1':
+        enchantment: DURABILITY
+        level: 1
+  '98':
+    item: SEA_PICKLE
+    amount: 1
+    name: '&2Pickel of Power'
+    enchantments:
+      '1':
+        enchantment: DURABILITY
         level: 1
