@@ -14,8 +14,8 @@ import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.ScoreboardManager;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 
@@ -27,20 +27,24 @@ public class GUI implements Listener {
     GUI(infernal_mobs instance) {
         plugin = instance;
     }
-
-    static void fixBar(Player p) {
-        //System.out.println("fixBar");
+    
+    public static Entity getNearbyBoss(Player p) {
         double dis = 26.0D;
-        Entity b = null;
         for (InfernalMob m : plugin.infernalList) {
             if (m.entity.getWorld().equals(p.getWorld())) {
                 Entity boss = m.entity;
                 if (p.getLocation().distance(boss.getLocation()) < dis) {
                     dis = p.getLocation().distance(boss.getLocation());
-                    b = boss;
+                    return boss;
                 }
             }
         }
+        return null;
+    }
+
+    static void fixBar(Player p) {
+        //System.out.println("fixBar");
+        Entity b = getNearbyBoss(p);
         if (b != null) {
             //System.out.println("Dead: " + b.isDead());
             //System.out.println("HP: " + ((Damageable)b).getHealth());
@@ -74,7 +78,7 @@ public class GUI implements Listener {
 
     @SuppressWarnings("deprecation")
     private static void showBossBar(Player p, Entity e) {
-        ArrayList<String> oldMobAbilityList = plugin.findMobAbilities(e.getUniqueId());
+        List<String> oldMobAbilityList = plugin.findMobAbilities(e.getUniqueId());
         String tittle = plugin.getConfig().getString("bossBarsName", "&fLevel <powers> &fInfernal <mobName>");
         String mobName = e.getType().getName().replace("_", " ");
         if (e.getType().equals(EntityType.SKELETON)) {
@@ -154,7 +158,7 @@ public class GUI implements Listener {
     }
 
     @SuppressWarnings("deprecation")
-    private static void fixScoreboard(Player player, Entity e, ArrayList<String> abilityList) {
+    private static void fixScoreboard(Player player, Entity e, List<String> abilityList) {
         if (plugin.getConfig().getBoolean("enableScoreBoard") && (e instanceof Damageable)) {
             //String name = getMobNameTag(e);
             //Get Display
@@ -243,7 +247,7 @@ public class GUI implements Listener {
 
     @SuppressWarnings("deprecation")
     public String getMobNameTag(Entity entity) {
-        ArrayList<String> oldMobAbilityList = plugin.findMobAbilities(entity.getUniqueId());
+        List<String> oldMobAbilityList = plugin.findMobAbilities(entity.getUniqueId());
         String tittle = null;
         try {
             tittle = plugin.getConfig().getString("nameTagsName", "&fInfernal <mobName>");

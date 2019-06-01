@@ -16,6 +16,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.*;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
@@ -31,6 +32,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 @SuppressWarnings({"unchecked", "rawtypes", "deprecation"})
 public class infernal_mobs extends JavaPlugin implements Listener {
@@ -48,14 +50,14 @@ public class infernal_mobs extends JavaPlugin implements Listener {
     ArrayList<Player> errorList = new ArrayList();
     ArrayList<Player> levitateList = new ArrayList();
 
-    private static List<Block> getSphere(Block block1, int radius) {
+    private static List<Block> getSphere(Block block1) {
         List<Block> blocks = new LinkedList();
         double xi = block1.getLocation().getX() + 0.5D;
         double yi = block1.getLocation().getY() + 0.5D;
         double zi = block1.getLocation().getZ() + 0.5D;
         for (int v1 = 0; v1 <= 90; v1++) {
-            double y = Math.sin(0.017453292519943295D * v1) * radius;
-            double r = Math.cos(0.017453292519943295D * v1) * radius;
+            double y = Math.sin(0.017453292519943295D * v1) * 4;
+            double r = Math.cos(0.017453292519943295D * v1) * 4;
             if (v1 == 90) {
                 r = 0.0D;
             }
@@ -187,11 +189,12 @@ public class infernal_mobs extends JavaPlugin implements Listener {
         //Register Wizardly Magic
         try {
             wMagic = (WizardlyMagic) Bukkit.getServer().getPluginManager().getPlugin("WizardlyMagic");
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
         applyEffect();
         reloadPowers();
         showEffect();
+        addRecipes();
     }
 
     private void reloadPowers() {
@@ -241,7 +244,7 @@ public class infernal_mobs extends JavaPlugin implements Listener {
     void giveMobPowers(Entity ent) {
         UUID id = ent.getUniqueId();
         if (idSearch(id) == -1) {
-            ArrayList<String> aList = null;
+            List<String> aList = null;
             for (MetadataValue v : ent.getMetadata("infernalMetadata")) {
                 aList = new ArrayList(Arrays.asList(v.asString().split(",")));
             }
@@ -296,13 +299,13 @@ public class infernal_mobs extends JavaPlugin implements Listener {
                         max = mc;
                     if (fixed)
                         max = 1;
-                    //int randomNum = new Random().nextInt(max - min + 1) + min;
+                    //int randomNum = new Random().nextInt(max - min) + min;
                     int randomNum = rand(min, max);
                     if (randomNum == 1) {
-                        ArrayList<String> aList = getAbilitiesAmount(e);
+                        List<String> aList = getAbilitiesAmount(e);
                         if (infernal_mobs.this.getConfig().getString("levelChance." + aList.size()) != null) {
                             int sc = infernal_mobs.this.getConfig().getInt("levelChance." + aList.size());
-                            int randomNum2 = new Random().nextInt(sc - min + 1) + min;
+                            int randomNum2 = new Random().nextInt(sc - min) + min;
                             if (randomNum2 != 1) {
                                 return;
                             }
@@ -366,7 +369,7 @@ public class infernal_mobs extends JavaPlugin implements Listener {
         }
     }
 
-    private void addHealth(Entity ent, ArrayList<String> powerList) {
+    private void addHealth(Entity ent, List<String> powerList) {
         double maxHealth = ((Damageable) ent).getHealth();
         float setHealth;
         if (getConfig().getBoolean("healthByPower")) {
@@ -408,16 +411,16 @@ public class infernal_mobs extends JavaPlugin implements Listener {
         }
     }
 
-    private String getPowerString(Entity ent, ArrayList<String> powerList) {
-        String list = "";
+    private String getPowerString(Entity ent, List<String> powerList) {
+        StringBuilder list = new StringBuilder();
         for (String s : powerList) {
             if (powerList.indexOf(s) != powerList.size() - 1) {
-                list = list + s + ",";
+                list.append(s).append(",");
             } else {
-                list = list + s;
+                list.append(s);
             }
         }
-        return list;
+        return list.toString();
     }
 
     void removeMob(int mobIndex) throws IOException {
@@ -455,7 +458,7 @@ public class infernal_mobs extends JavaPlugin implements Listener {
         g.getEquipment().setChestplateDropChance(0.0F);
         int min = 1;
         int max = 5;
-        int rn = new Random().nextInt(max - min + 1) + min;
+        int rn = new Random().nextInt(max - min) + min;
         if (rn == 1) {
             g.getEquipment().setItemInHand(new ItemStack(Material.STONE_HOE, 1));
             g.getEquipment().setItemInHandDropChance(0.0F);
@@ -798,12 +801,10 @@ public class infernal_mobs extends JavaPlugin implements Listener {
     private void setItem(ItemStack s, String path, FileConfiguration fc) {
         if (s != null) {
             fc.set(path + ".item", s.getType().toString());
-            fc.set(path + ".amount", Integer.valueOf(s.getAmount()));
-            fc.set(path + ".durability", Short.valueOf(s.getDurability()));
+            fc.set(path + ".amount", s.getAmount());
+            fc.set(path + ".durability", s.getDurability());
             if (s.getItemMeta() != null) {
-                if (s.getItemMeta().getDisplayName() != null) {
-                    fc.set(path + ".name", s.getItemMeta().getDisplayName());
-                }
+                fc.set(path + ".name", s.getItemMeta().getDisplayName());
                 if (s.getItemMeta().getLore() != null) {
                     for (int l = 0; l < s.getItemMeta().getLore().size(); l++) {
                         if (s.getItemMeta().getLore().get(l) != null) {
@@ -970,54 +971,77 @@ public class infernal_mobs extends JavaPlugin implements Listener {
         int data2 = Integer.parseInt(split[2]);
         try {
             String f = "FLAME";
-            if (effect.equals("potionBrake")) {
-                f = Particle.SPELL.toString();
-            } else if (effect.equals("smoke")) {
-                f = Particle.SMOKE_NORMAL.toString();
-            } else if (effect.equals("blockBrake")) {
-                f = Particle.BLOCK_CRACK.toString();
-            } else if (effect.equals("hugeExplode")) {
-                f = Particle.EXPLOSION_HUGE.toString();
-            } else if (effect.equals("angryVillager")) {
-                f = Particle.VILLAGER_ANGRY.toString();
-            } else if (effect.equals("cloud")) {
-                f = Particle.CLOUD.toString();
-            } else if (effect.equals("criticalHit")) {
-                f = Particle.CRIT.toString();
-            } else if (effect.equals("mobSpell")) {
-                f = Particle.SPELL_MOB.toString();
-            } else if (effect.equals("enchantmentTable")) {
-                f = Particle.ENCHANTMENT_TABLE.toString();
-            } else if (effect.equals("ender")) {
-                f = Particle.PORTAL.toString();
-            } else if (effect.equals("explode")) {
-                f = Particle.EXPLOSION_NORMAL.toString();
-            } else if (effect.equals("greenSparkle")) {
-                f = Particle.VILLAGER_HAPPY.toString();
-            } else if (effect.equals("heart")) {
-                f = Particle.HEART.toString();
-            } else if (effect.equals("largeExplode")) {
-                f = Particle.EXPLOSION_LARGE.toString();
-            } else if (effect.equals("splash")) {
-                f = Particle.WATER_SPLASH.toString();
-            } else if (effect.equals("largeSmoke")) {
-                f = Particle.SMOKE_LARGE.toString();
-            } else if (effect.equals("lavaSpark")) {
-                f = Particle.LAVA.toString();
-            } else if (effect.equals("magicCriticalHit")) {
-                f = Particle.CRIT_MAGIC.toString();
-            } else if (effect.equals("noteBlock")) {
-                f = Particle.NOTE.toString();
-            } else if (effect.equals("tileDust")) {
-                f = Particle.BLOCK_DUST.toString();
-            } else if (effect.equals("colouredDust")) {
-                f = Particle.REDSTONE.toString();
-            } else if (effect.equals("flame")) {
-                f = Particle.FLAME.toString();
-            } else if (effect.equals("witchMagic")) {
-                f = Particle.SPELL_WITCH.toString();
-            } else
-                f = effect;
+            switch (effect) {
+                case "potionBrake":
+                    f = Particle.SPELL.toString();
+                    break;
+                case "smoke":
+                    f = Particle.SMOKE_NORMAL.toString();
+                    break;
+                case "blockBrake":
+                    f = Particle.BLOCK_CRACK.toString();
+                    break;
+                case "hugeExplode":
+                    f = Particle.EXPLOSION_HUGE.toString();
+                    break;
+                case "angryVillager":
+                    f = Particle.VILLAGER_ANGRY.toString();
+                    break;
+                case "cloud":
+                    f = Particle.CLOUD.toString();
+                    break;
+                case "criticalHit":
+                    f = Particle.CRIT.toString();
+                    break;
+                case "mobSpell":
+                    f = Particle.SPELL_MOB.toString();
+                    break;
+                case "enchantmentTable":
+                    f = Particle.ENCHANTMENT_TABLE.toString();
+                    break;
+                case "ender":
+                    f = Particle.PORTAL.toString();
+                    break;
+                case "explode":
+                    f = Particle.EXPLOSION_NORMAL.toString();
+                    break;
+                case "greenSparkle":
+                    f = Particle.VILLAGER_HAPPY.toString();
+                    break;
+                case "heart":
+                    f = Particle.HEART.toString();
+                    break;
+                case "largeExplode":
+                    f = Particle.EXPLOSION_LARGE.toString();
+                    break;
+                case "splash":
+                    f = Particle.WATER_SPLASH.toString();
+                    break;
+                case "largeSmoke":
+                    f = Particle.SMOKE_LARGE.toString();
+                    break;
+                case "lavaSpark":
+                    f = Particle.LAVA.toString();
+                    break;
+                case "magicCriticalHit":
+                    f = Particle.CRIT_MAGIC.toString();
+                    break;
+                case "noteBlock":
+                    f = Particle.NOTE.toString();
+                    break;
+                case "tileDust":
+                    f = Particle.BLOCK_DUST.toString();
+                    break;
+                case "colouredDust":
+                    f = Particle.REDSTONE.toString();
+                    break;
+                case "flame":
+                    f = Particle.FLAME.toString();
+                    break;
+                case "witchMagic":
+                    f = Particle.SPELL_WITCH.toString();
+                    break;
+            }
             if (f != null) {
                 displayParticle(f, l, 1.0, data1, data2);
             } else
@@ -1056,14 +1080,14 @@ public class infernal_mobs extends JavaPlugin implements Listener {
                         }
                     }
                     //Ability's
-                    ArrayList<String> abilityList = findMobAbilities(id);
+                    List<String> abilityList = findMobAbilities(id);
                     //System.out.println("PE1");
                     if (!mob.isDead()) {
                         for (String ability : abilityList) {
                             Random rand = new Random();
                             int min = 1;
                             int max = 10;
-                            int randomNum = rand.nextInt(max - min + 1) + min;
+                            int randomNum = rand.nextInt(max - min) + min;
                             //System.out.println("PE: " + ability);
                             if (ability.equals("cloaked")) {
                                 ((LivingEntity) mob).addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 40, 1), true);
@@ -1154,11 +1178,7 @@ public class infernal_mobs extends JavaPlugin implements Listener {
             x.printStackTrace();
         }
         serverTime = serverTime + 1;
-        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
-            public void run() {
-                showEffect();
-            }
-        }, (1 * 20));
+        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, () -> showEffect(),  20);
     }
 
     public boolean isSmall(Entity mob) {
@@ -1227,11 +1247,7 @@ public class infernal_mobs extends JavaPlugin implements Listener {
                         }
             }
         }
-        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
-            public void run() {
-                applyEffect();
-            }
-        }, (10 * 20));
+        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, this::applyEffect, (10 * 20));
     }
 
     private boolean isArmor(ItemStack s) {
@@ -1361,7 +1377,7 @@ public class infernal_mobs extends JavaPlugin implements Listener {
         try {
             UUID id = mob.getUniqueId();
             if (idSearch(id) != -1) {
-                ArrayList<String> abilityList = findMobAbilities(id);
+                List<String> abilityList = findMobAbilities(id);
                 if ((!player.isDead()) && (!mob.isDead())) {
                     for (String ability : abilityList)
                         doMagic(player, mob, playerIsVictom, ability, id);
@@ -1373,7 +1389,7 @@ public class infernal_mobs extends JavaPlugin implements Listener {
     private void doMagic(Entity vic, Entity atc, boolean playerIsVictom, String ability, UUID id) {
         int min = 1;
         int max = 10;
-        int randomNum = new Random().nextInt(max - min + 1) + min;
+        int randomNum = new Random().nextInt(max - min) + min;
         if ((atc instanceof Player)) {
             randomNum = 1;
         }
@@ -1426,7 +1442,7 @@ public class infernal_mobs extends JavaPlugin implements Listener {
                     }
                     Location l = atc.getLocation().clone();
                     double h = ((Damageable) atc).getHealth();
-                    ArrayList<String> aList = this.infernalList.get(idSearch(id)).abilityList;
+                    List<String> aList = this.infernalList.get(idSearch(id)).abilityList;
                     //Remove old
                     double dis = 46.0D;
                     for (Entity e : atc.getNearbyEntities(dis, dis, dis))
@@ -1528,11 +1544,11 @@ public class infernal_mobs extends JavaPlugin implements Listener {
                         int randomNum2 = rand2.nextInt(max2 - min2 + 1) + min2;
                         if (randomNum2 == 1) {
                             targetLocation.setZ(targetLocation.getZ() + 6.0D);
-                        } else if (randomNum == 2) {
+                        } else if (randomNum2 == 2) {
                             targetLocation.setZ(targetLocation.getZ() - 5.0D);
-                        } else if (randomNum == 3) {
+                        } else if (randomNum2 == 3) {
                             targetLocation.setX(targetLocation.getX() + 8.0D);
-                        } else if (randomNum == 4) {
+                        } else if (randomNum2 == 4) {
                             targetLocation.setX(targetLocation.getX() - 10.0D);
                         }
                         needAir2 = targetLocation;
@@ -1558,12 +1574,12 @@ public class infernal_mobs extends JavaPlugin implements Listener {
                                 feet.getBlock().setType(Material.COBWEB);
                                 setAir(feet, 60);
 
-                                int rNum = new Random().nextInt(max - min + 1) + min;
+                                int rNum = new Random().nextInt(max - min) + min;
                                 if ((rNum == 5) && (
                                         (atc.getType().equals(EntityType.SPIDER)) || (atc.getType().equals(EntityType.CAVE_SPIDER)))) {
                                     Location l = atc.getLocation();
                                     Block b = l.getBlock();
-                                    List<Block> blocks = getSphere(b, 4);
+                                    List<Block> blocks = getSphere(b);
                                     for (Block bl : blocks) {
                                         if (bl.getType().equals(Material.AIR)) {
                                             bl.setType(Material.COBWEB);
@@ -1826,7 +1842,7 @@ public class infernal_mobs extends JavaPlugin implements Listener {
         }, time * 20);
     }
 
-    private ArrayList<String> getAbilitiesAmount(Entity e) {
+    private List<String> getAbilitiesAmount(Entity e) {
         int power;
         if (getConfig().getBoolean("powerByDistance")) {
             Location l = e.getWorld().getSpawnLocation();
@@ -1844,14 +1860,13 @@ public class infernal_mobs extends JavaPlugin implements Listener {
         return getAbilities(power);
     }
 
-    private ArrayList<String> getAbilities(int amount) {
-        ArrayList<String> abilityList = new ArrayList();
-        ArrayList<String> allAbilitiesList = new ArrayList(Arrays.asList("confusing", "ghost", "morph", "mounted", "flying", "gravity", "firework", "necromancer", "archer", "molten", "mama", "potions", "explode", "berserk", "weakness", "vengeance", "webber", "storm", "sprint", "lifesteal", "ghastly", "ender", "cloaked", "1up", "sapper", "rust", "bullwark", "quicksand", "thief", "tosser", "withering", "blinding", "armoured", "poisonous"));
+    private List<String> getAbilities(int amount) {
+        List<String> allAbilitiesList = new ArrayList<>(Arrays.asList("confusing", "ghost", "morph", "mounted", "flying", "gravity", "firework", "necromancer", "archer", "molten", "mama", "potions", "explode", "berserk", "weakness", "vengeance", "webber", "storm", "sprint", "lifesteal", "ghastly", "ender", "cloaked", "1up", "sapper", "rust", "bullwark", "quicksand", "thief", "tosser", "withering", "blinding", "armoured", "poisonous"));
+        List<String> abilityList = new ArrayList();
         int min = 1;
         for (int i = 0; i < amount; i++) {
             int max = allAbilitiesList.size();
-            int randomNum = new Random().nextInt(max - min + 1) + min - 1;
-
+            int randomNum = new Random().nextInt(max - min) + min;
             String ab = allAbilitiesList.get(randomNum);
             if (getConfig().getString(ab) != null) {
                 if ((getConfig().getString(ab, "always").equals("always")) || (getConfig().getBoolean(ab))) {
@@ -1867,7 +1882,7 @@ public class infernal_mobs extends JavaPlugin implements Listener {
         return abilityList;
     }
 
-    int idSearch(UUID id) {
+    public int idSearch(UUID id) {
         InfernalMob idMob = null;
         for (InfernalMob mob : this.infernalList) {
             if (mob.id.equals(id)) {
@@ -1880,11 +1895,10 @@ public class infernal_mobs extends JavaPlugin implements Listener {
         return -1;
     }
 
-    ArrayList<String> findMobAbilities(UUID id) {
+    public List<String> findMobAbilities(UUID id) {
         for (InfernalMob mob : this.infernalList) {
             if (mob.id.equals(id)) {
-                ArrayList<String> abilityList = mob.abilityList;
-                return abilityList;
+                return mob.abilityList;
             }
         }
         return null;
@@ -1920,7 +1934,7 @@ public class infernal_mobs extends JavaPlugin implements Listener {
 
     private void giveMobGear(Entity mob, boolean naturalSpawn) {
         UUID mobId = mob.getUniqueId();
-        ArrayList<String> mobAbilityList = null;
+        List<String> mobAbilityList = null;
         boolean armoured = false;
         if (idSearch(mobId) != -1) {
             mobAbilityList = findMobAbilities(mobId);
@@ -2073,7 +2087,7 @@ public class infernal_mobs extends JavaPlugin implements Listener {
         displayParticle(effect, l.getWorld(), l.getX(), l.getY(), l.getZ(), radius, speed, amount);
     }
 
-    private void displayParticle(String effect, World w, double x, double y, double z, double radius, int speed, int amount) {
+    void displayParticle(String effect, World w, double x, double y, double z, double radius, int speed, int amount) {
         amount = (amount <= 0) ? 1 : amount;
         Location l = new Location(w, x, y, z);
         try {
@@ -2119,7 +2133,7 @@ public class infernal_mobs extends JavaPlugin implements Listener {
         return "Zombie";
     }
 
-    String generateString(int maxNames, ArrayList<String> names) {
+    String generateString(int maxNames, List<String> names) {
         StringBuilder namesString = new StringBuilder();
         if (maxNames > names.size()) {
             maxNames = names.size();
@@ -2198,20 +2212,161 @@ public class infernal_mobs extends JavaPlugin implements Listener {
         return min + (int) (Math.random() * (1 + max - min));
     }
 
+    public List<String> onTabComplete(CommandSender sender, Command cmd, String label, String[] args){
+        List<String> allAbilitiesList = new ArrayList<>(Arrays.asList("confusing", "ghost", "morph", "mounted", "flying", "gravity", "firework", "necromancer", "archer", "molten", "mama", "potions", "explode", "berserk", "weakness", "vengeance", "webber", "storm", "sprint", "lifesteal", "ghastly", "ender", "cloaked", "1up", "sapper", "rust", "bullwark", "quicksand", "thief", "tosser", "withering", "blinding", "armoured", "poisonous"));
+        Set<String> commands = new HashSet<>(Arrays.asList("reload", "worldInfo", "error", "getloot", "setloot", "giveloot", "abilities", "showAbilities", "setInfernal", "spawn", "cspawn", "pspawn", "kill", "killall"));
+        if (sender.hasPermission("infernal_mobs.commands")) {
+
+            List<String> newTab = new ArrayList<>();
+            if (args.length == 1){
+                if (args[0].isEmpty())
+                    return new ArrayList<>(commands);
+                commands.forEach(tab->{
+                    if (tab.toLowerCase().startsWith(args[0].toLowerCase()))
+                    newTab.add(tab);
+                });
+            }
+            if (args[0].equalsIgnoreCase("getloot") || args[0].equalsIgnoreCase("setloot")){
+                if (args.length == 2){
+                    newTab.add("1");
+                }
+            }
+            if (args[0].equalsIgnoreCase("giveloot")){
+                if (args.length == 2){
+                    newTab.addAll(Bukkit.getOnlinePlayers().stream().map(HumanEntity::getName).collect(Collectors.toList()));
+                }
+                if (args.length == 3){
+                    newTab.add("1");
+                }
+            }
+            if (args[0].equalsIgnoreCase("setinfernal")){
+                if (args.length == 2){
+                    newTab.add("10");
+                }
+            }
+            if (args.length == 2){
+                if (args[0].equalsIgnoreCase("spawn") || args[0].equalsIgnoreCase("cspawn") || args[0].equalsIgnoreCase("pspawn")){
+                    if (args[1].isEmpty())
+                        newTab.addAll(Arrays.stream(EntityType.values()).filter(m->m.isSpawnable() && m.isAlive()).map(Enum::name).collect(Collectors.toList()));
+                    else
+                        Arrays.stream(EntityType.values()).filter(m->m.isSpawnable() && m.isAlive()).map(Enum::name).collect(Collectors.toList()).forEach(tab->{
+                            if (tab.toLowerCase().startsWith(args[1].toLowerCase()))
+                                newTab.add(tab);
+                        });
+                }
+                if (args[0].equalsIgnoreCase("killall")){
+                    if (args[args.length - 1].isEmpty())
+                        newTab.addAll(Bukkit.getWorlds().stream().map(World::getName).collect(Collectors.toList()));
+                    else
+                        Bukkit.getWorlds().stream().map(World::getName).collect(Collectors.toList()).forEach(tab -> {
+                            if (tab.toLowerCase().startsWith(args[args.length - 1].toLowerCase()))
+                                newTab.add(tab);
+                        });
+                }
+                if (args[0].equalsIgnoreCase("kill")){
+                    newTab.add("1");
+                }
+            }
+            if (args[0].equalsIgnoreCase("cspawn")) {
+                if (args.length == 3) {
+                    if (args[args.length - 1].isEmpty())
+                        newTab.addAll(Bukkit.getWorlds().stream().map(World::getName).collect(Collectors.toList()));
+                    else
+                        Bukkit.getWorlds().stream().map(World::getName).collect(Collectors.toList()).forEach(tab -> {
+                            if (tab.toLowerCase().startsWith(args[args.length - 1].toLowerCase()))
+                                newTab.add(tab);
+                        });
+                }
+                if (args.length > 3 && args.length < 7) {
+                    newTab.add("~");
+                }
+                if (args.length >= 7){
+                    if (args[args.length-1].isEmpty())
+                        newTab.addAll(allAbilitiesList);
+                    else
+                        allAbilitiesList.forEach(tab->{
+                            if (tab.toLowerCase().startsWith(args[args.length-1].toLowerCase()))
+                                newTab.add(tab);
+                        });
+                }
+            }
+            if (args[0].equalsIgnoreCase("pspawn")) {
+                if (args.length == 3) {
+                    if (args[args.length - 1].isEmpty())
+                        newTab.addAll(Bukkit.getOnlinePlayers().stream().map(HumanEntity::getName).collect(Collectors.toList()));
+                    else
+                        Bukkit.getOnlinePlayers().stream().map(HumanEntity::getName).collect(Collectors.toList()).forEach(tab -> {
+                            if (tab.toLowerCase().startsWith(args[args.length - 1].toLowerCase()))
+                                newTab.add(tab);
+                        });
+                }
+                if (args.length > 3){
+                    if (args[args.length-1].isEmpty())
+                        newTab.addAll(allAbilitiesList);
+                    else
+                        allAbilitiesList.forEach(tab->{
+                            if (tab.toLowerCase().startsWith(args[args.length-1].toLowerCase()))
+                                newTab.add(tab);
+                        });
+                }
+            }
+            if (args.length >= 3){
+                if (args[0].equalsIgnoreCase("spawn")){
+                    if (args[args.length-1].isEmpty())
+                        newTab.addAll(allAbilitiesList);
+                    else
+                        allAbilitiesList.forEach(tab->{
+                            if (tab.toLowerCase().startsWith(args[args.length-1].toLowerCase()))
+                                newTab.add(tab);
+                        });
+                }
+            }
+            return newTab;
+        }
+        return null;
+    }
+    
+    public ItemStack getDiviningStaff(){
+    	ItemStack s = getItem(Material.BLAZE_ROD, "§6§lDivining Rod", 1, Arrays.asList("Click to find infernal mobs."));
+    	ItemMeta m = s.getItemMeta();
+    	m.addEnchant(Enchantment.CHANNELING, 1, true);
+    	s.setItemMeta(m);
+    	return s;
+    }
+
+    public void addRecipes() {
+    	ItemStack staff = getDiviningStaff();
+    	ShapedRecipe sr = new ShapedRecipe(staff);
+		sr.shape("ANA", "ASA", "ASA");
+		sr.setIngredient('N', Material.NETHER_STAR);
+		sr.setIngredient('S', Material.BLAZE_ROD);
+		//sr.setIngredient('A', Material.AIR);
+		Bukkit.addRecipe(sr);
+    }
+    
+    private ItemStack getItem(Material mat, String name, int amount, List<String> loreList){
+    	ItemStack item = new ItemStack(mat, amount);
+    	ItemMeta m = item.getItemMeta();
+    	if(name != null)
+    		m.setDisplayName(name);
+    	if(loreList != null)
+    		m.setLore(loreList);
+    	item.setItemMeta(m);
+  	  	return item;
+    }
+    
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if ((cmd.getName().equalsIgnoreCase("infernalmobs")) || (cmd.getName().equalsIgnoreCase("im"))) {
             try {
                 Player player = null;
-                boolean plyr = true;
                 if (!(sender instanceof Player)) {
-                    if (args != null && args.length > 0 && (!args[0].equalsIgnoreCase("cspawn")) && (!args[0].equalsIgnoreCase("giveloot")) && (!args[0].equalsIgnoreCase("reload")) && (!args[0].equalsIgnoreCase("killall"))) {
+                    if (args != null && args.length > 0 && (!args[0].equalsIgnoreCase("cspawn")) && (!args[0].equalsIgnoreCase("pspawn")) && (!args[0].equalsIgnoreCase("giveloot")) && (!args[0].equalsIgnoreCase("reload")) && (!args[0].equalsIgnoreCase("killall"))) {
                         sender.sendMessage("This command can only be run by a player!");
                         return true;
                     }
-                    plyr = false;
                 } else
                     player = (Player) sender;
-                if ((!plyr) || (player.hasPermission("infernal_mobs.commands"))) {
+                if (sender.hasPermission("infernal_mobs.commands")) {
                     if (args.length == 0) {
                         throwError(sender);
                         return true;
@@ -2320,7 +2475,7 @@ public class infernal_mobs extends JavaPlugin implements Listener {
                                 ent = player.getWorld().spawnEntity(farSpawnLoc, EntityType.fromName(args[1]));
                                 exmsg = false;
                             }
-                            ArrayList<String> abList = getAbilitiesAmount(ent);
+                            List<String> abList = getAbilitiesAmount(ent);
                             InfernalMob newMob;
                             UUID id = ent.getUniqueId();
                             if (abList.contains("1up")) {
@@ -2328,6 +2483,7 @@ public class infernal_mobs extends JavaPlugin implements Listener {
                             } else {
                                 newMob = new InfernalMob(ent, id, true, abList, 1, getEffect());
                             }
+
                             if (abList.contains("flying")) {
                                 makeFly(ent);
                             }
@@ -2347,7 +2503,6 @@ public class infernal_mobs extends JavaPlugin implements Listener {
                         }
                     } else if (((args.length >= 3) && (args[0].equalsIgnoreCase("spawn"))) || ((args[0].equalsIgnoreCase("cspawn")) && (args.length >= 6)) || ((args[0].equalsIgnoreCase("pspawn")) && (args.length >= 3))) {
                         if (args[0].equalsIgnoreCase("spawn")) {
-                            //World world = player.getWorld();
                             if ((EntityType.fromName(args[1]) != null)) {
                                 Location farSpawnLoc = player.getTargetBlock(null, 200).getLocation();
                                 farSpawnLoc.setY(farSpawnLoc.getY() + 1.0D);
@@ -2412,7 +2567,7 @@ public class infernal_mobs extends JavaPlugin implements Listener {
                         sender.sendMessage("--Infernal Mobs Abilities--");
                         sender.sendMessage("mama, molten, weakness, vengeance, webber, storm, sprint, lifesteal, ghastly, ender, cloaked, berserk, 1up, sapper, rust, bullwark, quicksand, thief, tosser, withering, blinding, armoured, poisonous, potions, explode, gravity, archer, necromancer, firework, flying, mounted, morph, ghost, confusing");
                     } else {
-                        ArrayList<String> oldMobAbilityList;
+                        List<String> oldMobAbilityList;
                         if ((args.length == 1) && (args[0].equalsIgnoreCase("showAbilities"))) {
                             if (getTarget(player) != null) {
                                 Entity targeted = getTarget(player);
@@ -2452,8 +2607,14 @@ public class infernal_mobs extends JavaPlugin implements Listener {
                                 }
                             }
                             sender.sendMessage("§eKilled all infernal mobs near you!");
-                        } else if ((args[0].equalsIgnoreCase("killall")) && (args.length == 2)) {
-                            World w = getServer().getWorld(args[1]);
+                        } else if ((args[0].equalsIgnoreCase("killall")) && (args.length == 1 || args.length == 2)) {
+                            World w = null;
+                            if (args.length == 1 && sender instanceof Player){
+                                w = ((Player) sender).getWorld();
+                            } else if (args.length == 2){
+                                w = getServer().getWorld(args[1]);
+                            }
+
                             if (w != null) {
                                 for (Entity e : w.getEntities()) {
                                     int id = idSearch(e.getUniqueId());

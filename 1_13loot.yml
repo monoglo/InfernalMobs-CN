@@ -192,7 +192,7 @@ loot:
     amount: 1
     durability: 90
     name: '&6Sword of fortune'
-    lore1: '&eYour fortunate to have this sword.'
+    lore1: '&eMay the luck be ever in your favor'
     enchantments:
       '1':
         enchantment: LOOT_BONUS_MOBS
@@ -202,7 +202,7 @@ loot:
     amount: 1
     durability: 0
     name: Wacker
-    lore1: Wack 'em back!
+    lore1: "Wack 'em back!"
     enchantments:
       '1':
         enchantment: KNOCKBACK
@@ -211,11 +211,11 @@ loot:
     item: DIAMOND
     amount: 5
   '6':
-    item: STONE_SWORD
+    item: DIAMOND_SWORD
     amount: 1
     durability: 10
-    name: '&8Spider Slayer'
-    lore1: '&7Slays the spiders!'
+    name: '&8Arthropod Bane'
+    lore1: '&7Slays spiders like a hot knife through butter'
     enchantments:
       '1':
         enchantment: DAMAGE_ARTHROPODS
@@ -290,7 +290,7 @@ loot:
         level: 2
       '2':
         enchantment: KNOCKBACK
-        level: 3
+        level: 6
   '12':
     item: GOLDEN_SHOVEL
     amount: 1
@@ -307,19 +307,21 @@ loot:
   '13':
     item: GOLDEN_PICKAXE
     amount: 1
-    durability: 25
-    name: '&7Drill'
-    lore1: '&8Drillin through dirt!'
+    name: '&7Glass Drill'
+    lore1: '&8Use in case of emergency!'
     enchantments:
       '1':
         enchantment: DIG_SPEED
         level: 10
+      '2':
+        enchantment: DURABILITY
+        level: 3
   '14':
     item: GOLDEN_AXE
     amount: 1
     durability: 8
     name: '&cAmerican &fAxe'
-    lore1: '&1Digs fast too...'
+    lore1: '&1Worse than the Canadian axe...'
     enchantments:
       '1':
         enchantment: DIG_SPEED
@@ -343,6 +345,7 @@ loot:
     durability: 10
     name: Magic Hoe
     lore1: Forged by God.
+    lore2: "Well, by God's Gardener"
     enchantments:
       '1':
         enchantment: DURABILITY
