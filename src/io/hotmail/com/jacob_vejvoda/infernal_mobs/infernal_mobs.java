@@ -562,23 +562,27 @@ public class infernal_mobs extends JavaPlugin implements Listener {
     }
 
     private ItemStack getLoot(Player player, int loot) {
-        if (!this.lootFile.getStringList("loot." + loot + ".commands").isEmpty()) {
-            List<String> commandList = this.lootFile.getStringList("loot." + loot + ".commands");
-            for (String command : commandList) {
-                command = ChatColor.translateAlternateColorCodes('&', command);
-                command = command.replace("player", player.getName());
-                Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), command);
-            }
-        }
-//        if (this.lootFile.getString("loot." + loot + ".staff.id") != null) {
-//            int id = this.lootFile.getInt("loot." + loot + ".staff.id");
-//            ArrayList<String> spells = new ArrayList();
-//            if (!this.lootFile.getStringList("loot." + loot + ".staff.spells").isEmpty()) {
-//                spells = (ArrayList) this.lootFile.getStringList("loot." + loot + ".staff.spells");
-//            }
-//            return this.wMagic.getStaffWithSpells(id, spells);
-//        }
-        return getItem(loot);
+    	ItemStack i = null;
+    	try {
+	        if (!this.lootFile.getStringList("loot." + loot + ".commands").isEmpty()) {
+	            List<String> commandList = this.lootFile.getStringList("loot." + loot + ".commands");
+	            for (String command : commandList) {
+	                command = ChatColor.translateAlternateColorCodes('&', command);
+	                command = command.replace("player", player.getName());
+	                Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), command);
+	            }
+	        }
+	//        if (this.lootFile.getString("loot." + loot + ".staff.id") != null) {
+	//            int id = this.lootFile.getInt("loot." + loot + ".staff.id");
+	//            ArrayList<String> spells = new ArrayList();
+	//            if (!this.lootFile.getStringList("loot." + loot + ".staff.spells").isEmpty()) {
+	//                spells = (ArrayList) this.lootFile.getStringList("loot." + loot + ".staff.spells");
+	//            }
+	//            return this.wMagic.getStaffWithSpells(id, spells);
+	//        }
+	        i = getItem(loot);
+    	}catch(Exception x) {getServer().getLogger().log(Level.WARNING, "No loot found with ID: " + loot);}
+    	return i;
     }
 
     private Material getMaterial(String s) {
@@ -638,7 +642,7 @@ public class infernal_mobs extends JavaPlugin implements Listener {
             if (this.lootFile.getString("loot." + loot + ".durability") != null) {
                 String durabilityString = this.lootFile.getString("loot." + loot + ".durability");
                 int durability = getIntFromString(durabilityString);
-                ((Damageable)stack).setDamage(durability);
+                ((Damageable)meta).setDamage(durability);
                 //stack.setDurability((short) durability);
             }
             if (name != null) {
@@ -744,10 +748,11 @@ public class infernal_mobs extends JavaPlugin implements Listener {
                         }
                         chance = new Random().nextInt(enChance - 1 + 1) + 1;
                         if (chance == 1) {
-                            String enchantment = this.lootFile.getString("loot." + loot + ".enchantments." + j + ".enchantment");
-
+                            String enchantment = this.lootFile.getString("loot." + loot + ".enchantments." + j + ".enchantment").toLowerCase();
                             String levelString = this.lootFile.getString("loot." + loot + ".enchantments." + j + ".level");
                             int level = getIntFromString(levelString);
+                            //System.out.print("1: " + NamespacedKey.minecraft(enchantment));
+                            //System.out.print("2: " + Enchantment.getByKey(NamespacedKey.minecraft(enchantment)));
                             if (Enchantment.getByKey(NamespacedKey.minecraft(enchantment)) != null) {
                                 if (level < 1) {
                                     level = 1;
@@ -1212,7 +1217,7 @@ public class infernal_mobs extends JavaPlugin implements Listener {
                 HashMap<Integer, ItemStack> itemMap = new HashMap<>();
                 for (int i : (ArrayList<Integer>) getConfig().getList("enabledCharmSlots", new ArrayList<>())) {
                     ItemStack in;
-                    in = p.getInventory().getItemInOffHand();
+                    in = p.getInventory().getItem(i);
                     itemMap.put(i, in);
                 }
                 int ai = 100;
@@ -1531,8 +1536,8 @@ public class infernal_mobs extends JavaPlugin implements Listener {
             } else if ((ability.equals("rust")) && (isLegitVictim(atc, playerIsVictom, ability))) {
                 ItemStack damItem = ((Player) vic).getInventory().getItemInMainHand();
                 if (((randomNum <= 3) || (randomNum == 1)) && (damItem.getMaxStackSize() == 1)) {
-                    int cDur = ((Damageable)damItem).getDamage();
-                    ((Damageable)damItem).setDamage(cDur + 20);
+                    int cDur = ((Damageable)damItem.getItemMeta()).getDamage();
+                    ((Damageable)damItem.getItemMeta()).setDamage(cDur + 20);
                 }
             } else if ((ability.equals("sapper")) && (isLegitVictim(atc, playerIsVictom, ability))) {
                 ((LivingEntity) vic).addPotionEffect(new PotionEffect(PotionEffectType.HUNGER, 500, 1), true);
@@ -2053,7 +2058,7 @@ public class infernal_mobs extends JavaPlugin implements Listener {
                 ee.setHelmet(skull);
             }
         }
-        if (((mobAbilityList.contains("mounted")) && (getConfig().getStringList("enabledRiders").contains(mob.getType().getName()))) || ((!naturalSpawn) && (mobAbilityList.contains("mounted")))) {
+        if (((mobAbilityList.contains("mounted")) && (getConfig().getStringList("enabledRiders").contains(mob.getType().name()))) || ((!naturalSpawn) && (mobAbilityList.contains("mounted")))) {
             List<String> mounts;
 
             mounts = getConfig().getStringList("enabledMounts");
@@ -2402,7 +2407,10 @@ public class infernal_mobs extends JavaPlugin implements Listener {
                         throwError(sender);
                         return true;
                     }
-                    if ((args.length == 1) && (args[0].equalsIgnoreCase("fixloot"))) {
+                    if(args[0].equalsIgnoreCase("slotTest")) {
+                    	for(int i : (ArrayList<Integer>)getConfig().getList("enabledCharmSlots"))
+                    		player.getInventory().setItem(i, new ItemStack(Material.RED_STAINED_GLASS_PANE));
+                    }else if ((args.length == 1) && (args[0].equalsIgnoreCase("fixloot"))) {
                         ArrayList<String> list = new ArrayList<>(getConfig().getConfigurationSection("items").getKeys(false));
                         for (String i : lootFile.getConfigurationSection("loot").getKeys(false)) {
                             String oid = lootFile.getInt("loot." + i + ".item") + "";
