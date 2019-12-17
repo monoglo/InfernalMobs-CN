@@ -368,7 +368,8 @@ public class infernal_mobs extends JavaPlugin implements Listener {
     }
 
     private void addHealth(Entity ent, List<String> powerList) {
-        double maxHealth = ((org.bukkit.entity.Damageable) ent).getHealth();
+        //double maxHealth = ((org.bukkit.entity.Damageable) ent).getHealth();
+    	double maxHealth = ((LivingEntity) ent).getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue();
         float setHealth;
         if (getConfig().getBoolean("healthByPower")) {
             int mobIndex = idSearch(ent.getUniqueId());
