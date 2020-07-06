@@ -127,33 +127,46 @@ public class infernal_mobs extends JavaPlugin implements Listener {
             }
         }
         //Register Config
+
+        String configVersion = null;
+        if (Bukkit.getVersion().contains("1.13") ||
+                Bukkit.getVersion().contains("1.14") ||
+                Bukkit.getVersion().contains("1.15")) {
+            configVersion = "1_15";
+        }
+        if (Bukkit.getVersion().contains("1.16")) {
+            configVersion = "1_16";
+        }
+
         if (!new File(this.getDataFolder(), "config.yml").exists()) {
             //saveDefaultConfig();
             this.getLogger().log(Level.INFO, "No config.yml found, generating...");
             //Generate Config
             boolean generatedConfig = false;
             //for(String version : Arrays.asList("1.12","1.11","1.10","1.9","1.8"))
-            if (Bukkit.getVersion().contains("1.13") || Bukkit.getVersion().contains("1.14") || Bukkit.getVersion().contains("1.15")) {
-                this.saveResource("1_15_config.yml", false);
-                new File(this.getDataFolder(), "1_15_config.yml").renameTo(new File(this.getDataFolder(), "config.yml"));
+
+            if (configVersion != null) {
+                this.saveResource(configVersion + "_config.yml", false);
+                new File(this.getDataFolder(), configVersion + "_config.yml").renameTo(new File(this.getDataFolder(), "config.yml"));
                 getConfig().set("configVersion", Bukkit.getVersion());
                 getConfig().options().header(
                         "Chance is the chance that a mob will not be infernal, the lower the number the higher the chance. (min 1)\n" +
-                        "Enabledworlds are the worlds that infernal mobs can spawn in.\n" +
-                        "Enabledmobs are the mobs that can become infernal.\n" +
-                        "Loot is the items that are dropped when an infernal mob dies. (You can have up to 64)\n" +
-                        "Item is the item, Amount is the amount, Durability is how damaged it will be (0 is undamaged).\n" +
-                        "nameTagsLevel is the visibility level of the name tags, 0 = no tag, \n" +
-                        "1 = tag shown when your looking at the mob, 2 = tag always shown.\n" +
-                        "Note, if you have name tags set to 0, on server restart all infernal mobs will turn normal.\n" +
-                        "If you want to enable the boss bar you must have BarAPI on your server.\n" +
-                        "nameTagsName and bossBarsName have these special tags: <mobLevel> = the amount of powers the boss has.\n" +
-                        "<abilities> = A list of about 3-5 (whatever can fit) names of abilities the boss has.\n" +
-                        "<mobName> = Name of the mob, so if the mob is a creeper the mobName will be \"Creeper\".");
+                                "Enabledworlds are the worlds that infernal mobs can spawn in.\n" +
+                                "Enabledmobs are the mobs that can become infernal.\n" +
+                                "Loot is the items that are dropped when an infernal mob dies. (You can have up to 64)\n" +
+                                "Item is the item, Amount is the amount, Durability is how damaged it will be (0 is undamaged).\n" +
+                                "nameTagsLevel is the visibility level of the name tags, 0 = no tag, \n" +
+                                "1 = tag shown when your looking at the mob, 2 = tag always shown.\n" +
+                                "Note, if you have name tags set to 0, on server restart all infernal mobs will turn normal.\n" +
+                                "If you want to enable the boss bar you must have BarAPI on your server.\n" +
+                                "nameTagsName and bossBarsName have these special tags: <mobLevel> = the amount of powers the boss has.\n" +
+                                "<abilities> = A list of about 3-5 (whatever can fit) names of abilities the boss has.\n" +
+                                "<mobName> = Name of the mob, so if the mob is a creeper the mobName will be \"Creeper\".");
                 saveConfig();
                 this.getLogger().log(Level.INFO, "Config successfully generated!");
                 generatedConfig = true;
             }
+
             if (!generatedConfig) {
                 this.getLogger().log(Level.SEVERE, "No config available, " + Bukkit.getVersion() + " is not supported!");
                 Bukkit.getPluginManager().disablePlugin(this);
@@ -164,11 +177,16 @@ public class infernal_mobs extends JavaPlugin implements Listener {
         if (!lootYML.exists()) {
             this.getLogger().log(Level.INFO, "No loot.yml found, generating...");
             //Generate Config
-            if (Bukkit.getVersion().contains("1.13") || Bukkit.getVersion().contains("1.14") || Bukkit.getVersion().contains("1.15")) {
-                this.saveResource("1_15loot.yml", false);
-                new File(this.getDataFolder(), "1_15loot.yml").renameTo(new File(this.getDataFolder(), "loot.yml"));
+            boolean generatedConfig = false;
+
+            if (configVersion != null) {
+                this.saveResource(configVersion + "loot.yml", false);
+                new File(this.getDataFolder(), configVersion + "loot.yml").renameTo(new File(this.getDataFolder(), "loot.yml"));
                 this.getLogger().log(Level.INFO, Bukkit.getVersion() + " Loot successfully generated!");
-            } else {
+                generatedConfig = true;
+            }
+
+            if (!generatedConfig) {
                 this.getLogger().log(Level.SEVERE, "No loot available, " + Bukkit.getVersion() + " is not supported!");
                 Bukkit.getPluginManager().disablePlugin(this);
             }
@@ -942,7 +960,7 @@ public class infernal_mobs extends JavaPlugin implements Listener {
         if (mob.getType().equals(EntityType.ZOMBIE)) {
             Zombie zombie = (Zombie) mob;
             return zombie.isBaby();
-        } else if (mob.getType().equals(EntityType.PIG_ZOMBIE)) {
+        } else if (mob.getType().equals(EntityType.PIGLIN)) {
             PigZombie pigzombie = (PigZombie) mob;
             return pigzombie.isBaby();
         }
@@ -1698,9 +1716,9 @@ public class infernal_mobs extends JavaPlugin implements Listener {
                                         Zombie minion = (Zombie) atc.getWorld().spawnEntity(atc.getLocation(), EntityType.ZOMBIE);
                                         minion.setBaby(true);
                                     }
-                                } else if (atc.getType().equals(EntityType.PIG_ZOMBIE)) {
+                                } else if (atc.getType().equals(EntityType.PIGLIN)) {
                                     for (int i = 0; i < amount; i++) {
-                                        PigZombie minion = (PigZombie) atc.getWorld().spawnEntity(atc.getLocation(), EntityType.PIG_ZOMBIE);
+                                        PigZombie minion = (PigZombie) atc.getWorld().spawnEntity(atc.getLocation(), EntityType.PIGLIN);
                                         minion.setBaby(true);
                                     }
                                 } else if (atc.getType().equals(EntityType.OCELOT)) {
