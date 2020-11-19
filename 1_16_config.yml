@@ -132,6 +132,11 @@ enabledmobs:
 - PHANTOM
 - PUFFERFISH
 - BEE
+- PIGLIN
+- HOGLIN
+- ZOGLIN
+- STRIDER
+- ZOMBIFIED_PIGLIN
 enabledCharmSlots:
 - 0
 - 1
@@ -242,6 +247,9 @@ enabledMounts:
 - POLAR_BEAR
 - LLAMA
 - PHANTOM
+- HOGLIN
+- ZOGLIN
+- STRIDER
 enabledRiders:
 - WITHER_SKELETON
 - STRAY
@@ -258,6 +266,8 @@ enabledRiders:
 - VILLAGER
 - ILLUSIONER
 - DROWNED
+- ZOMBIFIED_PIGLIN
+- PIGLIN
 disabledBabyMobs:
 - WOLF
 - MUSHROOM_COW

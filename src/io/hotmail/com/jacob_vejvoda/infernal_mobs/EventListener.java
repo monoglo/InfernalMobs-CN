@@ -260,6 +260,8 @@ public class EventListener implements Listener {
     public void onMobSpawn(CreatureSpawnEvent event) {
         World world = event.getEntity().getWorld();
         if ((!event.getEntity().hasMetadata("NPC")) && (!event.getEntity().hasMetadata("shopkeeper")) && event.getEntity().getCustomName() == null) {
+        	if(event.getEntity().getType().equals(EntityType.ENDER_DRAGON))
+        		plugin.getLogger().log(Level.INFO, "Detected Entity Spawn: Ender Dragon");
             if (event.getSpawnReason().equals(CreatureSpawnEvent.SpawnReason.SPAWNER)) {
                 Block spawner = plugin.blockNear(event.getEntity().getLocation(), Material.SPAWNER, 10);
                 if (spawner != null) {

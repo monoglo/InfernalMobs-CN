@@ -86,7 +86,7 @@ import org.bukkit.potion.PotionType;
 import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
 
-@SuppressWarnings({"unchecked", "rawtypes"})
+@SuppressWarnings({"unchecked", "rawtypes", "deprecation"})
 public class infernal_mobs extends JavaPlugin implements Listener {
     GUI gui;
     long serverTime = 0L;
@@ -745,16 +745,14 @@ public class infernal_mobs extends JavaPlugin implements Listener {
                 }
             }
             if (enchAmount > 0) {
-                int enMin = enchAmount;
+                int enMin = 0;
                 int enMax = enchAmount;
                 if ((this.lootFile.getString("loot." + loot + ".minEnchantments") != null) && (this.lootFile.getString("loot." + loot + ".maxEnchantments") != null)) {
                     enMin = this.lootFile.getInt("loot." + loot + ".minEnchantments");
                     enMax = this.lootFile.getInt("loot." + loot + ".maxEnchantments");
                 }
-                int enchNeeded = new Random().nextInt(enMax + 1 - enMin) + enMin;
-                if (enchNeeded > enMax) {
-                    enchNeeded = enMax;
-                }
+                //int enchNeeded = new Random().nextInt(enMax + 1 - enMin) + enMin;
+                int enchNeeded = rand(enMin,enMax);
                 ArrayList<LevelledEnchantment> enchList = new ArrayList();
                 int safety = 0;
                 int j = 0;
@@ -800,9 +798,10 @@ public class infernal_mobs extends JavaPlugin implements Listener {
                         safety++;
                     }
                     if (safety >= enchAmount * 100) {
-                        System.out.println("Error: No valid drops found!");
-                        System.out.println("Error: Please increase chance for enchantments on item " + loot);
-                        return null;
+                        //System.out.println("Error: No valid drops found!");
+                        //System.out.println("Error: Please increase chance for enchantments on item " + loot);
+                        //return null;
+                    	break;
                     }
                 } while (enchList.size() != enchNeeded);
                 for (LevelledEnchantment le : enchList) {
@@ -941,19 +940,22 @@ public class infernal_mobs extends JavaPlugin implements Listener {
 
     private int getIntFromString(String setAmountString) {
         int setAmount = 1;
-        if (setAmountString.contains("-")) {
-            String[] split = setAmountString.split("-");
-            try {
-                Integer minSetAmount = Integer.parseInt(split[0]);
-                Integer maxSetAmount = Integer.parseInt(split[1]);
-                setAmount = new Random().nextInt(maxSetAmount - minSetAmount + 1) + minSetAmount;
-            } catch (Exception e) {
-                System.out.println("getIntFromString: " + e);
-            }
-        } else {
-            setAmount = Integer.parseInt(setAmountString);
-        }
+        try {
+	        if (setAmountString.contains("-")) {
+	            String[] split = setAmountString.split("-");
+	            try {
+	                Integer minSetAmount = Integer.parseInt(split[0]);
+	                Integer maxSetAmount = Integer.parseInt(split[1]);
+	                setAmount = new Random().nextInt(maxSetAmount - minSetAmount + 1) + minSetAmount;
+	            } catch (Exception e) {
+	                System.out.println("getIntFromString: " + e);
+	            }
+	        } else {
+	            setAmount = Integer.parseInt(setAmountString);
+	        }
+        }catch(Exception x) {}
         return setAmount;
+
     }
 
     private boolean isBaby(Entity mob) {
@@ -1072,7 +1074,7 @@ public class infernal_mobs extends JavaPlugin implements Listener {
             } else
                 l.getWorld().playEffect(l, Effect.MOBSPAWNER_FLAMES, data2);
         } catch (Exception x) {
-            x.printStackTrace();
+            //x.printStackTrace();
         }
     }
 
@@ -2092,7 +2094,7 @@ public class infernal_mobs extends JavaPlugin implements Listener {
                 mount = s[0];
                 type = s[1];
             }
-            if (EntityType.fromName(mount) != null) {
+            if (EntityType.fromName(mount) != null && (!EntityType.fromName(mount).equals(EntityType.ENDER_DRAGON))) {
                 Entity liveMount = mob.getWorld().spawnEntity(mob.getLocation(), EntityType.fromName(mount));
 
                 this.mountList.put(liveMount, mob);
@@ -2152,14 +2154,14 @@ public class infernal_mobs extends JavaPlugin implements Listener {
                 if (ll.size() > 0){
                     for (int i = 0; i < amount; i++) {
                         int index = new Random().nextInt(ll.size());
-                        w.spawnParticle(Particle.valueOf(effect), ll.get(index), 1, 0, 0, speed, 1);
+                        w.spawnParticle(Particle.valueOf(effect), ll.get(index), 1, 0, 0, 0, 0);
                         ll.remove(index);
                     }
                 }
             }
         } catch (Exception ex) {
-            System.out.println("V: " + getServer().getVersion());
-            ex.printStackTrace();
+           // System.out.println("V: " + getServer().getVersion());
+           // ex.printStackTrace();
         }
     }
 

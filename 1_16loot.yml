@@ -2,7 +2,7 @@ potionEffects:
   '1':
     potion: INCREASE_DAMAGE
     level: 2
-    particleEffect: colouredDust:0:1
+    particleEffect: CLOUD:0:1
     requiredItems:
     - 7
   '2':
@@ -178,6 +178,56 @@ potionEffects:
     level: 1
     requiredItems:
     - 100
+  '33':
+    potion: FAST_DIGGING
+    level: 2
+    requiredItems:
+    - 101
+  '34':
+    potion: SLOW_FALLING
+    level: 1
+    requiredItems:
+    - 102
+  '35':
+    potion: GLOWING
+    level: 1
+    requiredItems:
+    - 103
+  '36':
+    potion: NIGHT_VISION
+    level: 1
+    requiredItems:
+    - 104
+  '37':
+    potion: GLOWING
+    level: 1
+    requiredItems:
+    - 107
+  '38':
+    potion: FAST_DIGGING
+    level: 3
+    requiredItems:
+    - 108
+  '39':
+    potion: CONDUIT_POWER
+    level: 0
+    requiredItems:
+    - 111
+  '40':
+    potion: BAD_OMEN
+    level: 0
+    requiredItems:
+    - 112
+  '41':
+    potion: HUNGER
+    level: 0
+    requiredItems:
+    - 113
+  '42':
+    potion: REGENERATION
+    level: 0
+    requiredItems:
+    - 108
 loot:
   '1':
     item: IRON_AXE
@@ -1374,4 +1424,187 @@ loot:
     enchantments:
       '1':
         enchantment: unbreaking
+        level: 1
+  '101':
+    item: NETHERITE_PICKAXE
+    amount: 1
+    name: '&eDwarven Pickaxe'
+    lore1: '&8Use only for gold!'
+    enchantments:
+      '1':
+        enchantment: efficiency
+        level: 10
+  '102':
+    item: DIAMOND_BOOTS
+    amount: 1
+    name: "&e&lWinged Boots"
+    lore1: "&8Crafted with Zepher wings"
+    enchantments:
+      '1':
+        enchantment: feather_falling
+        level: 10
+      '2':
+        enchantment: unbreaking
+        level: 10
+      '3':
+        enchantment: protection
+        level: 10
+  '103':
+    item: GOLDEN_HELMET
+    amount: 1
+    name: '&e&lHalo'
+    lore1: '&8Torn from a fallen angel'
+    lore2: "&8By Archangel Michel himself"
+    enchantments:
+      '1':
+        enchantment: protection
+        level: 7-10
+      '2':
+        enchantment: unbreaking
+        level: 7-10
+      '3':
+        enchantment: mending
+        level: 1
+  '104':
+    item: DIAMOND_HELMET
+    amount: 1
+    name: '&fCat Spirit Helm'
+    lore1: '&8Embued with the spirit'
+    lore2: "&8of a great and ancient beast"
+    enchantments:
+      '1':
+        enchantment: protection
+        level: 5-15
+      '2':
+        enchantment: unbreaking
+        level: 5-15
+      '3':
+        enchantment: mending
+        level: 1
+  '105':
+    item: CROSSBOW
+    amount: 1
+    name: "&7Shotbow"
+    enchantments: 
+      0:
+        enchantment: mending
+        level: 1
+      1:
+        enchantment: unbreaking
+        level: 5
+      2:
+        enchantment: multishot
+        level: 1
+      3:
+        enchantment: piercing
+        level: 1
+      4:
+        enchantment: quick_charge
+        level: 3
+  '106':
+    item: DIAMOND_LEGGINGS
+    amount: 1
+    name: "&7&lKing Uthers Greaves"
+    lore1: '&8Lost long ago by a legend'
+    enchantments:
+      '1':
+        enchantment: protection
+        level: 4-10
+      '2':
+        enchantment: thorns
+      '3':
+        enchantment: unbreaking
+        level: 4-10
+      '4':
+        enchantment: mending
+        level: 1
+  '107':
+    item: WRITTEN_BOOK
+    amount: 1
+    name: '&f&lThe Holy Bible'
+    enchantments:
+      '1':
+        enchantment: smite
+        level: 77
+  '108':
+    item: MILK_BUCKET
+    amount: 1
+    name: "&f&lMother's Milk"
+    enchantments:
+      '1':
+        enchantment: unbreaking
+        level: 1
+  '109':
+    item: NETHERITE_INGOT
+    amount: 1
+  '110':
+    item: NETHERITE_SCRAP
+    amount: 2-6
+  '111':
+    item: NAUTILUS_SHELL
+    amount: 1
+    name: "&b&lShell of 7 Seas"
+    lore1: "&8He who holds the shell"
+    llore2: "&8controlls the sea."
+    enchantments:
+      '1':
+        enchantment: unbreaking
+        level: 1
+  '112':
+    item: NETHERITE_SWORD
+    amount: 1
+    name: '&c&lWrathbringer'
+    lore1: "&4A righteous wrath this is not"
+    enchantments:
+      '1':
+        enchantment: sharpness
+        level: 3-10
+      '2':
+        enchantment: unbreaking
+        level: 1-5
+        chance: 25
+      '4':
+        enchantment: bane_of_arthropods
+        level: 1-8
+        chance: 15
+      '5':
+        enchantment: smite
+        level: 1-8
+        chance: 15
+      '6':
+        enchantment: fire_aspect
+        level: 1-5
+        chance: 30
+      '7':
+        enchantment: looting
+        level: 1-10
+        chance: 35
+      '8':
+        enchantment: mending
+        level: 1
+        chance: 15
+  '113':
+    item: NETHERITE_CHESTPLATE
+    amount: 1
+    name: "&6&lPlate of Greed"
+    lore1: '&6Take and eat, fill thy belly'
+    enchantments:
+      '1':
+        enchantment: protection
+        level: 3-10
+        chance: 30
+      '2':
+        enchantment: thorns
+        level: 1-10
+        chance: 25
+      '3':
+        enchantment: unbreaking
+        level: 1-10
+        chance: 24
+      '4':
+        enchantment: fire_protection
+        level: 1-10
+        chance: 15
+      '5':
+        enchantment: mending
         level: 1
