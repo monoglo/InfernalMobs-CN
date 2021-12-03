@@ -120,7 +120,7 @@ public class infernal_mobs extends JavaPlugin implements Listener {
                 getConfig().set("configVersion", Bukkit.getVersion().split(":")[1].replace(")", "").trim());
                 saveConfig();
             }
-            if (!Bukkit.getVersion().contains(getConfig().getString("configVersion"))) {
+            if (!Bukkit.getVersion().equals(getConfig().getString("configVersion"))) {
                 System.out.println(Bukkit.getVersion() + " contains " + getConfig().getString("configVersion"));
                 this.getLogger().log(Level.INFO, "Old config found, deleting!");
                 new File(this.getDataFolder() + File.separator + "config.yml").delete();
@@ -136,6 +136,9 @@ public class infernal_mobs extends JavaPlugin implements Listener {
         }
         if (Bukkit.getVersion().contains("1.16")) {
             configVersion = "1_16";
+        }
+        if (Bukkit.getVersion().contains("1.17") || Bukkit.getVersion().contains("1.18")) {
+            configVersion = "1_18";
         }
 
         if (!new File(this.getDataFolder(), "config.yml").exists()) {
@@ -744,8 +747,10 @@ public class infernal_mobs extends JavaPlugin implements Listener {
                     enchAmount++;
                 }
             }
+            //System.out.println("Enchantments Found: " + enchAmount);
             if (enchAmount > 0) {
-                int enMin = 0;
+                int enMin = enchAmount/2;
+                if(enchAmount<1) {enchAmount=1;}
                 int enMax = enchAmount;
                 if ((this.lootFile.getString("loot." + loot + ".minEnchantments") != null) && (this.lootFile.getString("loot." + loot + ".maxEnchantments") != null)) {
                     enMin = this.lootFile.getInt("loot." + loot + ".minEnchantments");
@@ -753,6 +758,7 @@ public class infernal_mobs extends JavaPlugin implements Listener {
                 }
                 //int enchNeeded = new Random().nextInt(enMax + 1 - enMin) + enMin;
                 int enchNeeded = rand(enMin,enMax);
+                //System.out.println("Enchantments Needed: " + enchNeeded);
                 ArrayList<LevelledEnchantment> enchList = new ArrayList();
                 int safety = 0;
                 int j = 0;
