@@ -228,6 +228,72 @@ potionEffects:
     level: 0
     requiredItems:
     - 108
+  '43':
+    potion: GLOWING
+    level: 0
+    requiredItems:
+    - 114
+  '44':
+    potion: DAMAGE_RESISTANCE
+    level: 3
+    requiredItems:
+    - 121
+  '45':
+    potion: INCREASE_DAMAGE
+    level: 3
+    requiredItems:
+    - 121
+consumeEffects:
+  '1':
+    requiredItem: 115
+    message: '&eYou consumed the fruit of Odin... &cNOW SHOW YOUR WORTH!'
+    potionEffects: 
+      - INCREASE_DAMAGE:1:60
+      - REGENERATION:1:60
+      - GLOWING:1:60
+      - SPEED:1:60
+  '2':
+    requiredItem: 116
+    message: '&eYou consumed some poop off the ground.. &cWHY?'
+    potionEffects: 
+      - BAD_OMEN:1:300
+      - CONFUSION:1:300
+      - UNLUCK:1:300
+      - POISON:1:60
+  '3':
+    requiredItem: 117
+    message: "&eThe power of the god's courses through your veins!"
+    potionEffects: 
+      - HEALTH_BOOST:1:120
+      - DAMAGE_RESISTANCE:2:120
+      - HEAL:2:5
+      - REGENERATION:2:120
+  '4':
+    requiredItem: 65
+    message: '&c&lYou a mere mortal, have been cursed for your pride...'
+    potionEffects: 
+      - WITHER:5:60
+      - HARM:2:5
+      - BLINDNESS:1:60
+  '5':
+    requiredItem: 118
+    message: '&5&lAn ancient power rises in you...'
+    potionEffects: 
+      - GLOWING:1:60
+      - INCREASE_DAMAGE:5:60
+      - HEAL:5:60
+      - REGENERATION:5:60
+  '6':
+    requiredItem: 119
+    message: '&dLove is in the air...'
+    potionEffects: 
+      - fertility:1:60
+      - INCREASE_DAMAGE:10:10
+  '7':
+    requiredItem: 120
+    message: '&7&lThe earth trembles under your feet...'
+    potionEffects: 
+      - FAST_DIGGING:10:300
 loot:
   '1':
     item: IRON_AXE
@@ -661,7 +727,7 @@ loot:
     item: GOLDEN_APPLE
     amount: 2
     unbreaking: 0
-    name: '&eThors Apple'
+    name: "&eThor's Apple"
     lore1: '&eStolen from Thors own table.'
   '35':
     item: GOLDEN_CARROT
@@ -1545,7 +1611,7 @@ loot:
     amount: 1
     name: "&b&lShell of 7 Seas"
     lore1: "&8He who holds the shell"
-    llore2: "&8controlls the sea."
+    lore2: "&8controlls the sea."
     enchantments:
       '1':
         enchantment: unbreaking
@@ -1608,3 +1674,73 @@ loot:
       '5':
         enchantment: mending
         level: 1
+  '114':
+    item: KELP
+    amount: 1
+    name: '&e&lGlow Leaf'
+    enchantments:
+      '1':
+        enchantment: unbreaking
+        level: 1
+  '115':
+    item: GLOW_BERRIES
+    amount: 1
+    name: '&e&lFruit of Odin'
+    enchantments:
+      '1':
+        enchantment: unbreaking
+        level: 10
+  '116':
+    item: DRIED_KELP
+    amount: 1
+    name: '&4&lStinky Animal Poo'
+    enchantments:
+      '1':
+        enchantment: thorns
+        level: 10
+  '117':
+    item: HONEY_BOTTLE
+    amount: 1
+    name: '&e&lNectar of the Gods'
+    enchantments:
+      '1':
+        enchantment: unbreaking
+        level: 10
+  '118':
+    item: GOLDEN_APPLE
+    amount: 1
+    name: '&6&lNotch Apple'
+    lore1: '&6Gone but never forgotten...'
+  '119':
+    item: SWEET_BERRIES
+    amount: 1
+    name: '&2&lMistletoe'
+    lore1: '&4Great for fertility,'
+    lore2: '&4Or can be used to fell a god'
+    enchantments:
+      '1':
+        enchantment: unbreaking
+        level: 10
+  '120':
+    item: HONEY_BOTTLE
+    amount: 1
+    name: "&6&lSampson's Honey"
+    lore1: 'Grants a great and terrible power,'
+    lore2: 'A power to move the very earth.'
+    enchantments:
+      '1':
+        enchantment: unbreaking
+        level: 10
+  '121':
+    item: AMETHYST_SHARD
+    amount: 1
+    name: "&d&lPower Shard"
+    lore1: "&5All the power is yours,"
+    lore2: "&5None shall stand against you"
+    enchantments:
+      '1':
+        enchantment: unbreaking
+        level: 1
+  '122':
+    item: AMETHYST_CLUSTER
+    amount: 1

@@ -95,11 +95,12 @@ public class infernal_mobs extends JavaPlugin implements Listener {
     private ArrayList<UUID> dropedLootList = new ArrayList();
     private File lootYML = new File(getDataFolder(), "loot.yml");
     File saveYML = new File(getDataFolder(), "save.yml");
-    private YamlConfiguration lootFile = YamlConfiguration.loadConfiguration(this.lootYML);
+    public YamlConfiguration lootFile = YamlConfiguration.loadConfiguration(this.lootYML);
     YamlConfiguration mobSaveFile = YamlConfiguration.loadConfiguration(this.saveYML);
     private HashMap<Entity, Entity> mountList = new HashMap();
     ArrayList<Player> errorList = new ArrayList();
     ArrayList<Player> levitateList = new ArrayList();
+    public ArrayList<Player> fertileList = new ArrayList();
 
     public void onEnable() {
         //Register Events
@@ -750,7 +751,7 @@ public class infernal_mobs extends JavaPlugin implements Listener {
             //System.out.println("Enchantments Found: " + enchAmount);
             if (enchAmount > 0) {
                 int enMin = enchAmount/2;
-                if(enchAmount<1) {enchAmount=1;}
+                if(enMin<1) {enMin=1;}
                 int enMax = enchAmount;
                 if ((this.lootFile.getString("loot." + loot + ".minEnchantments") != null) && (this.lootFile.getString("loot." + loot + ".maxEnchantments") != null)) {
                     enMin = this.lootFile.getInt("loot." + loot + ".minEnchantments");
@@ -1290,7 +1291,7 @@ public class infernal_mobs extends JavaPlugin implements Listener {
         return t.contains("helm") || t.contains("plate") || t.contains("leg") || t.contains("boot");
     }
 
-    private void applyEffects(LivingEntity e, int effectID) {
+    public void applyEffects(LivingEntity e, int effectID) {
         int level = this.lootFile.getInt("potionEffects." + effectID + ".level");
         String name = this.lootFile.getString("potionEffects." + effectID + ".potion");
         if ((PotionEffectType.getByName(name) == PotionEffectType.HARM) || (PotionEffectType.getByName(name) == PotionEffectType.HEAL)) {
@@ -1302,6 +1303,27 @@ public class infernal_mobs extends JavaPlugin implements Listener {
             String effect = this.lootFile.getString("potionEffects." + effectID + ".particleEffect");
             showEffectParticles(e, effect, 15);
         }
+    }
+    
+    public void applyEatEffects(LivingEntity e, int effectID) {
+    	for(String s : (ArrayList<String>)this.lootFile.getList("consumeEffects." + effectID + ".potionEffects")) {
+    		String[] split = s.split(":");
+    		String name = split[0];
+    		int level = Integer.parseInt(split[1]);
+	        int time = Integer.parseInt(split[2]);
+	        if((name.equalsIgnoreCase("fertility")) && (e instanceof Player)) {
+	        	fertileList.add(((Player)e));
+	        	final Player p = (Player) e;
+				Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
+					public void run() {
+						fertileList.remove(p);
+					}
+				}, (time*20));
+	        }else
+	        	e.addPotionEffect(new PotionEffect(PotionEffectType.getByName(name), time*20, level - 1), true);
+    	}
+        if(e instanceof Player)
+        	((Player)e).sendMessage(this.lootFile.getString("consumeEffects." + effectID + ".message").replace("&", "§"));
     }
 
     private void showEffectParticles(final Entity p, final String e, int time) {
@@ -2270,7 +2292,7 @@ public class infernal_mobs extends JavaPlugin implements Listener {
         }
     }
 
-    private int rand(int min, int max) {
+    public int rand(int min, int max) {
         return min + (int) (Math.random() * (1 + max - min));
     }
 
@@ -2686,6 +2708,9 @@ public class infernal_mobs extends JavaPlugin implements Listener {
                                     int id = idSearch(e.getUniqueId());
                                     if (id != -1) {
                                         removeMob(id);
+                                        if(e instanceof LivingEntity) {
+                                        	((LivingEntity)e).setCustomName(null);
+                                        }
                                         this.getLogger().log(Level.INFO, "Entity remove due to /killall");
                                         e.remove();
                                     }

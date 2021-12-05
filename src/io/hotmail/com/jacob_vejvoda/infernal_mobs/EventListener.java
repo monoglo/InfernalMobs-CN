@@ -3,18 +3,21 @@ package io.hotmail.com.jacob_vejvoda.infernal_mobs;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
+import org.bukkit.event.entity.EntityBreedEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.weather.LightningStrikeEvent;
@@ -119,6 +122,37 @@ public class EventListener implements Listener {
             return ((Player) entity).getEyeLocation().toVector();
         else
             return entity.getLocation().toVector();
+    }
+    
+    @EventHandler
+    public void onEntityBreed(EntityBreedEvent e) {
+    	if(e.getBreeder() instanceof Player) {
+    		Player p = (Player) e.getBreeder();
+    		if(plugin.fertileList.contains(p)) {
+    			for(int i = 0; i < plugin.rand(1, 4); i++) {
+    				LivingEntity babe = (LivingEntity) e.getEntity().getLocation().getWorld().spawnEntity(e.getEntity().getLocation(), e.getEntityType());
+    				if(babe instanceof Ageable)
+    					((Ageable)babe).setBaby();
+    				if(e.getEntity() instanceof Sheep)
+    					((Sheep)babe).setColor(((Sheep)e.getEntity()).getColor());
+    			}
+    		}
+    	}
+    }
+    
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onPlayerItemConsumeEvent(PlayerItemConsumeEvent e) {
+    	Player p = e.getPlayer();
+    	ItemStack check = e.getItem();
+    	YamlConfiguration lootFile = plugin.lootFile;
+        if (lootFile.getString("consumeEffects") != null)
+            for (String id : lootFile.getConfigurationSection("consumeEffects").getKeys(false))
+                if (lootFile.getString("consumeEffects." + id + ".requiredItem") != null) {
+                	ItemStack neededItem = plugin.getItem(lootFile.getInt("consumeEffects." + id + ".requiredItem"));
+                    if ((neededItem.getItemMeta() != null) && (check.getItemMeta().getDisplayName().equals(neededItem.getItemMeta().getDisplayName()))) 
+                    	if (check.getType().equals(neededItem.getType()))
+                    		plugin.applyEatEffects(p, Integer.parseInt(id));
+                }
     }
 
     @EventHandler(priority = EventPriority.HIGH)
