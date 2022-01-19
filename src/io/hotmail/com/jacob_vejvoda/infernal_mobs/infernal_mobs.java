@@ -2293,7 +2293,7 @@ public class infernal_mobs extends JavaPlugin implements Listener {
     	case "flying":
     	return "飞行";
     	case "mounted":
-    	return "坐骑";
+    	return "骑兵";
     	case "morph":
     	return "变形";
     	case "ghost":

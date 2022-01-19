@@ -246,7 +246,7 @@ potionEffects:
 consumeEffects:
   '1':
     requiredItem: 115
-    message: '&eYou consumed the fruit of Odin... &cNOW SHOW YOUR WORTH!'
+    message: '&e你食用了奥丁之果... &c现在展现你的价值!'
     potionEffects: 
       - INCREASE_DAMAGE:1:60
       - REGENERATION:1:60
@@ -254,7 +254,7 @@ consumeEffects:
       - SPEED:1:60
   '2':
     requiredItem: 116
-    message: '&eYou consumed some poop off the ground.. &cWHY?'
+    message: '&e你食用了地上的便便.. &c为什么!?'
     potionEffects: 
       - BAD_OMEN:1:300
       - CONFUSION:1:300
@@ -262,7 +262,7 @@ consumeEffects:
       - POISON:1:60
   '3':
     requiredItem: 117
-    message: "&eThe power of the god's courses through your veins!"
+    message: "&e神的力量在你的血液中流淌!"
     potionEffects: 
       - HEALTH_BOOST:1:120
       - DAMAGE_RESISTANCE:2:120
@@ -270,14 +270,14 @@ consumeEffects:
       - REGENERATION:2:120
   '4':
     requiredItem: 65
-    message: '&c&lYou a mere mortal, have been cursed for your pride...'
+    message: '&c&l你身为一个凡人，现在因为你的骄傲而被诅咒...'
     potionEffects: 
       - WITHER:5:60
       - HARM:2:5
       - BLINDNESS:1:60
   '5':
     requiredItem: 118
-    message: '&5&lAn ancient power rises in you...'
+    message: '&5&l一股古老的力量在你心中升起...'
     potionEffects: 
       - GLOWING:1:60
       - INCREASE_DAMAGE:5:60
@@ -285,13 +285,13 @@ consumeEffects:
       - REGENERATION:5:60
   '6':
     requiredItem: 119
-    message: '&dLove is in the air...'
+    message: '&d爱无所不在...'
     potionEffects: 
       - fertility:1:60
       - INCREASE_DAMAGE:10:10
   '7':
     requiredItem: 120
-    message: '&7&lThe earth trembles under your feet...'
+    message: '&7&l大地在你脚下颤抖...'
     potionEffects: 
       - FAST_DIGGING:10:300
 loot:
