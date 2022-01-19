@@ -2230,6 +2230,93 @@ public class infernal_mobs extends JavaPlugin implements Listener {
         }
         return namesString.toString();
     }
+    private static String translateAbilityToZHCN(String ability) {
+    	switch (ability) {
+    	case "mama":
+    	return "妈妈";
+    	case "molten":
+    	return "熔火";
+    	case "weakness":
+    	return "虚弱";
+    	case "vengeance":
+    	return "复仇";
+    	case "webber":
+    	return "织网";
+    	case "storm":
+    	return "风暴";
+    	case "sprint":
+    	return "疾速";
+    	case "lifesteal":
+    	return "吸血";
+    	case "ghastly":
+    	return "火球";
+    	case "ender":
+    	return "末影";
+    	case "cloaked":
+    	return "隐形";
+    	case "berserk":
+    	return "狂暴";
+    	case "1up":
+    	return "不死图腾";
+    	case "sapper":
+    	return "饥荒";
+    	case "rust":
+    	return "锈蚀";
+    	case "bullwark":
+    	return "壁垒";
+    	case "quicksand":
+    	return "流沙";
+    	case "thief":
+    	return "盗贼";
+    	case "tosser":
+    	return "投掷";
+    	case "withering":
+    	return "凋零";
+    	case "blinding":
+    	return "失明";
+    	case "armoured":
+    	return "装甲";
+    	case "poisonous":
+    	return "剧毒";
+    	case "potions":
+    	return "女巫";
+    	case "explode":
+    	return "临别礼物";
+    	case "gravity":
+    	return "失重";
+    	case "archer":
+    	return "箭雨";
+    	case "necromancer":
+    	return "死灵法师";
+    	case "firework":
+    	return "烟花";
+    	case "flying":
+    	return "飞行";
+    	case "mounted":
+    	return "坐骑";
+    	case "morph":
+    	return "变形";
+    	case "ghost":
+    	return "亡魂";
+    	case "confusing":
+    	return "混乱";
+    	default:
+    		return "";
+    	}
+    }
+    String generateStringZHCN(int maxNames, List<String> names) {
+        StringBuilder namesString = new StringBuilder();
+        if (maxNames > names.size()) {
+            maxNames = names.size();
+        }
+        for (int i = 0; i < maxNames; i++) {
+            namesString.append(translateAbilityToZHCN(names.get(i))).append(" ");
+        }
+        if (names.size() > maxNames) {
+            namesString.append("... ");
+        }
+        return namesString.toString();
+    }
 
     private void reloadLoot() {
         if (this.lootYML == null) {

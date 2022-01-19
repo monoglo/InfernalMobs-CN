@@ -298,8 +298,8 @@ loot:
   '1':
     item: IRON_AXE
     amount: 1
-    name: '&2Murder Axe'
-    lore1: '&aFor felling the undead!'
+    name: '&2杀戮之斧'
+    lore1: '&a感受不死的力量!'
     unbreaking: 8
     enchantments:
       '1':
@@ -309,8 +309,8 @@ loot:
     item: BOW
     amount: 1
     unbreaking: 10
-    name: '&cFlame &6Bow'
-    lore1: '&eShoots fire to the heavens!'
+    name: '&c焰火 &6长弓'
+    lore1: '&e星星之火必将穿破天境!'
     enchantments:
       '1':
         enchantment: infinity
@@ -322,8 +322,8 @@ loot:
     item: IRON_SWORD
     amount: 1
     unbreaking: 90
-    name: '&6Sword of fortune'
-    lore1: '&eMay the luck be ever in your favor'
+    name: '&6时运之剑'
+    lore1: '&e也许幸运总是会和你撞个满怀'
     enchantments:
       '1':
         enchantment: looting
@@ -332,8 +332,8 @@ loot:
     item: WOOD_SWORD
     amount: 1
     unbreaking: 0
-    name: Wacker
-    lore1: "Wack 'em back!"
+    name: '挥挥手'
+    lore1: "击飞他们!"
     enchantments:
       '1':
         enchantment: knockback
@@ -345,8 +345,8 @@ loot:
     item: DIAMOND_SWORD
     amount: 1
     unbreaking: 10
-    name: '&8Arthropod Bane'
-    lore1: '&7Slays spiders like a hot knife through butter'
+    name: '&8节肢动物的恐惧'
+    lore1: '&7对蜘蛛如黄油般切开'
     enchantments:
       '1':
         enchantment: bane_of_arthropods
@@ -355,8 +355,8 @@ loot:
     item: DIAMOND_SWORD
     amount: 1
     unbreaking: 2
-    name: '&fThe Excalibur'
-    lore1: '&7King Author''s sword.'
+    name: '&fEX 咖喱棒&7(圣剑)'
+    lore1: '&7圣主之剑.'
     enchantments:
       '1':
         enchantment: sharpness
@@ -371,8 +371,8 @@ loot:
     item: DIAMOND_SHOVEL
     amount: 1
     unbreaking: 10
-    name: '&7Backhoe'
-    lore1: '&8Digs too fast!'
+    name: '&7双头铲'
+    lore1: '&8超速掘土!'
     enchantments:
       '1':
         enchantment: efficiency
@@ -384,8 +384,8 @@ loot:
     item: DIAMOND_PICKAXE
     amount: 1
     unbreaking: 15
-    name: '&fSilky'
-    lore1: '&7Silkier than milk!'
+    name: '&f丝滑'
+    lore1: '&7德芙,纵享丝滑!'
     enchantments:
       '1':
         enchantment: silk_touch
@@ -397,8 +397,8 @@ loot:
     item: DIAMOND_AXE
     amount: 1
     unbreaking: 250
-    name: '&cCanadian Axe'
-    lore1: '&fChops way to fast!'
+    name: '&c加式手斧'
+    lore1: '&f更快的劈砍!'
     enchantments:
       '1':
         enchantment: smite
@@ -413,8 +413,8 @@ loot:
     item: GOLDEN_SWORD
     amount: 1
     unbreaking: 1
-    name: '&6Butter Knife'
-    lore1: '&eCan only cut butter...'
+    name: '&6黄油刀'
+    lore1: '&e只能拿来切黄油...'
     enchantments:
       '1':
         enchantment: sharpness
@@ -426,8 +426,8 @@ loot:
     item: GOLDEN_SHOVEL
     amount: 1
     unbreaking: 5
-    name: '&6GOLDEN Spoon'
-    lore1: '&eUse with caution.'
+    name: '&6黄金勺子'
+    lore1: '&e应当小心使用.'
     enchantments:
       '1':
         enchantment: fortune
@@ -438,8 +438,8 @@ loot:
   '13':
     item: GOLDEN_PICKAXE
     amount: 1
-    name: '&7Glass Drill'
-    lore1: '&8Use in case of emergency!'
+    name: '&7玻璃钻头'
+    lore1: '&8除紧急情况外不得使用!'
     enchantments:
       '1':
         enchantment: efficiency
@@ -451,8 +451,8 @@ loot:
     item: GOLDEN_AXE
     amount: 1
     unbreaking: 8
-    name: '&cAmerican &fAxe'
-    lore1: '&1Worse than the Canadian axe...'
+    name: '&c美式 &f手斧'
+    lore1: '&1比加式手斧还难以趁手...'
     enchantments:
       '1':
         enchantment: efficiency
@@ -464,8 +464,8 @@ loot:
     item: IRON_HOE
     amount: 1
     unbreaking: 5
-    name: '&fQuarts Hoe'
-    lore1: '&yBetter than iron!'
+    name: '&f石英斧'
+    lore1: '&y比铁制的好多了!'
     enchantments:
       '1':
         enchantment: unbreaking
@@ -474,9 +474,9 @@ loot:
     item: DIAMOND_HOE
     amount: 1
     unbreaking: 10
-    name: Magic Hoe
-    lore1: Forged by God.
-    lore2: "Well, by God's Gardener"
+    name: 魔法锄头
+    lore1: 由神锻造
+    lore2: "好吧, 其实是他的园丁做的"
     enchantments:
       '1':
         enchantment: unbreaking
@@ -485,8 +485,8 @@ loot:
     item: LEATHER_CHESTPLATE
     amount: 1
     unbreaking: 50
-    name: '&4Old Shirt'
-    lore1: '&4Still good!'
+    name: '&4旧衬衫'
+    lore1: '&4仍然值得使用!'
     enchantments:
       '1':
         enchantment: fire_protection
@@ -501,8 +501,8 @@ loot:
     item: CHAINMAIL_HELMET
     amount: 1
     unbreaking: 30
-    name: '&9Water Helmet'
-    lore1: '&1Go in the sea!'
+    name: '&9海洋头盔'
+    lore1: '&1深潜!'
     enchantments:
       '1':
         enchantment: respiration
@@ -514,8 +514,8 @@ loot:
     item: CHAINMAIL_CHESTPLATE
     amount: 1
     unbreaking: 30
-    name: '&2Creeper Gear'
-    lore1: '&aPart 2'
+    name: '&2苦力怕装备'
+    lore1: '&a这是第二件'
     enchantments:
       '1':
         enchantment: blast_protection
@@ -527,8 +527,8 @@ loot:
     item: CHAINMAIL_LEGGINGS
     amount: 1
     unbreaking: 50
-    name: Thorny Pants
-    lore1: Very Sharp...
+    name: 荆棘裤子
+    lore1: 很扎人...
     enchantments:
       '1':
         enchantment: fire_protection
@@ -543,8 +543,8 @@ loot:
     item: CHAINMAIL_BOOTS
     amount: 1
     unbreaking: 10
-    name: '&7Travellers Boots'
-    lore1: '&8Go on a journey!'
+    name: '&7旅行者之靴'
+    lore1: '&8从脚下开始吧!'
     enchantments:
       '1':
         enchantment: thorns
@@ -556,8 +556,8 @@ loot:
     item: IRON_HELMET
     amount: 1
     unbreaking: 90
-    name: '&7Rusty Iron Helm'
-    lore1: '&8Rusted but still good.'
+    name: '&7锈铁头盔'
+    lore1: '&8锈蚀但仍不失光辉.'
     enchantments:
       '1':
         enchantment: protection
@@ -569,8 +569,8 @@ loot:
     item: IRON_CHESTPLATE
     amount: 1
     unbreaking: 50
-    name: '&cArchers Vest'
-    lore1: '&4Take an arrow to the knee!'
+    name: '&c弓箭手背心'
+    lore1: '&4直到我膝盖中了一箭!'
     enchantments:
       '1':
         enchantment: projectile_protection
@@ -579,8 +579,8 @@ loot:
     item: IRON_LEGGINGS
     amount: 1
     unbreaking: 20
-    name: Firemen Pants
-    lore1: Take 'em to a fire!
+    name: 消防员背心
+    lore1: 与火共舞!
     enchantments:
       '1':
         enchantment: fire_protection
@@ -592,8 +592,8 @@ loot:
     item: IRON_BOOTS
     amount: 1
     unbreaking: 10
-    name: Fall Far Boots
-    lore1: Mark 1
+    name: 远足之鞋
+    lore1: 标记 1
     enchantments:
       '1':
         enchantment: feather_falling
@@ -605,8 +605,8 @@ loot:
     item: GOLDEN_HELMET
     amount: 1
     unbreaking: 12
-    name: '&9Fish Hat'
-    lore1: '&1Be the fish.'
+    name: '&9鱼帽'
+    lore1: '&1做一条鱼.'
     enchantments:
       '1':
         enchantment: aqua_affinity
@@ -621,8 +621,8 @@ loot:
     item: GOLDEN_CHESTPLATE
     amount: 1
     unbreaking: 80
-    name: '&9Fish Body'
-    lore1: '&1Be the fish.'
+    name: '&9鱼身'
+    lore1: '&1做一条鱼.'
     enchantments:
       '1':
         enchantment: protection
@@ -634,8 +634,8 @@ loot:
     item: GOLDEN_LEGGINGS
     amount: 1
     unbreaking: 60
-    name: '&9Fish Legs'
-    lore1: '&1Be the fish.'
+    name: '&9鱼护腿'
+    lore1: '&1做一条鱼'
     enchantments:
       '1':
         enchantment: fire_protection
@@ -650,8 +650,8 @@ loot:
     item: GOLDEN_BOOTS
     amount: 1
     unbreaking: 40
-    name: '&9Fish Feet'
-    lore1: '&1Be the fish.'
+    name: '&9鱼蹼'
+    lore1: '&1做一条鱼.'
     enchantments:
       '1':
         enchantment: thorns
@@ -666,8 +666,8 @@ loot:
     item: DIAMOND_HELMET
     amount: 1
     unbreaking: 22
-    name: '&3Drowned Helm'
-    lore1: '&3From the Drowned Gods watery halls.'
+    name: '&3溺尸之盔'
+    lore1: '&3来自淹死之神的宫殿.'
     enchantments:
       '1':
         enchantment: blast_protection
@@ -682,8 +682,8 @@ loot:
     item: DIAMOND_CHESTPLATE
     amount: 1
     unbreaking: 10
-    name: '&3Drowned Plate'
-    lore1: '&3From the Drowned Gods watery halls.'
+    name: '&3溺尸之甲'
+    lore1: '&3来自淹死之神的宫殿.'
     enchantments:
       '1':
         enchantment: blast_protection
@@ -695,8 +695,8 @@ loot:
     item: DIAMOND_LEGGINGS
     amount: 1
     unbreaking: 3
-    name: '&3Drowned Leggings'
-    lore1: '&3From the Drowned Gods watery halls.'
+    name: '&3溺尸之护腿'
+    lore1: '&3来自淹死之神的宫殿.'
     enchantments:
       '1':
         enchantment: protection
@@ -708,8 +708,8 @@ loot:
     item: DIAMOND_BOOTS
     amount: 1
     unbreaking: 9
-    name: '&3Drowned Boots'
-    lore1: '&3From the Drowned Gods watery halls.'
+    name: '&3溺尸之靴子'
+    lore1: '&3来自淹死之神的宫殿.'
     enchantments:
       '1':
         enchantment: thorns
@@ -727,20 +727,20 @@ loot:
     item: GOLDEN_APPLE
     amount: 2
     unbreaking: 0
-    name: "&eThor's Apple"
-    lore1: '&eStolen from Thors own table.'
+    name: '&e雷果'
+    lore1: '&e从雷神桌上窃得.'
   '35':
     item: GOLDEN_CARROT
     amount: 3
     unbreaking: 0
-    name: Easter Bunny's Carrot
-    lore1: He will kill to get it back!
+    name: 彩蛋兔兔的胡萝卜
+    lore1: 不计一切代价夺回它!
   '36':
     item: DIAMOND_SWORD
     amount: 1
     unbreaking: 11
-    name: Spider Whacker
-    lore1: Whack spiders.
+    name: 蜘蛛劈砍者
+    lore1: 切开那些讨厌的蜘蛛.
     enchantments:
       '1':
         enchantment: knockback
@@ -749,8 +749,8 @@ loot:
     item: DIAMOND_SHOVEL
     amount: 1
     unbreaking: 10
-    name: '&aGardener''s SHOVEL'
-    lore1: '&aDig in the garden.'
+    name: '&a园丁的铲子'
+    lore1: '&a在花园里挖掘.'
     enchantments:
       '1':
         enchantment: silk_touch
@@ -762,8 +762,8 @@ loot:
     item: DIAMOND_PICKAXE
     amount: 1
     unbreaking: 19
-    name: Dwarf's Pick
-    lore1: Diggy diggy hole.
+    name: 地精之镐
+    lore1: 挖洞洞.
     enchantments:
       '1':
         enchantment: fortune
@@ -775,8 +775,8 @@ loot:
     item: DIAMOND_AXE
     amount: 1
     unbreaking: 30
-    name: '&7Battle Axe'
-    lore1: '&8Saxon war axe.'
+    name: '&7战斧'
+    lore1: '&8撒克逊人使用的斧头.'
     enchantments:
       '1':
         enchantment: smite
@@ -788,8 +788,8 @@ loot:
     item: GOLDEN_SWORD
     amount: 1
     unbreaking: 10
-    name: '&4Demon Sword'
-    lore1: '&cFiery hot!'
+    name: '&4恶魔之剑'
+    lore1: '&c烫死我了!'
     enchantments:
       '1':
         enchantment: sharpness
@@ -801,8 +801,8 @@ loot:
     item: GOLDEN_SHOVEL
     amount: 1
     unbreaking: 1
-    name: '&6Disposable Quick SHOVEL'
-    lore1: '&eQuick but disposable.'
+    name: '&6一次性铲子'
+    lore1: '&e用起来很好,但是可惜很快就坏了.'
     enchantments:
       '1':
         enchantment: efficiency
@@ -814,8 +814,8 @@ loot:
     item: GOLDEN_PICKAXE
     amount: 1
     unbreaking: 50
-    name: '&6Butter Pick'
-    lore1: '&ePractically made from butter.'
+    name: '&6黄油镐'
+    lore1: '&e全部都是黄油做的.'
     enchantments:
       '1':
         enchantment: fortune
@@ -827,8 +827,8 @@ loot:
     item: GOLDEN_AXE
     amount: 1
     unbreaking: 40
-    name: Slim Axe
-    lore1: Small but deadly
+    name: 小斧头
+    lore1: 麻雀虽小,五脏俱全.
     enchantments:
       '1':
         enchantment: sharpness
@@ -840,8 +840,8 @@ loot:
     item: IRON_HOE
     amount: 1
     unbreaking: 50
-    name: '&7Old Hoe'
-    lore1: '&8Not much use.'
+    name: '&7旧锄头'
+    lore1: '&8再也没有被使用过.'
     enchantments:
       '1':
         enchantment: unbreaking
@@ -850,8 +850,8 @@ loot:
     item: DIAMOND_HOE
     amount: 1
     unbreaking: 10
-    name: '&aGardener''s Hoe'
-    lore1: '&aBe a Gardener'
+    name: '&a园丁的锄头'
+    lore1: '&a做一个园丁.'
     enchantments:
       '1':
         enchantment: unbreaking
@@ -860,8 +860,8 @@ loot:
     item: LEATHER_CHESTPLATE
     amount: 1
     unbreaking: 50
-    name: '&4Boiled Leather Shirt'
-    lore1: '&4Better than nothing.'
+    name: '&4水煮皮衬衫'
+    lore1: '&4比没有好.'
     enchantments:
       '1':
         enchantment: protection
@@ -876,8 +876,8 @@ loot:
     item: CHAINMAIL_HELMET
     amount: 1
     unbreaking: 30
-    name: '&7Sharp Hat'
-    lore1: '&8So sharp...'
+    name: '&7锋利帽子'
+    lore1: '&8好尖锐...'
     enchantments:
       '1':
         enchantment: thorns
@@ -889,8 +889,8 @@ loot:
     item: CHAINMAIL_CHESTPLATE
     amount: 1
     unbreaking: 30
-    name: '&7Sharp Chest'
-    lore1: '&8So sharp...'
+    name: '&7锋利胸甲'
+    lore1: '&8好尖锐...'
     enchantments:
       '1':
         enchantment: fire_protection
@@ -902,8 +902,8 @@ loot:
     item: CHAINMAIL_LEGGINGS
     amount: 1
     unbreaking: 50
-    name: '&4Traveller''s Pants'
-    lore1: '&4Worn but still good.'
+    name: '&4旅行者裤子'
+    lore1: '&4用旧了,但仍然很好用.'
     enchantments:
       '1':
         enchantment: protection
@@ -912,8 +912,8 @@ loot:
     item: CHAINMAIL_BOOTS
     amount: 1
     unbreaking: 10
-    name: Strong Boots
-    lore1: So strong!
+    name: 强壮靴子
+    lore1: 让我变得坚挺!
     enchantments:
       '1':
         enchantment: protection
@@ -925,8 +925,8 @@ loot:
     item: IRON_HELMET
     amount: 1
     unbreaking: 30
-    name: Cast Iron Helm
-    lore1: Its Iron but cast.
+    name: 铸铁头盔
+    lore1: 它是铁,但是是铸铁.
     enchantments:
       '1':
         enchantment: protection
@@ -938,8 +938,8 @@ loot:
     item: IRON_CHESTPLATE
     amount: 1
     unbreaking: 15
-    name: '&7Spiked Chestplate'
-    lore1: '&8Nothing can survive this.'
+    name: '&7尖刺胸甲'
+    lore1: '&8碰到它的人可倒霉了.'
     enchantments:
       '1':
         enchantment: thorns
@@ -948,8 +948,8 @@ loot:
     item: IRON_LEGGINGS
     amount: 1
     unbreaking: 10
-    name: '&cArchers Pants'
-    lore1: '&4Stops ''em arrows.'
+    name: '&c弓箭手护腿'
+    lore1: '&4弹开那些讨厌的箭矢.'
     enchantments:
       '1':
         enchantment: projectile_protection
@@ -961,8 +961,8 @@ loot:
     item: IRON_BOOTS
     amount: 1
     unbreaking: 5
-    name: Stiletto Heels
-    lore1: Don't walk one me!
+    name: 细高跟
+    lore1: 别碰我!
     enchantments:
       '1':
         enchantment: thorns
@@ -974,8 +974,8 @@ loot:
     item: GOLDEN_HELMET
     amount: 1
     unbreaking: 2
-    name: '&0Death Mask'
-    lore1: '&8Breath death itself!'
+    name: '&0死亡面具'
+    lore1: '&8感受死亡!'
     enchantments:
       '1':
         enchantment: thorns
@@ -990,10 +990,10 @@ loot:
     item: GOLDEN_CHESTPLATE
     amount: 1
     unbreaking: 8
-    name: '&6Kings Breastplate'
-    lore1: '&eOnly for kings,'
-    lore2: '&eThose of noble birth,'
-    lore3: '&eNot you...'
+    name: '&6王之护甲'
+    lore1: '&e仅为王铸造,'
+    lore2: '&e出生贵族者,'
+    lore3: '&e不是你...'
     enchantments:
       '1':
         enchantment: protection
@@ -1011,8 +1011,8 @@ loot:
     item: DIAMOND_LEGGINGS
     amount: 1
     unbreaking: 16
-    name: '&cArchers Pants MK 2'
-    lore1: '&4Even better than MK 1!'
+    name: '&c弓箭手护腿 MK-2 型'
+    lore1: '&4比 MK-1 好很多了!'
     enchantments:
       '1':
         enchantment: projectile_protection
@@ -1024,8 +1024,8 @@ loot:
     item: DIAMOND_BOOTS
     amount: 1
     unbreaking: 40
-    name: '&27 League Boots'
-    lore1: '&2Just say the magic word.'
+    name: '&2七号靴子'
+    lore1: '&2这就是魔法.'
     enchantments:
       '1':
         enchantment: feather_falling
@@ -1037,8 +1037,8 @@ loot:
     item: DIAMOND_HELMET
     amount: 1
     unbreaking: 22
-    name: '&bMermen Helm'
-    lore1: '&bDon''t drown!'
+    name: '&b人鱼头盔'
+    lore1: '&b别淹死了!'
     enchantments:
       '1':
         enchantment: protection
@@ -1053,8 +1053,8 @@ loot:
     item: DIAMOND_CHESTPLATE
     amount: 1
     unbreaking: 16
-    name: '&cArchers Vest MK2'
-    lore1: '&4Also has spikes!'
+    name: '&c弓箭手背心 MK2'
+    lore1: '&4它也有尖刺!'
     enchantments:
       '1':
         enchantment: projectile_protection
@@ -1066,8 +1066,8 @@ loot:
     item: BOW
     amount: 1
     unbreaking: 30
-    name: '&2Robinhood''s Bow'
-    lore1: '&4The Legend Lives!'
+    name: '&2罗宾汉的弓'
+    lore1: '&4传说犹在!'
     enchantments:
       '1':
         enchantment: unbreaking
@@ -1088,8 +1088,8 @@ loot:
     item: BOW
     amount: 1
     unbreaking: 20
-    name: '&eBrave Flame Bow'
-    lore1: '&cBurnt may a village.'
+    name: '&e凤凰之影'
+    lore1: '&c烧毁的可能是一整个村子.'
     enchantments:
       '1':
         enchantment: unbreaking
@@ -1104,8 +1104,8 @@ loot:
     item: BOW
     amount: 1
     unbreaking: 100
-    name: '&6Squaw Flame Bow'
-    lore1: '&4Cooked many a pig!'
+    name: '&6狱炎弓'
+    lore1: '&4热量足以烤熟一头猪!'
     enchantments:
       '1':
         enchantment: flame
@@ -1117,8 +1117,8 @@ loot:
     item: BOW
     amount: 1
     unbreaking: 0
-    name: '&cArchers Bow'
-    lore1: '&4Time to shoot!'
+    name: '&c弓箭手长弓'
+    lore1: '&4瞄准,发射!'
     enchantments:
       '1':
         enchantment: unbreaking
@@ -1133,14 +1133,14 @@ loot:
     item: GOLDEN_APPLE
     amount: 1
     unbreaking: 1
-    name: '&6God Apple'
-    lore1: '&6Not eaten my mortals!'
-    lore2: '&6And never can be!'
+    name: '&6神之果'
+    lore1: '&6从没有凡人吃过我!'
+    lore2: '&6也永远不可能吃到我!'
   '66':
     item: ZOMBIE_HEAD
     amount: 1
-    name: '&2Zombie Gear'
-    lore1: '&2Part 1'
+    name: '&2僵尸装备'
+    lore1: '&2第 1 部分'
     enchantments:
       '1':
         enchantment: thorns
@@ -1148,32 +1148,32 @@ loot:
   '67':
     item: NETHER_STAR
     amount: 1
-    name: '&4Nether Star'
-    lore1: '&0From the depths of the Nether!'
+    name: '&4下界之星'
+    lore1: '&0来自地狱深层!'
   '68':
     item: POTION
     amount: 8
     potion: POISON
-    name: '&aPoison Potion'
-    lore1: '&2Very deadly.'
+    name: '&a毒药'
+    lore1: '&2很致命.'
   '69':
     item: POTION
     amount: 6
     potion: INVISIBILITY
-    name: '&fInvisibility Potion'
-    lore1: '&7From nowhere?'
+    name: '&f隐身药水'
+    lore1: '&7哪儿来的?'
   '70':
     item: POTION
     amount: 5
     potion: HEAL
-    name: '&dLife Potion'
-    lore1: '&5Not many left on earth.'
+    name: '&d生命药水'
+    lore1: '&5在世界上所剩不多.'
   '71':
     item: IRON_HELMET
     amount: 1
     unbreaking: 10
-    name: '&3Eliminator''s Helmet'
-    lore1: '&eOnly for the best!'
+    name: '&3消灭者头盔'
+    lore1: '&e只为最好!'
     enchantments:
       '1':
         enchantment: protection
@@ -1191,8 +1191,8 @@ loot:
     item: DIAMOND_CHESTPLATE
     amount: 1
     unbreaking: 10
-    name: '&3Eliminator''s Chestplate'
-    lore1: '&eYou have to be awesome!'
+    name: '&3消灭者胸甲'
+    lore1: '&e你将会变得强大!'
     enchantments:
       '1':
         enchantment: protection
@@ -1207,8 +1207,8 @@ loot:
     item: IRON_LEGGINGS
     amount: 1
     unbreaking: 10
-    name: '&3Eliminator''s Pants'
-    lore1: '&eThe most epic!'
+    name: '&3消灭者护腿'
+    lore1: '&e史诗级的装备!'
     enchantments:
       '1':
         enchantment: protection
@@ -1223,8 +1223,8 @@ loot:
     item: IRON_BOOTS
     amount: 1
     unbreaking: 10
-    name: '&3Eliminator''s Boots'
-    lore1: '&eThat much more cool!'
+    name: '&3消灭者靴子'
+    lore1: '&e看起来更酷了!'
     enchantments:
       '1':
         enchantment: protection
@@ -1241,13 +1241,13 @@ loot:
   '75':
     item: GLISTERING_MELON_SLICE
     amount: 1
-    name: '&6Hunger Charm'
-    lore1: '&7Hunger no more'
+    name: '&6饥饿符咒'
+    lore1: '&7再也没有饥饿'
   '76':
     item: IRON_SWORD
     amount: 1
-    name: '&aPoisoned Blade'
-    lore1: '&2Poison all ye strike!'
+    name: '&a毒刃'
+    lore1: '&2刀刀致命!'
     enchantments:
       '1':
         enchantment: unbreaking
@@ -1258,8 +1258,8 @@ loot:
   '77':
     item: STICK
     amount: 1
-    name: '&4Vampire Stake'
-    lore1: '&cHeals you when used'
+    name: '&4吸血鬼长棒'
+    lore1: '&c使用时可以为你回血'
     enchantments:
       '1':
         enchantment: sharpness
@@ -1267,44 +1267,44 @@ loot:
   '78':
     item: RABBIT_FOOT
     amount: 1
-    name: '&7Bunny Charm'
-    lore1: '&8Jump Higher'
+    name: '&7兔符咒'
+    lore1: '&8跳得更高'
   '79':
     item: WITHER_SKELETON_SKULL
     amount: 1
     unbreaking: 1
-    name: '&7Wither Charm'
-    lore1: '&8Wither all ye fight!'
+    name: '&7凋零符咒'
+    lore1: '&8为死亡献上心脏!'
   '80':
     item: FIREWORK_ROCKET
     amount: 1
-    name: '&7Cloak Charm'
-    lore1: '&8They will see you not'
+    name: '&7斗篷符咒'
+    lore1: '&8他们看不见你'
   '81':
     item: BONE
     amount: 1
-    name: '&cWeakness Charm'
-    lore1: '&4Weaken your foes'
+    name: '&c虚弱符咒'
+    lore1: '&4削弱你的敌人'
   '82':
     item: PRISMARINE_CRYSTALS
     amount: 1
-    name: '&bAqua Charm'
-    lore1: '&3Become the fish...'
+    name: '&b水之符咒'
+    lore1: '&3成为一条鱼...'
   '83':
     item: PRISMARINE_SHARD
     amount: 1
-    name: '&bGuardian Tooth'
-    lore1: '&3It can only make'
-    lore2: '&3you stronger!'
+    name: '&b守卫者牙齿'
+    lore1: '&3它只会让你'
+    lore2: '&3变得更强!'
   '84':
     item: SPONGE
     amount: 1
     unbreaking: 1
-    name: '&eSoggy Sponge'
+    name: '&e湿海绵'
   '85':
     item: ELYTRA
     amount: 1
-    name: '&4Beetle Wings'
+    name: '&4甲虫翅膀'
     enchantments:
       '1':
         enchantment: protection
@@ -1316,10 +1316,10 @@ loot:
     item: DIAMOND_SWORD
     amount: 1
     name:
-    - '&c&lNether Sword'
-    - '&c&lWither Sword'
-    - '&c&lGhast Sword'
-    - '&c&lMagma Sword'
+    - '&c&l下界之剑'
+    - '&c&l凋零之剑'
+    - '&c&l恶鬼之刃'
+    - '&c&l岩浆之刃'
     enchantments:
       '1':
         enchantment: sharpness
@@ -1356,17 +1356,17 @@ loot:
   '87':
     item: DRAGON_BREATH
     amount: 1
-    name: '&e&lAngel Soul'
-    lore1: '&6Bottled for your convenience'
+    name: '&e&l圣魂'
+    lore1: '&6为你便利而装瓶'
   '88':
     item: BEETROOT_SEEDS
     amount: 1
-    name: '&6GOLDEN Coins'
-    lore1: '&7They bring you luck'
+    name: '&6金币'
+    lore1: '&7为你带来好运'
   '89':
     item: IRON_SWORD
     amount: 1
-    name: '&f&lSky Sword'
+    name: '&f&l空境之刃'
     enchantments:
       '1':
         enchantment: unbreaking
@@ -1383,7 +1383,7 @@ loot:
     item: SHIELD
     amount: 1
     unbreaking: 0
-    name: '&7&lShield of Power'
+    name: '&7&l力量之盾'
     colour: YELLOW
     patterns:
     - ==: Pattern
@@ -1396,8 +1396,8 @@ loot:
     item: DIAMOND_SWORD
     amount: 1
     unbreaking: 90
-    name: '&c&lDemon Blade'
-    lore1: '&4Forged in the depths of the nether!'
+    name: '&c&l恶魔之刃'
+    lore1: '&4来自地狱深处!'
     enchantments:
       '1':
         enchantment: fire_aspect
@@ -1408,8 +1408,8 @@ loot:
   '92':
     item: SUGAR
     amount: 1
-    name: '&fSugar of Ianite'
-    lore1: '&8Gives you the speed of Ianite.'
+    name: '&f因安缇的糖果'
+    lore1: '&8让你变得很快.'
     enchantments:
       '1':
         enchantment: unbreaking
@@ -1417,7 +1417,7 @@ loot:
   '93':
     item: TOTEM_OF_UNDYING
     amount: 1
-    name: '&4Totem of Death'
+    name: '&4死亡图腾'
     enchantments:
       '1':
         enchantment: thorns
@@ -1425,7 +1425,7 @@ loot:
   '94':
     item: TOTEM_OF_UNDYING
     amount: 1
-    name: '&eTotem of Life'
+    name: '&e生命图腾'
     enchantments:
       '1':
         enchantment: unbreaking
@@ -1433,7 +1433,7 @@ loot:
   '95':
     item: RED_GLAZED_TERRACOTTA
     amount: 1
-    name: '&cFire Crystal'
+    name: '&c火焰宝石'
     enchantments:
       '1':
         enchantment: unbreaking
@@ -1442,8 +1442,8 @@ loot:
     item: TRIDENT
     amount: 1
     unbreaking: 90
-    name: '&b&lTrident of Poseidon'
-    lore1: '&3Wielded by Poseidon during the great war.'
+    name: '&b&l海神三叉戟'
+    lore1: '&3据说是波塞冬在大战中用过的三叉戟.'
     enchantments:
       '1':
         enchantment: loyalty
@@ -1460,7 +1460,7 @@ loot:
   '97':
     item: FEATHER
     amount: 1
-    name: '&eAngel Feather'
+    name: '&e天使之羽'
     enchantments:
       '1':
         enchantment: unbreaking
@@ -1468,7 +1468,7 @@ loot:
   '98':
     item: SEA_PICKLE
     amount: 1
-    name: '&2Pickel of Power'
+    name: '&2力量泡菜'
     enchantments:
       '1':
         enchantment: unbreaking
@@ -1476,9 +1476,9 @@ loot:
   '99':
     item: HONEYCOMB
     amount: 1
-    name: '&fHoney of the Eater'
-    lore1: "Out of the eater, something to eat;"
-    lore2: "Out of the strong, something sweet."
+    name: '&f吞噬者之蜜'
+    lore1: "快出来, 吃点东西;"
+    lore2: "快变壮, 变得甜蜜."
     enchantments:
       '1':
         enchantment: unbreaking
@@ -1486,7 +1486,7 @@ loot:
   '100':
     item: BELL
     amount: 1
-    name: '&fHeroic Village Bell'
+    name: '&f英雄村庄钟'
     enchantments:
       '1':
         enchantment: unbreaking
@@ -1494,8 +1494,8 @@ loot:
   '101':
     item: NETHERITE_PICKAXE
     amount: 1
-    name: '&eDwarven Pickaxe'
-    lore1: '&8Use only for gold!'
+    name: '&e地精之镐'
+    lore1: '&8只能挖黄金!'
     enchantments:
       '1':
         enchantment: efficiency
@@ -1503,8 +1503,8 @@ loot:
   '102':
     item: DIAMOND_BOOTS
     amount: 1
-    name: "&e&lWinged Boots"
-    lore1: "&8Crafted with Zepher wings"
+    name: "&e&l翼靴"
+    lore1: "&8用赛普赫的翅膀制作"
     enchantments:
       '1':
         enchantment: feather_falling
@@ -1518,9 +1518,9 @@ loot:
   '103':
     item: GOLDEN_HELMET
     amount: 1
-    name: '&e&lHalo'
-    lore1: '&8Torn from a fallen angel'
-    lore2: "&8By Archangel Michel himself"
+    name: '&e&l光环'
+    lore1: '&8来自一位堕天使'
+    lore2: "&8也就是大天使米歇尔本人"
     enchantments:
       '1':
         enchantment: protection
@@ -1534,9 +1534,9 @@ loot:
   '104':
     item: DIAMOND_HELMET
     amount: 1
-    name: '&fCat Spirit Helm'
-    lore1: '&8Embued with the spirit'
-    lore2: "&8of a great and ancient beast"
+    name: '&f猫魂头盔'
+    lore1: '&8充满了伟大而古老的'
+    lore2: '&8野兽的精神.'
     enchantments:
       '1':
         enchantment: protection
@@ -1550,7 +1550,7 @@ loot:
   '105':
     item: CROSSBOW
     amount: 1
-    name: "&7Shotbow"
+    name: "&7弩弓"
     enchantments: 
       0:
         enchantment: mending
@@ -1570,8 +1570,8 @@ loot:
   '106':
     item: DIAMOND_LEGGINGS
     amount: 1
-    name: "&7&lKing Uthers Greaves"
-    lore1: '&8Lost long ago by a legend'
+    name: "&7&l乌瑟斯国护腿"
+    lore1: '&8很久之前的传奇'
     enchantments:
       '1':
         enchantment: protection
@@ -1587,7 +1587,7 @@ loot:
   '107':
     item: WRITTEN_BOOK
     amount: 1
-    name: '&f&lThe Holy Bible'
+    name: '&f&l圣经'
     enchantments:
       '1':
         enchantment: smite
@@ -1595,7 +1595,7 @@ loot:
   '108':
     item: MILK_BUCKET
     amount: 1
-    name: "&f&lMother's Milk"
+    name: "&f&l母奶"
     enchantments:
       '1':
         enchantment: unbreaking
@@ -1609,9 +1609,9 @@ loot:
   '111':
     item: NAUTILUS_SHELL
     amount: 1
-    name: "&b&lShell of 7 Seas"
-    lore1: "&8He who holds the shell"
-    lore2: "&8controlls the sea."
+    name: "&b&l七海之壳"
+    lore1: "&8得到此物者"
+    llore2: "&8能掌控海洋."
     enchantments:
       '1':
         enchantment: unbreaking
@@ -1619,8 +1619,8 @@ loot:
   '112':
     item: NETHERITE_SWORD
     amount: 1
-    name: '&c&lWrathbringer'
-    lore1: "&4A righteous wrath this is not"
+    name: '&c&l愤怒使者'
+    lore1: "&4义愤填膺?不,它不是."
     enchantments:
       '1':
         enchantment: sharpness
@@ -1652,8 +1652,8 @@ loot:
   '113':
     item: NETHERITE_CHESTPLATE
     amount: 1
-    name: "&6&lPlate of Greed"
-    lore1: '&6Take and eat, fill thy belly'
+    name: "&6&l贪婪石板"
+    lore1: '&6无尽吞噬, 填饱肚子'
     enchantments:
       '1':
         enchantment: protection
@@ -1677,7 +1677,7 @@ loot:
   '114':
     item: KELP
     amount: 1
-    name: '&e&lGlow Leaf'
+    name: '&e&l光叶'
     enchantments:
       '1':
         enchantment: unbreaking
@@ -1685,7 +1685,7 @@ loot:
   '115':
     item: GLOW_BERRIES
     amount: 1
-    name: '&e&lFruit of Odin'
+    name: '&e&l奥丁之果'
     enchantments:
       '1':
         enchantment: unbreaking
@@ -1693,7 +1693,7 @@ loot:
   '116':
     item: DRIED_KELP
     amount: 1
-    name: '&4&lStinky Animal Poo'
+    name: '&4&l臭动物便便'
     enchantments:
       '1':
         enchantment: thorns
@@ -1701,7 +1701,7 @@ loot:
   '117':
     item: HONEY_BOTTLE
     amount: 1
-    name: '&e&lNectar of the Gods'
+    name: '&e&l众神的甘露'
     enchantments:
       '1':
         enchantment: unbreaking
@@ -1709,14 +1709,14 @@ loot:
   '118':
     item: GOLDEN_APPLE
     amount: 1
-    name: '&6&lNotch Apple'
-    lore1: '&6Gone but never forgotten...'
+    name: '&6&lNotch的苹果'
+    lore1: '&6永远铭记...'
   '119':
     item: SWEET_BERRIES
     amount: 1
-    name: '&2&lMistletoe'
-    lore1: '&4Great for fertility,'
-    lore2: '&4Or can be used to fell a god'
+    name: '&2&槲寄生'
+    lore1: '&4非常适合生育,'
+    lore2: '&4可以用来堕神'
     enchantments:
       '1':
         enchantment: unbreaking
@@ -1724,9 +1724,9 @@ loot:
   '120':
     item: HONEY_BOTTLE
     amount: 1
-    name: "&6&lSampson's Honey"
-    lore1: 'Grants a great and terrible power,'
-    lore2: 'A power to move the very earth.'
+    name: "&6&l桑普森的蜂蜜"
+    lore1: '赋予强大而可怕的力量,'
+    lore2: '撼动地球.'
     enchantments:
       '1':
         enchantment: unbreaking
@@ -1734,9 +1734,9 @@ loot:
   '121':
     item: AMETHYST_SHARD
     amount: 1
-    name: "&d&lPower Shard"
-    lore1: "&5All the power is yours,"
-    lore2: "&5None shall stand against you"
+    name: "&d&l能量碎片"
+    lore1: "&5所有的能量都是你的,"
+    lore2: "&5没有人敢反对你"
     enchantments:
       '1':
         enchantment: unbreaking

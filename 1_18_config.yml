@@ -27,8 +27,8 @@ namePrefix: '&fInfernal'
 #  '6': '&fKing'
 #  '7': '&fInfernal'
 nameTagsLevel: 1
-nameTagsName: '&f<prefix> <mobName>'
-bossBarsName: '&fLevel <mobLevel> &f<prefix> <mobName>'
+nameTagsName: '&f精英 <mobName>'
+bossBarsName: '&f<abilities>&f精英 <mobName>'
 enableBossBar: true
 bossBarSettings:
   defaultColor: "PINK"
@@ -59,20 +59,20 @@ effectAllPlayerAttacks: true
 enableParticles: true
 enableDeathMessages: false
 deathMessages:
-- '&cplayer &chas killed an mob&c!'
-- '&cAn mob &cwas slain by player&c!'
-- '&cplayer &cowned an mob&c!'
-- '&cAn mob &cwas beheaded by player&c''s weapon!'
-- '&cplayer&c''s weapon &ckilled an mob&c!'
-- '&cAn mob &cwas killed by player &cusing a weapon&c!'
+- '&c一名玩家 &c杀死了一个精英怪&c!'
+- '&c一只精英怪 &c被玩家杀死&c!'
+- '&c玩家 &c拥有了一个精英怪&c!'
+- '&c一个精英怪 &c被玩家&c的武器斩首!'
+- '&c玩家&c的武器&c杀死了一个精英怪&c!'
+- '&c一个精英怪 &c被玩家用 &c武器杀死&c!'
 enableSpawnMessages: false
 spawnMessageRadius: 64
 spawnMessages:
-- '&cAn Infernal mob has spawned near you!'
-- '&cWatch out!'
-- '&cYou hear a faint scream...'
-- '&cSomething is coming...'
-- '&cYou hear a mob nearby...'
+- '&c一只精英怪在你附近生成!'
+- '&c小心!'
+- '&c你听到风中传来微弱的尖啸声...'
+- '&c有些邪恶的东西在靠近...'
+- '&c感受到了强大的恶名精英的气息...'
 mobworlds:
 - <all>
 effectworlds:

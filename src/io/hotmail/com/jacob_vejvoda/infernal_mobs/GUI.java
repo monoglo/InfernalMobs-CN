@@ -75,30 +75,175 @@ public class GUI implements Listener {
         } else
             clearInfo(p);
     }
+    
+    
+    @SuppressWarnings("deprecation")
+	private static String translateEntityTypeToZHCN(EntityType type) {
+    	switch (type) {
+    		case ZOMBIE_HORSE: 
+    		return "僵尸马";
+    		case AXOLOTL:
+    		return "美西螈";
+    		case BAT:
+    		return "蝙蝠";
+    		case CHICKEN:
+    		return "鸡";
+    		case COD:
+    		return "鳕鱼";
+    		case COW:
+    		return "牛";
+    		case FOX:
+    		return "狐狸";
+    		case GLOW_SQUID:
+    		return "发光鱿鱼";
+    		case OCELOT:
+    		return "豹猫";
+    		case PIG:
+    		return "猪";
+    		case RABBIT:
+    		return "兔子";
+    		case SALMON:
+    		return "鲑鱼";
+    		case SHEEP:
+    		return "绵羊";
+    		case SQUID:
+    		return "鱿鱼";
+    		case STRIDER:
+    		return "炽足兽";
+    		case TROPICAL_FISH:
+    		return "热带鱼";
+    		case TURTLE:
+    		return "海龟";
+    		case VILLAGER:
+    		return "村民";
+    		case WANDERING_TRADER:
+    		return "流浪商人";
+    		case PUFFERFISH:
+    		return "河豚";
+    		case BEE:
+    		return "蜜蜂";
+    		case CAVE_SPIDER:
+    		return "洞穴蜘蛛 ";
+    		case DOLPHIN:
+    		return "海豚";
+    		case ENDERMAN:
+    		return "末影人";
+    		case GOAT:
+    		return "山羊";
+    		case PANDA:
+    		return "熊猫";
+    		case PIGLIN:
+    		return "猪灵";
+    		case POLAR_BEAR:
+    		return "北极熊";
+    		case SPIDER:
+    		return "蜘蛛";
+    		case ZOMBIFIED_PIGLIN:
+    		return "僵尸猪灵";
+    		case BLAZE:
+    		return "烈焰人";
+    		case CREEPER:
+    		return "苦力怕";
+    		case DROWNED:
+    		return "溺尸";
+    		case ELDER_GUARDIAN:
+    		return "远古守卫者";
+    		case ENDERMITE:
+    		return "末影螨";
+    		case EVOKER:
+    		return "唤魔者";
+    		case GHAST:
+    		return "恶魂";
+    		case GUARDIAN:
+    		return "守卫者";
+    		case HOGLIN:
+    		return "疣猪兽";
+    		case HUSK:
+    		return "尸壳";
+    		case MAGMA_CUBE:
+    		return "岩浆怪";
+    		case PHANTOM:
+    		return "幻翼";
+    		case PIGLIN_BRUTE:
+    		return "猪灵蛮兵";
+    		case PILLAGER:
+    		return "掠夺者";
+    		case RAVAGER:
+    		return "劫掠兽";
+    		case SHULKER:
+    		return "潜影贝";
+    		case SILVERFISH:
+    		return "蠹虫";
+    		case SKELETON:
+    		return "骷髅";
+    		case SLIME:
+    		return "史莱姆";
+    		case STRAY:
+    		return "流浪者";
+    		case VEX:
+    		return "恼鬼";
+    		case VINDICATOR:
+    		return "卫道士";
+    		case WITCH:
+    		return "女巫";
+    		case WITHER_SKELETON:
+    		return "凋零骷髅";
+    		case ZOGLIN:
+    		return "僵尸疣猪兽";
+    		case ZOMBIE_VILLAGER:
+    		return "僵尸村民";
+    		case ZOMBIE:
+    		return "僵尸";
+    		case CAT:
+    		return "猫";
+    		case DONKEY:
+    		return "驴";
+    		case HORSE:
+    		return "马";
+    		case LLAMA:
+    		return "羊驼";
+    		case TRADER_LLAMA:
+    		return "行商羊驼";
+    		case MULE:
+    		return "骡";
+    		case PARROT:
+    		return "鹦鹉";
+    		case SKELETON_HORSE:
+    		return "骷髅马";
+    		case WOLF:
+    		return "狼";
+    		case IRON_GOLEM:
+    		return "铁傀儡";
+    		case ENDER_DRAGON:
+    		return "末影龙";
+    		case WITHER:
+    		return "凋灵";
+    		default:
+    		return type.getName();
+    			
+    	}
+    }
 
     @SuppressWarnings("deprecation")
     private static void showBossBar(Player p, Entity e) {
         List<String> oldMobAbilityList = plugin.findMobAbilities(e.getUniqueId());
-        String tittle = plugin.getConfig().getString("bossBarsName", "&fLevel <powers> &fInfernal <mobName>");
-        String mobName = e.getType().getName().replace("_", " ");
-        if (e.getType().equals(EntityType.SKELETON)) {
-            Skeleton sk = (Skeleton) e;
-            if (sk.getSkeletonType().equals(Skeleton.SkeletonType.WITHER)) {
-                mobName = "WitherSkeleton";
-            }
-        }
-        String prefix = plugin.getConfig().getString("namePrefix", "&fInfernal");
+        String tittle = plugin.getConfig().getString("bossBarsName", "&fLevel <powers> &精英 <mobName>");
+        EntityType mobType = e.getType();
+        
+        
+        String mobName = translateEntityTypeToZHCN(mobType);
+        String prefix = plugin.getConfig().getString("namePrefix", "&f精英");
         if (plugin.getConfig().getString("levelPrefixs." + oldMobAbilityList.size()) != null) {
             prefix = plugin.getConfig().getString("levelPrefixs." + oldMobAbilityList.size());
         }
         tittle = tittle.replace("<prefix>", prefix.substring(0, 1).toUpperCase() + prefix.substring(1));
-        tittle = tittle.replace("<mobName>", mobName.substring(0, 1).toUpperCase() + mobName.substring(1));
+        tittle = tittle.replace("<mobName>", mobName);
         tittle = tittle.replace("<mobLevel>", oldMobAbilityList.size() + "");
-        String abilities = plugin.generateString(5, oldMobAbilityList);
+        String abilities = plugin.generateStringZHCN(5, oldMobAbilityList);
         int count = 4;
         try {
             do {
-                abilities = plugin.generateString(count, oldMobAbilityList);
+                abilities = plugin.generateStringZHCN(count, oldMobAbilityList);
                 count--;
                 if (count <= 0) {
                     break;
@@ -245,20 +390,19 @@ public class GUI implements Listener {
         }
     }
 
-    @SuppressWarnings("deprecation")
     public String getMobNameTag(Entity entity) {
         List<String> oldMobAbilityList = plugin.findMobAbilities(entity.getUniqueId());
         String tittle = null;
         try {
-            tittle = plugin.getConfig().getString("nameTagsName", "&fInfernal <mobName>");
-            String mobName = entity.getType().getName().replace("_", " ");
-
+            tittle = plugin.getConfig().getString("nameTagsName", "&精英 <mobName>");
+            EntityType mobType = entity.getType();
+            String mobName = translateEntityTypeToZHCN(mobType);
             tittle = tittle.replace("<mobName>", mobName.substring(0, 1).toUpperCase() + mobName.substring(1));
             tittle = tittle.replace("<mobLevel>", "" + oldMobAbilityList.size());
             String abilities;
             int count = 4;
             do {
-                abilities = plugin.generateString(count, oldMobAbilityList);
+                abilities = plugin.generateStringZHCN(count, oldMobAbilityList);
                 count--;
             } while ((tittle.length() + abilities.length() + mobName.length()) > 64);
             tittle = tittle.replace("<abilities>", abilities.substring(0, 1).toUpperCase() + abilities.substring(1));
