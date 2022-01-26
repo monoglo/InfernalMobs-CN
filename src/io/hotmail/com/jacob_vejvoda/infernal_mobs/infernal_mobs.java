@@ -967,11 +967,11 @@ public class infernal_mobs extends JavaPlugin implements Listener {
 
     private boolean isBaby(Entity mob) {
         if (mob.getType().equals(EntityType.ZOMBIE)) {
-            Zombie zombie = (Zombie) mob;
-            return zombie.isBaby();
+        	Ageable zombie = (Ageable) mob;
+            return !zombie.isAdult();
         } else if (mob.getType().equals(EntityType.PIGLIN)) {
-            PigZombie pigzombie = (PigZombie) mob;
-            return pigzombie.isBaby();
+        	Ageable pigzombie = (Ageable) mob;
+            return !pigzombie.isAdult();
         }
         return false;
     }
