@@ -6,7 +6,6 @@
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="/home/eliminator/eclipse/1.18/spigot-1.18.jar"/>
-	<classpathentry kind="lib" path="/home/eliminator/eclipse/1.18/spigot-api-1.18-R0.1-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="/home/eliminator/eclipse/1.19/spigot-api-1.19-R0.1-SNAPSHOT.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
