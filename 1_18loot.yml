@@ -1610,8 +1610,8 @@ loot:
     item: NAUTILUS_SHELL
     amount: 1
     name: "&b&l七海之壳"
-    lore1: "&8得到此物者"
-    llore2: "&8能掌控海洋."
+    lore1: "&8得此物者"
+    lore2: "&8掌控海洋."
     enchantments:
       '1':
         enchantment: unbreaking
@@ -1714,7 +1714,7 @@ loot:
   '119':
     item: SWEET_BERRIES
     amount: 1
-    name: '&2&槲寄生'
+    name: '&2&l槲寄生'
     lore1: '&4非常适合生育,'
     lore2: '&4可以用来堕神'
     enchantments:
@@ -1735,8 +1735,8 @@ loot:
     item: AMETHYST_SHARD
     amount: 1
     name: "&d&l能量碎片"
-    lore1: "&5所有的能量都是你的,"
-    lore2: "&5没有人敢反对你"
+    lore1: "&5所有能量为您所有,"
+    lore2: "&5没有人胆敢反对你"
     enchantments:
       '1':
         enchantment: unbreaking
