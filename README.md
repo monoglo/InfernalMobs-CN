@@ -2,7 +2,7 @@
 
 这是 Eliminator 大佬的精英怪插件的中文本地化分支，[原始仓库](https://bitbucket.org/Eliminator/infernalmobs/src/master/)
 
-This is the fork of Eliminator's InfernalMobs in Simplified Chinese,[Origin Repository](https://bitbucket.org/Eliminator/infernalmobs/src/master/)
+This is the fork of Eliminator's InfernalMobs in Simplified Chinese, [Origin Repository](https://bitbucket.org/Eliminator/infernalmobs/src/master/)
 
 适配 InfernalMobs 6.6 版本，汉化了 Boss 血量条的文字、生物种类、精英词条，以及截至1.18的掉落物和文本提示。
 
