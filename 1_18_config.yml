@@ -1,15 +1,3 @@
-#Chance is the chance that a mob will not be infernal, the lower the number the higher the chance. (min 1)
-#Enabledworlds are the worlds that infernal mobs can spawn in.
-#Enabledmobs are the mobs that can become infernal.
-#Loot is the items that are dropped when an infernal mob dies. (You can have up to 64)
-#Item is the item, Amount is the amount, Durability is how damaged it will be (0 is undamaged).
-#nameTagsLevel is the visibility level of the name tags, 0 = no tag, 
-#1 = tag shown when your looking at the mob, 2 = tag always shown.
-#Note, if you have name tags set to 0, on server restart all infernal mobs will turn normal.
-#If you want to enable the boss bar you must have BarAPI on your server.
-#nameTagsName and bossBarsName have these special tags: <mobLevel> = the amount of powers the boss has.
-#<abilities> = A list of about 3-5 (whatever can fit) names of abilities the boss has.
-#<mobName> = Name of the mob, so if the mob is a creeper the mobName will be "Creeper".
 chance: 100
 #mobChances:
 #  Ghast: 150
