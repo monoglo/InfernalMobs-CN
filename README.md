@@ -7,6 +7,7 @@ This is the fork of Eliminator's InfernalMobs in Simplified Chinese, [Origin Rep
 适配 InfernalMobs 6.6 版本，汉化了 Boss 血量条的文字、生物种类、精英词条，以及截至1.18的掉落物和文本提示。
 
 **6.7 版本除了支持 1.19 以外没有任何改动，且由于作者没有放出 6.7 版本源码，手动升级到了 6.7 版本。**
+~现在放出了，但懒得改了~
 
 ---
 This is the Infernal Mobs source code. 
