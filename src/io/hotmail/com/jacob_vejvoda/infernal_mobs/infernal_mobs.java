@@ -139,7 +139,7 @@ public class infernal_mobs extends JavaPlugin implements Listener {
         if (Bukkit.getVersion().contains("1.16")) {
             configVersion = "1_16";
         }
-        if (Bukkit.getVersion().contains("1.17") || Bukkit.getVersion().contains("1.18") || Bukkit.getVersion().contains("1.19")) {
+        if (Bukkit.getVersion().contains("1.17") || Bukkit.getVersion().contains("1.18") || Bukkit.getVersion().contains("1.19") || Bukkit.getVersion().contains("1.20")) {
             configVersion = "1_18";
         }
 
