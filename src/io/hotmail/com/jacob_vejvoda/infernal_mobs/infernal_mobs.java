@@ -1132,7 +1132,7 @@ public class infernal_mobs extends JavaPlugin implements Listener {
                                     if (oneUpper.lives > 1) {
                                         //System.out.print("1");//-------------------------------Debug
                                        // ((org.bukkit.entity.Damageable) mob).setHealth(((org.bukkit.entity.Damageable) mob).);
-                                        
+
                                         //System.out.print("UP!");//-------------------------------Debug
                                         //InfernalMob newMob = new InfernalMob(mob, id, mob.getWorld(), oneUpper.infernal, abilityList, 1, getEffect());
                                         //infernalList.set(index, newMob);
@@ -1301,7 +1301,7 @@ public class infernal_mobs extends JavaPlugin implements Listener {
             showEffectParticles(e, effect, 15);
         }
     }
-    
+
     public void applyEatEffects(LivingEntity e, int effectID) {
     	for(String s : (ArrayList<String>)this.lootFile.getList("consumeEffects." + effectID + ".potionEffects")) {
     		String[] split = s.split(":");
@@ -1827,7 +1827,7 @@ public class infernal_mobs extends JavaPlugin implements Listener {
         } catch (Exception ignored) {
         }
     }
-    
+
     private static List<Block> getSphere(Block block1) {
         List<Block> blocks = new LinkedList();
         double xi = block1.getLocation().getX() + 0.5D;
@@ -2227,80 +2227,82 @@ public class infernal_mobs extends JavaPlugin implements Listener {
         }
         return namesString.toString();
     }
+
     private static String translateAbilityToZHCN(String ability) {
-    	switch (ability) {
-    	case "mama":
-    	return "妈妈";
-    	case "molten":
-    	return "熔火";
-    	case "weakness":
-    	return "虚弱";
-    	case "vengeance":
-    	return "复仇";
-    	case "webber":
-    	return "织网";
-    	case "storm":
-    	return "风暴";
-    	case "sprint":
-    	return "疾速";
-    	case "lifesteal":
-    	return "吸血";
-    	case "ghastly":
-    	return "火球";
-    	case "ender":
-    	return "末影";
-    	case "cloaked":
-    	return "隐形";
-    	case "berserk":
-    	return "狂暴";
-    	case "1up":
-    	return "不死图腾";
-    	case "sapper":
-    	return "饥荒";
-    	case "rust":
-    	return "锈蚀";
-    	case "bullwark":
-    	return "壁垒";
-    	case "quicksand":
-    	return "流沙";
-    	case "thief":
-    	return "盗贼";
-    	case "tosser":
-    	return "投掷";
-    	case "withering":
-    	return "凋零";
-    	case "blinding":
-    	return "失明";
-    	case "armoured":
-    	return "装甲";
-    	case "poisonous":
-    	return "剧毒";
-    	case "potions":
-    	return "女巫";
-    	case "explode":
-    	return "临别礼物";
-    	case "gravity":
-    	return "失重";
-    	case "archer":
-    	return "箭雨";
-    	case "necromancer":
-    	return "死灵法师";
-    	case "firework":
-    	return "烟花";
-    	case "flying":
-    	return "飞行";
-    	case "mounted":
-    	return "骑兵";
-    	case "morph":
-    	return "变形";
-    	case "ghost":
-    	return "亡魂";
-    	case "confusing":
-    	return "混乱";
-    	default:
-    		return "";
-    	}
+        switch (ability) {
+            case "mama":
+                return "妈妈";
+            case "molten":
+                return "熔火";
+            case "weakness":
+                return "虚弱";
+            case "vengeance":
+                return "复仇";
+            case "webber":
+                return "织网";
+            case "storm":
+                return "风暴";
+            case "sprint":
+                return "疾速";
+            case "lifesteal":
+                return "吸血鬼";
+            case "ghastly":
+                return "恶魂";
+            case "ender":
+                return "末影";
+            case "cloaked":
+                return "隐匿";
+            case "berserk":
+                return "狂暴";
+            case "1up":
+                return "不死图腾";
+            case "sapper":
+                return "饥荒";
+            case "rust":
+                return "锈蚀";
+            case "bullwark":
+                return "壁垒";
+            case "quicksand":
+                return "流沙";
+            case "thief":
+                return "盗贼";
+            case "tosser":
+                return "投掷";
+            case "withering":
+                return "凋零";
+            case "blinding":
+                return "失明";
+            case "armoured":
+                return "装甲";
+            case "poisonous":
+                return "剧毒";
+            case "potions":
+                return "女巫";
+            case "explode":
+                return "临别礼物";
+            case "gravity":
+                return "失重";
+            case "archer":
+                return "箭雨";
+            case "necromancer":
+                return "死灵法师";
+            case "firework":
+                return "烟花";
+            case "flying":
+                return "飞行";
+            case "mounted":
+                return "骑兵";
+            case "morph":
+                return "变形";
+            case "ghost":
+                return "亡魂";
+            case "confusing":
+                return "混乱";
+            default:
+                return "";
+        }
     }
+
     String generateStringZHCN(int maxNames, List<String> names) {
         StringBuilder namesString = new StringBuilder();
         if (maxNames > names.size()) {
@@ -2493,7 +2495,7 @@ public class infernal_mobs extends JavaPlugin implements Listener {
         }
         return null;
     }
-    
+
     public ItemStack getDiviningStaff(){
     	ItemStack s = getItem(Material.BLAZE_ROD, "§6§lDivining Rod", 1, Arrays.asList("Click to find infernal mobs."));
     	ItemMeta m = s.getItemMeta();
@@ -2512,7 +2514,7 @@ public class infernal_mobs extends JavaPlugin implements Listener {
 		//sr.setIngredient('A', Material.AIR);
 		Bukkit.addRecipe(sr);
     }
-    
+
     private ItemStack getItem(Material mat, String name, int amount, List<String> loreList){
     	ItemStack item = new ItemStack(mat, amount);
     	ItemMeta m = item.getItemMeta();
@@ -2523,7 +2525,7 @@ public class infernal_mobs extends JavaPlugin implements Listener {
     	item.setItemMeta(m);
   	  	return item;
     }
-    
+
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if ((cmd.getName().equalsIgnoreCase("infernalmobs")) || (cmd.getName().equalsIgnoreCase("im"))) {
             try {
