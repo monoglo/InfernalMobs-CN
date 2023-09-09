@@ -86,7 +86,7 @@ import org.bukkit.potion.PotionType;
 import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
 
-@SuppressWarnings({"unchecked", "rawtypes", "deprecation"})
+@SuppressWarnings({"unchecked", "rawtypes"})
 public class infernal_mobs extends JavaPlugin implements Listener {
     GUI gui;
     long serverTime = 0L;
@@ -102,7 +102,8 @@ public class infernal_mobs extends JavaPlugin implements Listener {
     ArrayList<Player> levitateList = new ArrayList();
     public ArrayList<Player> fertileList = new ArrayList();
 
-    public void onEnable() {
+    @SuppressWarnings("deprecation")
+	public void onEnable() {
         //Register Events
         getServer().getPluginManager().registerEvents(this, this);
         EventListener events = new EventListener(this);
@@ -138,7 +139,7 @@ public class infernal_mobs extends JavaPlugin implements Listener {
         if (Bukkit.getVersion().contains("1.16")) {
             configVersion = "1_16";
         }
-        if (Bukkit.getVersion().contains("1.17") || Bukkit.getVersion().contains("1.18") || Bukkit.getVersion().contains("1.19")) {
+        if (Bukkit.getVersion().contains("1.17") || Bukkit.getVersion().contains("1.18") || Bukkit.getVersion().contains("1.19") || Bukkit.getVersion().contains("1.20")) {
             configVersion = "1_18";
         }
 
@@ -966,13 +967,9 @@ public class infernal_mobs extends JavaPlugin implements Listener {
     }
 
     private boolean isBaby(Entity mob) {
-        if (mob.getType().equals(EntityType.ZOMBIE)) {
-        	Ageable zombie = (Ageable) mob;
-            return !zombie.isAdult();
-        } else if (mob.getType().equals(EntityType.PIGLIN)) {
-        	Ageable pigzombie = (Ageable) mob;
-            return !pigzombie.isAdult();
-        }
+    	if(mob instanceof Ageable) {
+    		return !((Ageable)mob).isAdult();
+    	}
         return false;
     }
 
@@ -1124,10 +1121,10 @@ public class infernal_mobs extends JavaPlugin implements Listener {
                             int randomNum = rand.nextInt(max - min) + min;
                             //System.out.println("PE: " + ability);
                             if (ability.equals("cloaked")) {
-                                ((LivingEntity) mob).addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 40, 1), true);
+                                ((LivingEntity) mob).addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 40, 1));
                             } else if (ability.equals("armoured")) {
                                 if ((!(mob instanceof Skeleton)) && (!(mob instanceof Zombie))) {
-                                    ((LivingEntity) mob).addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 40, 1), true);
+                                    ((LivingEntity) mob).addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 40, 1));
                                 }
                             } else if (ability.equals("1up")) {
                                 if (((org.bukkit.entity.Damageable) mob).getHealth() <= 5) {
@@ -1144,9 +1141,9 @@ public class infernal_mobs extends JavaPlugin implements Listener {
                                     }
                                 }
                             } else if (ability.equals("sprint")) {
-                                ((LivingEntity) mob).addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 40, 1), true);
+                                ((LivingEntity) mob).addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 40, 1));
                             } else if (ability.equals("molten")) {
-                                ((LivingEntity) mob).addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 40, 1), true);
+                                ((LivingEntity) mob).addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 40, 1));
                             } else if (ability.equals("tosser")) {
                                 if (randomNum < 6) {
                                     double radius = 6D;
@@ -1295,9 +1292,9 @@ public class infernal_mobs extends JavaPlugin implements Listener {
         int level = this.lootFile.getInt("potionEffects." + effectID + ".level");
         String name = this.lootFile.getString("potionEffects." + effectID + ".potion");
         if ((PotionEffectType.getByName(name) == PotionEffectType.HARM) || (PotionEffectType.getByName(name) == PotionEffectType.HEAL)) {
-            e.addPotionEffect(new PotionEffect(PotionEffectType.getByName(name), 1, level - 1), true);
+            e.addPotionEffect(new PotionEffect(PotionEffectType.getByName(name), 1, level - 1));
         } else {
-            e.addPotionEffect(new PotionEffect(PotionEffectType.getByName(name), 400, level - 1), true);
+            e.addPotionEffect(new PotionEffect(PotionEffectType.getByName(name), 400, level - 1));
         }
         if (this.lootFile.getString("potionEffects." + effectID + ".particleEffect") != null) {
             String effect = this.lootFile.getString("potionEffects." + effectID + ".particleEffect");
@@ -1320,7 +1317,7 @@ public class infernal_mobs extends JavaPlugin implements Listener {
 					}
 				}, (time*20));
 	        }else
-	        	e.addPotionEffect(new PotionEffect(PotionEffectType.getByName(name), time*20, level - 1), true);
+	        	e.addPotionEffect(new PotionEffect(PotionEffectType.getByName(name), time*20, level - 1));
     	}
         if(e instanceof Player)
         	((Player)e).sendMessage(this.lootFile.getString("consumeEffects." + effectID + ".message").replace("&", "§"));
@@ -1489,7 +1486,7 @@ public class infernal_mobs extends JavaPlugin implements Listener {
             if (ability.equals("ender")) {
                 atc.teleport(vic.getLocation());
             } else if ((ability.equals("poisonous")) && (isLegitVictim(atc, playerIsVictom, ability))) {
-                ((LivingEntity) vic).addPotionEffect(new PotionEffect(PotionEffectType.POISON, 200, 1), true);
+                ((LivingEntity) vic).addPotionEffect(new PotionEffect(PotionEffectType.POISON, 200, 1));
             } else if ((ability.equals("morph")) && (isLegitVictim(atc, playerIsVictom, ability))) {
                 try {
                     Entity newEnt;
@@ -1561,11 +1558,11 @@ public class infernal_mobs extends JavaPlugin implements Listener {
                 }
                 vic.setFireTicks(amount * 20);
             } else if ((ability.equals("blinding")) && (isLegitVictim(atc, playerIsVictom, ability))) {
-                ((LivingEntity) vic).addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 60, 1), true);
+                ((LivingEntity) vic).addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 60, 1));
             } else if ((ability.equals("confusing")) && (isLegitVictim(atc, playerIsVictom, ability))) {
-                ((LivingEntity) vic).addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 80, 2), true);
+                ((LivingEntity) vic).addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 80, 2));
             } else if ((ability.equals("withering")) && (isLegitVictim(atc, playerIsVictom, ability))) {
-                ((LivingEntity) vic).addPotionEffect(new PotionEffect(PotionEffectType.WITHER, 180, 1), true);
+                ((LivingEntity) vic).addPotionEffect(new PotionEffect(PotionEffectType.WITHER, 180, 1));
             } else if ((ability.equals("thief")) && (isLegitVictim(atc, playerIsVictom, ability))) {
                 if ((vic instanceof Player)) {
                     if ((!((Player) vic).getInventory().getItemInMainHand().getType().equals(Material.AIR)) && ((randomNum <= 1) || (randomNum == 1))) {
@@ -1579,9 +1576,9 @@ public class infernal_mobs extends JavaPlugin implements Listener {
                     eq.setItemInMainHand(null);
                 }
             } else if ((ability.equals("quicksand")) && (isLegitVictim(atc, playerIsVictom, ability))) {
-                ((LivingEntity) vic).addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 180, 1), true);
+                ((LivingEntity) vic).addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 180, 1));
             } else if ((ability.equals("bullwark")) && (isLegitVictim(atc, playerIsVictom, ability))) {
-                ((LivingEntity) atc).addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 500, 2), true);
+                ((LivingEntity) atc).addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 500, 2));
             } else if ((ability.equals("rust")) && (isLegitVictim(atc, playerIsVictom, ability))) {
                 ItemStack damItem = ((Player) vic).getInventory().getItemInMainHand();
                 if (((randomNum <= 3) || (randomNum == 1)) && (damItem.getMaxStackSize() == 1)) {
@@ -1618,7 +1615,7 @@ public class infernal_mobs extends JavaPlugin implements Listener {
                         }
                     }
                 } else if ((ability.equals("lifesteal")) && (isLegitVictim(atc, playerIsVictom, ability))) {
-                    ((LivingEntity) atc).addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 20, 1), true);
+                    ((LivingEntity) atc).addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 20, 1));
                 } else if ((!ability.equals("cloaked")) || (!isLegitVictim(atc, playerIsVictom, ability))) {
                     if ((ability.equals("storm")) && (isLegitVictim(atc, playerIsVictom, ability))) {
                         if (((randomNum <= 2) || (randomNum == 1)) && (!atc.isDead())) {
@@ -1658,7 +1655,7 @@ public class infernal_mobs extends JavaPlugin implements Listener {
                                 }
                             }
                         } else if ((ability.equals("weakness")) && (isLegitVictim(atc, playerIsVictom, ability))) {
-                            ((LivingEntity) vic).addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 500, 1), true);
+                            ((LivingEntity) vic).addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 500, 1));
                         } else if ((ability.equals("berserk")) && (isLegitVictim(atc, playerIsVictom, ability))) {
                             if ((randomNum >= 5) && (!atc.isDead())) {
                                 double health = ((org.bukkit.entity.Damageable) atc).getHealth();
@@ -1744,12 +1741,12 @@ public class infernal_mobs extends JavaPlugin implements Listener {
                                 } else if (atc.getType().equals(EntityType.ZOMBIE)) {
                                     for (int i = 0; i < amount; i++) {
                                         Zombie minion = (Zombie) atc.getWorld().spawnEntity(atc.getLocation(), EntityType.ZOMBIE);
-                                        minion.setBaby(true);
+                                        minion.setBaby();
                                     }
                                 } else if (atc.getType().equals(EntityType.PIGLIN)) {
                                     for (int i = 0; i < amount; i++) {
                                         PigZombie minion = (PigZombie) atc.getWorld().spawnEntity(atc.getLocation(), EntityType.PIGLIN);
-                                        minion.setBaby(true);
+                                        minion.setBaby();
                                     }
                                 } else if (atc.getType().equals(EntityType.OCELOT)) {
                                     for (int i = 0; i < amount; i++) {
@@ -2033,7 +2030,7 @@ public class infernal_mobs extends JavaPlugin implements Listener {
         bat.setVelocity(new Vector(0, 1, 0));
         //bat.setPassenger(ent);
         bat.addPassenger(ent);
-        ((LivingEntity) bat).addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 999999, 1), true);
+        ((LivingEntity) bat).addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 999999, 1));
     }
 
     private void giveMobGear(Entity mob, boolean naturalSpawn) {
